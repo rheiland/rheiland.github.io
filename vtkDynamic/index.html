@@ -1,0 +1,37 @@
+<title>Heiland: Dynamic VTK Tests</title>
+<link rel="shortcut icon" type="image/png" href="../vtkDynamic/lorenz-zoom.png" >
+
+<h1>Dynamic VTK Tests</h1>
+This was a test of VTK's ability to dynamically draw data, inspired by Joseph Cottam (who supplied the
+Peano-like path alg for the dots).  Joseph's Stencil code was much more elegant than the equivalent Python
+code in the scripts below.
+<p>
+<img src=3scenes.png>
+<p>
+Sample VTK-Python scripts (to run these you will need a Python-wrapped VTK installation):
+<p>
+<li><a href=drawPerDot.py>drawPerDot.py</a> - updates the rendering after each dot is added
+<li><a href=drawPerShell.py>drawPerShell.py</a> - updates the rendering after an entire shell is added
+To summarize, these scripts use the .Modified() method of a VTK object to tell the pipeline that things
+have changed.  Also, the range of the scalar data for the Mapper needs to be dynamically updated
+(glyphsMapper.SetScalarRange(0,npts)).
+
+<hr>
+<pre>
+Sample drawing times:
+
+heiland@Macintosh-7:~/Documents/Lumsdaine/Joseph$ time python drawPerDot.py 40
+maxShell = 40
+npts =  1599
+
+real	0m29.210s
+user	0m16.924s
+sys	0m2.670s
+heiland@Macintosh-7:~/Documents/Lumsdaine/Joseph$ time python drawPerShell.py 40
+maxShell = 40
+npts =  1599
+
+real	0m1.064s
+user	0m0.518s
+sys	0m0.176s
+</pre>

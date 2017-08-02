@@ -1,0 +1,215 @@
+
+<head>
+<title>
+VTK-PBGL issues
+</title>
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+</head>
+
+<pre>
+Sandia/build-4-7-09/bin$ ./TestPBGLGraphSQLReader
+vtkPBGLGraphSQLReader: 0.00752401
+PROCESS 0 vertex: 0,0,0
+PROCESS 0 vertex: 1,1,1
+PROCESS 0 vertex: 2,2,2
+PROCESS 0 vertex: 3,3,3
+PROCESS 0 vertex: 4,4,4
+PROCESS 0 vertex: 5,5,5
+PROCESS 0 vertex: 6,6,6
+PROCESS 0 vertex: 7,7,7
+PROCESS 0 vertex: 8,8,8
+PROCESS 0 vertex: 9,9,9
+PROCESS 0 vertex: a,10,a
+PROCESS 0 edge: 0 (0,1),0
+PROCESS 0 edge: 1 (1,2),1
+PROCESS 0 edge: 2 (2,3),2
+PROCESS 0 edge: 3 (3,4),3
+PROCESS 0 edge: 4 (4,5),4
+PROCESS 0 edge: 5 (5,6),5
+PROCESS 0 edge: 6 (6,7),6
+PROCESS 0 edge: 7 (7,8),7
+PROCESS 0 edge: 8 (8,9),8
+PROCESS 0 edge: 9 (9,a),9
+PROCESS 0 edge: a (a,0),10
+finalizing.
+done.
+Sandia/build-4-7-09/bin$ ll TestPBGLGraphSQLReader
+-rwxr-xr-x  1 heiland  heiland  84340 Apr  9 23:58 TestPBGLGraphSQLReader*
+
+
+---------------------------------------------------------------------------------
+Sandia/build-4-7-09/bin$ mpirun -n 2 TestPBGLGraphSQLReader
+vtkPBGLGraphSQLReader: 0.50756
+PROCESS 0 vertex: 0,1,1
+PROCESS 0 edge: 0 (0,4000000000000007),1
+finalizing.
+vtkPBGLGraphSQLReader: 2.02303
+PROCESS 1 vertex: 4000000000000000,5,5
+PROCESS 1 vertex: 4000000000000001,6,6
+PROCESS 1 vertex: 4000000000000002,7,7
+PROCESS 1 vertex: 4000000000000003,8,8
+PROCESS 1 vertex: 4000000000000004,9,9
+PROCESS 1 vertex: 4000000000000005,10,a
+PROCESS 1 vertex: 4000000000000006,0,0
+PROCESS 1 vertex: 4000000000000007,2,2
+PROCESS 1 vertex: 4000000000000008,3,3
+PROCESS 1 vertex: 4000000000000009,4,4
+PROCESS 1 edge: 4000000000000000 (4000000000000000,4000000000000001),5
+PROCESS 1 edge: 4000000000000001 (4000000000000001,4000000000000002),6
+PROCESS 1 edge: 4000000000000002 (4000000000000002,4000000000000003),7
+PROCESS 1 edge: 4000000000000003 (4000000000000003,4000000000000004),8
+PROCESS 1 edge: 4000000000000004 (4000000000000004,4000000000000005),9
+PROCESS 1 edge: 4000000000000005 (4000000000000005,4000000000000006),10
+PROCESS 1 edge: 4000000000000006 (4000000000000006,0),0
+PROCESS 1 edge: 4000000000000007 (4000000000000007,4000000000000008),2
+PROCESS 1 edge: 4000000000000008 (4000000000000008,4000000000000009),3
+PROCESS 1 edge: 4000000000000009 (4000000000000009,4000000000000000),4
+finalizing.
+done.
+done.
+
+
+---------------------------------------------------------------------------------
+Sandia/build-4-7-09/bin$ mpirun -n 3 TestPBGLGraphSQLReader
+vtkPBGLGraphSQLReader: 0.109472
+vtkPBGLGraphSQLReader: 0.126982
+PROCESS 1 vertex: 2000000000000000,3,3
+PROCESS 1 vertex: 2000000000000001,4,4PROCESS 0 vertex: 
+PROCESS 1 vertex: 2000000000000002,5,5
+PROCESS 1 vertex: 2000000000000003,6,6
+PROCESS 1 vertex: 2000000000000004,2,2
+PROCESS 1 vertex: 2000000000000005,7,7
+PROCESS 1 vertex: 2000000000000006,9,9
+0,0,0
+PROCESS 0 edge: 0 (0,4000000000000002),0
+finalizing.
+PROCESS 1 edge: 2000000000000000 (2000000000000000,2000000000000001),3
+PROCESS 1 edge: 2000000000000001 (2000000000000001,2000000000000002),4
+PROCESS 1 edge: 2000000000000002 (2000000000000002,2000000000000003),5
+PROCESS 1 edge: 2000000000000003 (2000000000000003,2000000000000005),6
+PROCESS 1 edge: 2000000000000006 (2000000000000004,2000000000000000),2
+PROCESS 1 edge: 2000000000000004 (2000000000000005,4000000000000000),7
+PROCESS 1 edge: 2000000000000005 (2000000000000006,4000000000000001),9
+finalizing.
+vtkPBGLGraphSQLReader: 0.090219
+PROCESS 2 vertex: 4000000000000000,8,8
+PROCESS 2 vertex: 4000000000000001,10,a
+PROCESS 2 vertex: 4000000000000002,1,1
+PROCESS 2 edge: 4000000000000001 (4000000000000000,2000000000000006),8
+PROCESS 2 edge: 4000000000000000 (4000000000000001,0),10
+PROCESS 2 edge: 4000000000000002 (4000000000000002,2000000000000004),1
+finalizing.
+done.
+done.
+done.
+
+
+---------------------------------------------------------------------------------
+Sandia/build-4-7-09/bin$ mpirun -n 4 TestPBGLGraphSQLReader
+vtkPBGLGraphSQLReader: 0.222366
+vtkPBGLGraphSQLReader: 0.237672
+PROCESS 1 vertex: 2000000000000000,2,2
+PROCESS 1 vertex: 2000000000000001,3,3
+PROCESS 1 vertex: 2000000000000002,4,4
+PROCESS 1 vertex: 2000000000000003,0,0
+PROCESS 1 vertex: 2000000000000004,8,8
+PROCESS 1 vertex: 2000000000000005,10,a
+PROCESS 1 vertex: 2000000000000006,5,5
+PROCESS 1 vertex: 2000000000000007,6,6
+PROCESS 1 vertex: 2000000000000008,7,7
+PROCESS 1 edge: 2000000000000000 (2000000000000000,2000000000000001),2
+PROCESS 1 edge: 2000000000000001 (2000000000000001,2000000000000002),3
+PROCESS 1 edge: 2000000000000002 (2000000000000002,2000000000000006),4
+PROCESS 1 edge: 2000000000000003 (2000000000000003,4000000000000000),0
+PROCESS 1 edge: 2000000000000007 (2000000000000004,6000000000000000),8
+PROCESS 1 edge: 2000000000000008 (2000000000000005,2000000000000003),10
+PROCESS 1 edge: 2000000000000004 (2000000000000006,2000000000000007),5
+PROCESS 1 edge: 2000000000000005 (2000000000000007,2000000000000008),6
+PROCESS 1 edge: 2000000000000006 (2000000000000008,2000000000000004),7
+vtkPBGLGraphSQLReader: 0.209997
+PROCESS 2 vertex: 4000000000000000,1,1
+PROCESS 2 edge: 4000000000000000 (4000000000000000,2000000000000000),1
+finalizing.
+finalizing.
+finalizing.
+vtkPBGLGraphSQLReader: 0.218461
+PROCESS 3 vertex: 6000000000000000,9,9
+PROCESS 3 edge: 6000000000000000 (6000000000000000,2000000000000005),9
+finalizing.
+done.
+done.
+done.
+done.
+
+---------------------------------------------------------------------------------
+Sandia/build-4-7-09/bin$ otool -L TestPBGLGraphSQLReader
+TestPBGLGraphSQLReader:
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkParallel.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	libboost_mpi-xgcc42-mt-1_37.dylib (compatibility version 0.0.0, current version 0.0.0)
+	libboost_serialization-xgcc42-mt-1_37.dylib (compatibility version 0.0.0, current version 0.0.0)
+	libboost_filesystem-xgcc42-mt-1_37.dylib (compatibility version 0.0.0, current version 0.0.0)
+	libboost_system-xgcc42-mt-1_37.dylib (compatibility version 0.0.0, current version 0.0.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkRendering.5.5.dylib (compatibility
+version 5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkGraphics.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkverdict.vtk5.5.0.dylib (compatibility
+version 0.0.0, current version 0.0.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkImaging.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkftgl.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkfreetype.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL (compatibility version 1.0.0, current
+version 1.0.0)
+	/System/Library/Frameworks/AGL.framework/Versions/A/AGL (compatibility version 1.0.0, current
+version 1.0.0)
+	/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon (compatibility version 2.0.0, current
+version 136.0.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkIO.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/usr/local/mysql/lib/libmysqlclient.16.dylib (compatibility version 17.0.0, current version 17.0.0)
+	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.3)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkFiltering.5.5.dylib (compatibility
+version 5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkCommon.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 111.1.3)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkDICOMParser.5.5.dylib (compatibility
+version 5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkmetaio.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtksqlite.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkpng.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtktiff.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkzlib.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkjpeg.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkexpat.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtksys.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkexoIIc.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	/Users/heiland/dev/Lumsdaine/Sandia/build-4-7-09/bin/libvtkNetCDF.5.5.dylib (compatibility version
+5.5.0, current version 5.5.0)
+	libboost_thread-xgcc42-mt-1_37.dylib (compatibility version 0.0.0, current version 0.0.0)
+	/usr/local/lib/libmpichcxx.dylib (compatibility version 0.0.0, current version 1.0.0)
+	/usr/local/lib/libmpich.dylib (compatibility version 0.0.0, current version 1.0.0)
+	/usr/local/lib/libpmpich.dylib (compatibility version 0.0.0, current version 1.0.0)
+	/usr/lib/libstdc++.6.dylib (compatibility version 7.0.0, current version 7.4.0)
+	/usr/lib/libgcc_s.1.dylib (compatibility version 1.0.0, current version 1.0.0)
+
+--------------------------------------
+William had a bug with:
+heiland@iub-vpn-192-69:~/Documents/workspace/vtkSNL-trunk/vtkSNL/Parallel$ ls -R|grep PBGLSqlDatabaseExample
+PBGLSqlDatabaseExample.cxx
+
+
+</pre>

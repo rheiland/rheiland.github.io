@@ -1,0 +1,99 @@
+
+<head>
+<title>
+VTK-PBGL issues
+</title>
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+</head>
+
+<h2>VTK-PBGL issues</h2>
+<h3>Related links</h3>
+<li>Boost parallel graph docs in
+.../boost_1_40_0/libs/graph_parallel/doc/html/index.html
+<li><a href=ParallelBFS>ParallelBFS</a>
+<li><a href=setup_test.html>setup and testing</a>
+<li><a href=https://www.kitware.com/InfovisWiki/index.php/PBGL_and_vtkGraph_integration>PBGL_and_vtkGraph_integration</a>
+<li><a href=http://www.boost.org/users/news/version_1_40_0>Boost 1.40</a>
+<hr>
+<h2>Current status (Oct '09)</h2>
+Which classes currently exist in .../VTK/Parallel/vtkPBGL*, which Boost [graph] classes do they use, and what
+remains to be implemented, i.e. what's defined in
+boost/graph/distributed/ that's not yet implemented in VTK?
+<p>
+<pre>
+-----vtkPBGLBreadthFirstSearch.h
+#include &lt;boost/graph/use_mpi.hpp>   // must precede all pbgl includes
+#include &lt;boost/graph/breadth_first_search.hpp>
+#include &lt;boost/graph/distributed/breadth_first_search.hpp>
+#include &lt;boost/graph/parallel/algorithm.hpp>
+#include &lt;boost/graph/visitors.hpp>
+#include &lt;boost/property_map/property_map.hpp>
+#include &lt;boost/property_map/vector_property_map.hpp>
+#include &lt;boost/pending/queue.hpp>
+
+-----vtkPBGLCollapseGraph.h			
+#include &lt;boost/graph/use_mpi.hpp>   // must precede all pbgl includes
+
+-----vtkPBGLCollapseParallelEdges.h
+(nothing directly)
+
+-----vtkPBGLCollectGraph.h
+#include &lt;boost/mpi/collectives/all_gather.hpp>
+#include &lt;boost/mpi/collectives/gather.hpp>
+#include &lt;boost/mpi/collectives/all_reduce.hpp>
+#include &lt;boost/serialization/vector.hpp>
+
+-----vtkPBGLConnectedComponents.h
+#include &lt;boost/graph/connected_components.hpp>
+#include &lt;boost/graph/distributed/connected_components.hpp>
+#include &lt;boost/graph/strong_components.hpp>
+#include &lt;boost/graph/distributed/strong_components.hpp>
+
+-----vtkPBGLGraphSQLReader.h
+#include &lt;vtksys/ios/sstream>
+
+-----vtkPBGLMinimumSpanningTree.h
+#include &lt;boost/graph/use_mpi.hpp>
+#include &lt;boost/graph/distributed/dehne_gotz_min_spanning_tree.hpp>
+#include &lt;boost/graph/distributed/vertex_list_adaptor.hpp>
+#include &lt;boost/property_map/parallel/global_index_map.hpp>
+#include &lt;boost/property_map/property_map.hpp>
+#include &lt;boost/property_map/vector_property_map.hpp>
+#include &lt;boost/pending/queue.hpp>
+
+-----vtkPBGLRMATGraphSource.h
+#include &lt;boost/mpi/communicator.hpp>
+#include &lt;boost/mpi/collectives/scan.hpp>
+
+-----vtkPBGLRandomGraphSource.h
+#include &lt;boost/mpi/communicator.hpp>
+#include &lt;boost/mpi/collectives/scan.hpp>
+
+-----vtkPBGLShortestPaths.h
+#include &lt;boost/graph/distributed/delta_stepping_shortest_paths.hpp>
+
+-----vtkPBGLVertexColoring.h
+#include &lt;boost/graph/use_mpi.hpp>
+#include &lt;boost/graph/distributed/boman_et_al_graph_coloring.hpp>
+#include &lt;boost/graph/parallel/algorithm.hpp>
+#include &lt;boost/property_map/property_map.hpp>
+</pre>
+<!----------------------------------------->
+<hr>
+<h2>vtkPBGL Tests</h2>
+<pre>
+heiland@dhcp-cs-244-214:~/Documents/workspace2/VTK/Parallel/Testing/Cxx$ ls *PBGL*
+PBGLNamedVertexGraph.cxx        TestPBGLCollectGraph.cxx        TestPBGLGraphSQLReaderFile.cxx
+PBGLRandomGraph.cxx             TestPBGLEdgesPedigrees.cxx      TestPBGLPedigrees.cxx
+TestPBGLCollapseGraph.cxx       TestPBGLGraphSQLReader.cxx      TestPBGLPipeline.cxx
+</pre>
+However, there are more (we should rename all PBGL-related test files to be consistent):
+<pre>
+heiland@dhcp-cs-244-214:~/Documents/workspace2/VTK/Parallel/Testing/Cxx$ grep vtkPBGL *.cxx |grep include
+PBGLNamedVertexGraph.cxx:#include "vtkPBGLDistributedGraphHelper.h"
+PBGLRandomGraph.cxx:#include "vtkPBGLDistributedGraphHelper.h"
+TestPRMATGraphSource.cxx:#include "vtkPBGLBreadthFirstSearch.h"
+TestPRandomGraphSource.cxx:#include "vtkPBGLBreadthFirstSearch.h"
+</pre>
+
+

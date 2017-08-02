@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<VTKFile type="ImageData" version="0.1" byte_order="LittleEndian">
+  <ImageData WholeExtent="0 9 0 4 0 0" Origin="0 0 0" Spacing="1 1 1">
+  <Piece Extent="0 9 0 4 0 0">
+    <PointData Scalars="Scalars_">
+      <DataArray type="Float64" Name="Scalars_" NumberOfComponents="1" format="ascii">
+0.000 0.643 0.985 0.866 0.342 -0.342 -0.866 -0.985 -0.643 0.000
+0.000 1.286 1.970 1.732 0.684 -0.684 -1.732 -1.970 -1.286 0.000
+0.000 1.928 2.954 2.598 1.026 -1.026 -2.598 -2.954 -1.928 0.000
+0.000 2.571 3.939 3.464 1.368 -1.368 -3.464 -3.939 -2.571 0.000
+0.000 3.214 4.924 4.330 1.710 -1.710 -4.330 -4.924 -3.214 0.000
+      </DataArray>
+    </PointData>
+    <CellData>
+    </CellData>
+  </Piece>
+  </ImageData>
+</VTKFile>

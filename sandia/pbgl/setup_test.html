@@ -1,0 +1,152 @@
+
+<title>
+VTK-PBGL setup and test
+</title>
+<h2>VTK-PBGL setup & testing</h2>
+We examine some issues trying to run some VTK-PBGL tests.
+<h3>Setup</h3>
+<pre>
+<li><a href=http://www.boost.org/users/news/version_1_40_0>boost 1.40</a>
+(<a href="building-boost.html">how I build boost</a>)
+(for PBGL-related docs, rf. (path-to-source)/boost_1_40_0/libs/graph_parallel/doc/html/index.html)
+<br>
+<li><a href=http://vtk.org/VTK/resources/software.html>VTK from CVS</a>
+(<a href=building-vtk.html>how I build VTK</a>)
+
+$ mpirun --version
+mpirun (Open MPI) 1.3.3
+</pre>
+
+<h3>Tests</h3>
+<pre>/VTK/Parallel/Testing/Cxx/PBGLNamedVertexGraph.cxx</pre>
+Currently, I'm just testing the:
+<pre>TestNamedUndirectedGraph();</pre>
+<li><a href="test-nv-n2.txt">(successful) output for nprocs=2</a>
+<li><a href="test-nv-n3.txt">(error) output for nprocs=3</a>
+<p>
+<pre>
+void TestNamedUndirectedGraph()
+{
+  // Create the distributed graph
+  vtkSmartPointer<vtkMutableUndirectedGraph>
+    graph = vtkSmartPointer<vtkMutableUndirectedGraph>::New();
+  vtkSmartPointer<vtkPBGLDistributedGraphHelper> helper
+    = vtkSmartPointer<vtkPBGLDistributedGraphHelper>::New();
+  graph->SetDistributedGraphHelper(helper);
+
+  int rank = graph->GetInformation()->Get(vtkDataObject::DATA_PIECE_NUMBER());
+  int numProcs
+    = graph->GetInformation()->Get(vtkDataObject::DATA_NUMBER_OF_PIECES());
+
+  // Make it a graph with the pedigree IDs vertices
+  vtkSmartPointer<vtkVariantArray> pedigreeIds
+    = vtkSmartPointer<vtkVariantArray>::New();
+  graph->GetVertexData()->SetPedigreeIds(pedigreeIds);
+  helper->Synchronize();
+
+  // Build the graph itself.
+  if (rank == 0)
+    {
+    graph->AddEdge("Bloomington", "Indianapolis");
+    graph->AddEdge("Indianapolis", "Chicago");
+    }
+  else if (rank == numProcs - 1)
+    {
+    graph->AddEdge("Indianapolis", "Cincinnati");
+    graph->AddEdge("Indianapolis", "Louisville");
+    }
+  helper->Synchronize();
+
+  // Display the vertices (and their names)
+  vtkSmartPointer<vtkVertexListIterator> vertices
+    = vtkSmartPointer<vtkVertexListIterator>::New();
+  graph->GetVertices(vertices);
+  while (vertices->HasNext())
+    {
+    vtkIdType vertex = vertices->Next();
+    vtkVariant pedigreeId
+      = pedigreeIds->GetValue(helper->GetVertexIndex(vertex));
+    cout << "Rank #" << rank << ": vertex " << pedigreeId.ToString() << " ("
+         << hex << vertex << ")\n";
+    cout.flush();
+    }
+
+  // Display the edges
+  vtkSmartPointer<vtkEdgeListIterator> edges
+    = vtkSmartPointer<vtkEdgeListIterator>::New();
+  graph->GetEdges(edges);
+  while (edges->HasNext())
+    {
+    vtkEdgeType edge = edges->Next();
+    cout << "Rank #" << rank << ": edge (" << hex << edge.Source << ", "
+         << edge.Target << ")\n";
+    cout.flush();
+    }
+}
+</pre>
+
+<hr>
+<h3>OOB issue</h3>
+<pre>
+From: Nick Edmonds 
+Date: August 26, 2009 2:05:50 PM GMT-04:00
+Subject: Re: CMakeLists for Parallel/Testing/Cxx/PBGL-related
+
+Hi Will,
+
+Ah, I remember this issue now.  I think we eventually decided that it was an implicit (and
+unfortunately undocumented) policy that out-of-band handlers can't send coalesced (i.e. messages sent
+using send()) messages.  There are ways to fix that, but most of them involve changing the structure of
+the primary (coalesced) communication channel to support what really is intended to be an auxiliary and
+seldom-used channel (out-of-band messaging).  I'll take another look and see if I can come up with an
+elegant fix though.
+
+One option may be to suspend handling out-of-band messages inside synchronize(), which shouldn't be a
+problem from a 'reasoning-about-the-parallel-structure-of-the-code' standpoint, since there are no
+guarantees on OOB message delivery anyway.  It would likely reduce the performance of OOB messaging
+somewhat, but OOB was never intended to be a high-performance channel anyway.
+
+Whether that approach is more desirable than simply requiring that OOB handlers not send coalesced
+messages is open for discussion.  If any one has comments/suggestions I'm happy to hear them.
+
+I'll keep you posted if I come up with a patch.
+
+Thanks,
+Nick
+
+--------------------------------------------------
+On Aug 26, 2009, at 1:22 PM, Mclendon, William C III wrote:
+
+Nick,
+
+You might remember this from last Spring, the race condition was basically the thing that I ran into
+with the vtk sql to pbgl graph reader last spring.  
+
+I’m working off memory here and don’t recall the nomenclature, but IIRC the problem was related to a
+situation in which a message of a type that has a declared handler is received and is immediately
+processed (i.e., its handler is invoked) ... that handler triggered another send() which appended the
+outgoing message to some list internally.
+
+The race was occurring in the synchronize(?) method, which was flushing out the send buffers then doing
+some stuff then has an assert(outgoing buffer is empty) line that consistently failed on some SQL
+graphs I was loading in my tests because in-between the flush of the outgoing buffer and the assert it
+was getting new outgoing messages inserted into it.  Certainly feels like a race condition to me... 
+
+It might be that on a cluster message travel-time is long enough that it’s never been an issue but on a
+multi-core workstation maybe the flight time was sufficiently small to make it show up?  I do remember
+that the sending and receiving process ids were different so it wasn’t a message self-loop though that
+shouldn’t matter I’d think.  In any case, moving that one message over to OOB stopped the filter from
+crashing due to a failed assertion.
+
+I don’t know if I have a simple example that I can put together easily... I’ll see if I can get an
+older revision of that filter and see if I can replicate it.  I recently put Ubuntu on my workstation
+and am running OpenMPI — which may or may not let me replicate it since my old setup was RHEL +
+MPICh-2.  I’ll let ya know if I can still replicate it and see if I can get something to ya that can be
+repeatable on other workstations :)
+
+-Will
+-- 
+William C. McLendon III
+Senior Technical Staff     Sandia National Laboratories
+PO Box 5800  /  MS 1319  /  Albuquerque, NM  87185-1319
+</pre>

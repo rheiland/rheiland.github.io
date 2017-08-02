@@ -1,0 +1,35 @@
+<HTML>
+<HEAD>
+   <TITLE>TE Calculation times</TITLE>
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<h3>Transfer Entropy calculation times</h3>
+Mike provided a file:
+<pre>
+# columns contain:
+# num,dur,rate,xo,yo,time  (# of neurons, duration, firing rate, x order, y order, calc time)
+#
+#  num in [75 100 125 150 200 250]
+#  durVal in [7500, 10000, 25000, 50000, 75000, 100000]
+#  x order in [1,7]
+#  y order in [1,8]
+#   --> (x+y) in [2,15]
+</pre>
+
+<p>
+<h3>2D colormaps, with relative scale colorbars</h3>
+<p>
+<img src=dur_7500_10000_25000.png width=1000 height=533>
+<p>
+<img src=dur_50k_75k_100k.png width=1000 height=533>
+<p>
+<hr>
+<h3>3D plots, with relative scale colorbars</h3>
+<p>
+<img src=d7500_3D.png width=500 height=500>
+<img src=durs3D.png width=500 height=500>
+<h3>3D plots, with semi-transparent surface (solid color) per duration</h3>
+<p>
+<img src=durs3D-transp.png width=500 height=500>

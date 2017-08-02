@@ -1,0 +1,4 @@
+
+latex manual1.tex
+dvips manual1.dvi -o manual1.ps 
+

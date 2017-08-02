@@ -1,0 +1,33 @@
+# ----choose.jy----
+from javax import swing
+from java.lang import Object
+from synchronize import make_synchronized
+
+class Chooser(Object):
+    def __init__(self, items):
+        self.list = swing.JList(items)
+        okbutton = swing.JButton("Ok", actionPerformed=self.onclick)
+        
+        panel = swing.JPanel()
+        panel.add(self.list, "Center")
+        panel.add(okbutton, "South")
+        frame = swing.JFrame(title="Choose an Item")
+        frame.contentPane.add(panel)
+        frame.pack()
+        frame.visible=1
+        
+    def onclick(self, event):
+        self.result = self.list.selectedIndex
+        self.notify()
+    onclick = make_synchronized(onclick)
+        
+    def choose(self):
+        self.wait()
+        return self.result
+    choose = make_synchronized(choose)
+
+items = ['apple', 'bannana', 'cherry']
+
+print Chooser(items).choose()
+import sys
+sys.exit()

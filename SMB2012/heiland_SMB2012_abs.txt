@@ -1,0 +1,47 @@
+Randy Heiland, Indiana University, Bloomington, IN, USA
+Jamie Champlin, North High School, Columbus, IN, USA
+Shinya Ito, Indiana University, Bloomington, IN, USA
+Alan Litke, University of California, Santa Cruz, CA, USA
+Andrew Lumsdaine, Indiana University, Bloomington, IN, USA
+John Beggs, Indiana University, Bloomington, IN, USA
+
+Introduction to Modeling and Computational Neuroscience using Python (SMB 2012, Knoxville, TN)
+
+Neuroscience offers a rich domain of crosscutting sciences (e.g. biology, chemistry, physics) and therefore has the 
+potential to be of interest to a wide variety of students.  The subject of the [human] brain adds even more appeal due 
+to its wondrous complexity and remarkable abilities, e.g. learning, memory, vision, consciousness - concepts that 
+everyone can appreciate.  Computational neuroscience brings in more core subject areas, primarily mathematics and 
+computer science.  It offers students an important hands-on experience, letting them apply concepts learned in their 
+classrooms and, for some, challenging them to step outside their comfort zone into higher math and new 
+programming languages.
+
+As part of a NSF grant related to the analysis of causal connectivity of neurons, our university team has formed a 
+collaboration with a high school physics teacher to share the excitement of neuroscience with high school students 
+and, hopefully, establish a long term academic relationship that will help encourage students to major in science or 
+mathematics in college.  The first phase of this collaboration involved a presentation to four different physics classes 
+(Honors or AP-level), consisting of about 100 students total, who ranged from freshmen to seniors.  The 
+presentation discussed computational science, in general: experiments, modeling, simulation, and analysis; but the 
+focus was on computational neuroscience and the Python programming language.  Many of the students were 
+completing a unit on electronic circuits, so we demonstrated, using visually engaging simulations, how a neuron 
+could be modeled as a simple (leaky integrate and fire (LIF)) R-C circuit and how this led to the important concept 
+of a neuron spike.  We then introduced the differential equation associated with the LIF model and the few lines of 
+Python code that could numerically solve it.  Following this simple, single neuron model, we discussed the 
+historically significant Hodgkin-Huxley model (with its more complicated differential equation and electronic 
+circuit).  Lastly, we demonstrated the Izhikevich model, a pair of coupled differential equations, and how it was used 
+to simulate a network of spiking neurons.
+
+The presentation included many visuals related to the structure and function of neurons - axons, synapses, spiking 
+behavior, and neuron networks.  We also asked thought-provoking questions about memory, self-awareness, etc., as 
+well as ethical questions related to animal testing.  Somewhat related to this last topic, we also pointed out the 
+availability of inexpensive do-it-yourself (DIY) neuroscience experiments that involve a cockroach leg.
+
+This initial phase of our high school-university collaboration certainly had its challenges.  Probably the most 
+challenging was the mathematics (differential equations) since only about half of the students had taken calculus.  
+But overall, we believe it was a very positive experience - for all of us.  We asked the students to anonymously 
+answer just two follow-up questions related to the presentation - what did they like best and what did they like 
+least?  We will present some simple statistics about these answers.
+
+There are a number of directions our collaboration could take from this point: simple email exchanges or social 
+networking groups, tours of university labs, or the formation of afterschool or weekend clubs, e.g. Python 
+programming/simulations or DIY experiments using hardware.  We are discussing the possibilities and we hope to 
+learn lessons from other science educators.

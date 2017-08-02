@@ -1,0 +1,155 @@
+<html>
+<head>
+<style>
+body
+{
+background-color:white;
+}
+pre { background-color:#DDFFDD; color: blue; }
+</style>
+
+<body BGCOLOR="#FFFFFF">
+<title>Image Processing</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</head>
+<BODY BGCOLOR="#FFFFFF">
+
+<h1>Image Processing</h1>
+I have been involved in a variety of projects related to image processing - a fascinating
+subject with a nice mix of computer science, mathematics and human vision.
+I learned much about the subject reading John Russ's <b>The Image Processing Handbook</b>.
+My first serious projects were at <a href=http://www.pnnl.gov>PNNL</a> where I 
+learned <a href=http://rsb.info.nih.gov/ij/>ImageJ</a>, obtained data for and experimented with
+the <a href=http://www.nlm.nih.gov/research/visible/>Visible Human Project</a>,
+and researched <a href=ultrasound>stereoscopic volume rendering on ultrasound data</a>.
+<p>
+<img src=ultrasound/vhp.s1713.gif>
+<img src=ultrasound/spine1.gif>
+<img src=ultrasound/spine2.gif>
+<p>
+<img src=ultrasound/cleft.volren.gif width=300 height=256>
+<img src=ultrasound/breast_volpack.gif>
+<p>
+<pre>
+Virtual Reality Volumetric Display Techniques for Three-Dimensional Medical Ultrasound
+  R. J. Littlefield, R. W. Heiland, and C. R. Macedonia,
+  Ultrasound in Health Care in the Information Age, H. Sieburg, S. Weghorst, 
+and K. Morgan (Eds.), IOS Press and Ohmsha, 1996
+</pre>
+<hr>
+<h3>scikit-image</h3>
+The Python package <a href=http://scikit-image.org/>scikit-image</a> is very easy to
+use.
+Here's a simple example (I relied on <a href=http://matplotlib.org/>matplotlib</a> for visualization):
+<pre><code>
+In [1]: from skimage import data,io,filter
+In [2]: %pprint   #Pretty printing has been turned OFF
+In [7]: dir(data)
+Out[7]: ['__all__', '__builtins__', '__doc__', '__file__', '__name__', '__package__', '__path__', '_os', 
+'camera', 'checkerboard', 'chelsea', 'clock', 'coffee', 'coins', 'data_dir', 'horse', 'immunohistochemistry', 
+'imread', 'lena', 'load', 'moon', 'page', 'text']
+
+In [3]: image1 = data.immunohistochemistry()
+In [4]: io.imshow(image1)
+In [5]: io.show()
+</code>
+</pre>
+<img src=immunohist-crop.png>
+<p>
+We can then easily determine the shape of the data (3 components of RGB) and
+extract edges of the R component using a Sobel filter:
+<pre><code>
+In [6]: image1.shape
+Out[6]: (512, 512, 3)
+
+
+In [7]: edgesRed = filter.sobel(image1[:,:,0])
+In [8]: io.imshow(edgesRed)
+In [9]: io.show()
+</code>
+</pre>
+<img src=immunohist-edges-R.png>
+<p>
+Some of its filters include:
+<p>
+>>> from skimage import filter<br>
+>>> dir(filter)<br>
+['LPIFilter2D', '__all__', '__builtins__', '__doc__', '__file__', '__name__', '__package__', '__path__', '_canny', '_ctmf', '_denoise', '_denoise_cy', '_gabor', '_gaussian', '_rank_order', 'canny', 'ctmf', 'denoise_bilateral', 'denoise_tv_bregman', 'denoise_tv_chambolle', 'edges', 'gabor_filter', 'gabor_kernel', 'gaussian_filter', 'hprewitt', 'hscharr', 'hsobel', 'inverse', 'lpi_filter', 'median_filter', 'prewitt', 'rank', 'rank_order', 'roberts', 'roberts_negative_diagonal', 'roberts_positive_diagonal', 'scharr', 'sobel', 'threshold_adaptive', 'threshold_otsu', 'thresholding', 'vprewitt', 'vscharr', 'vsobel', 'wiener']
+<p>
+<!------------------------------------->
+<hr>
+<h3>ImageJ</h3>
+<a href=http://rsb.info.nih.gov/ij/>ImageJ</a> is very mature and widely used, especially
+in the life sciences (not surprising, given that it came out of the NIH). 
+It started out as a Mac-only application but has evolved
+over time and is now a cross-platform Java-based application. It is primarily GUI-driven,
+but also has options for macros and scripting.
+<p>
+<img src=flybrain-slice.jpg>
+<img src=flybrain-montage-med.jpg>
+<img src=flybrain3D.jpg>
+<p>
+<!------------------------------------->
+<hr>
+<h3>SimpleITK</h3>
+<li><a href=http://www.simpleitk.org/>SimpleITK</a>, based on
+the amazingly rich <a href=http://itk.org/>Insight Segmentation and Registration Toolkit (ITK)</a> project also provides Python bindings.
+
+<pre>
+
+from __future__ import print_function
+
+import SimpleITK as sitk
+import sys
+import os
+
+if len ( sys.argv ) < 4:
+    print( "Usage: SimpleGaussian {input} {sigma} {output}" )
+    sys.exit ( 1 )
+
+
+reader = sitk.ImageFileReader()
+reader.SetFileName ( sys.argv[1] )
+image = reader.Execute()
+
+pixelID = image.GetPixelIDValue()
+
+gaussian = sitk.SmoothingRecursiveGaussianImageFilter()
+gaussian.SetSigma ( float ( sys.argv[2] ) )
+image = gaussian.Execute ( image )
+
+caster = sitk.CastImageFilter()
+caster.SetOutputPixelType( pixelID )
+image = caster.Execute( image )
+
+writer = sitk.ImageFileWriter()
+writer.SetFileName ( sys.argv[3] )
+writer.Execute ( image );
+</pre>
+We can then run this script and provide various parameters:
+<pre>
+python SimpleGaussian.py gauss.png 2.0 gauss_2.0.png
+python SimpleGaussian.py gauss.png 4.0 gauss_4.0.png
+python SimpleGaussian.py gauss.png 9.0 gauss_9.0.png
+</pre>
+
+<img src=gauss.png>
+<img src=gauss_2.0.png>
+<img src=gauss_4.0.png>
+<img src=gauss_9.0.png>
+<br>
+Original image from <a href=http://en.wikipedia.org/wiki/File:Carl_Friedrich_Gauss.jpg>Wikimedia Commons</a>.
+
+
+<!------------------------------------->
+<hr>
+<h3>Other image processing packages</h3>
+<p>
+Some other open source imaging packages include:
+<ul>
+<li><a href=http://opencv.org/>OpenCV</a> is another
+popular package (also with Python bindings).
+<li><a href=http://iraf.noao.edu/>IRAF</a> - Image Reduction and Analysis Facility (for astronomy data)
+<li><a href=http://www.aips.nrao.edu/index.shtml>AIPS</a> - Astronomical Image Processing System 
+<li><a href=http://www.astropy.org/>Astropy</a> - Python lib for astronomy
+</ul>

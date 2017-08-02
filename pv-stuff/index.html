@@ -1,0 +1,45 @@
+<title>pv-play</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+
+<h2>ImageData plotting tool?</h2>
+<h3>Plot Over Line</h3>
+Using the Data Analysis -> Plot Over Line filter, we can sort of dynamically plot a row of an ImageData
+dataset.  Note that to have the Line Source be displayed/pickable, the "PlotOverLineX" object in the
+Pipeline needs to be selected and the ImageData render window needs to be selected.
+By holding down "Shift", the user can move the line source, constrained to move only in the Y direction.
+Also, by setting the line source's Resolution=9 (our DataImage is 5x10), then mousing over the implied
+points in the plot, we will see values at the exact X (integral) locations.
+Here's the <a href=simple_2.vti>simple_2.vti</a> file which contains the following matrix:
+<pre>
+0.000 0.643 0.985 0.866 0.342 -0.342 -0.866 -0.985 -0.643 0.000
+0.000 1.286 1.970 1.732 0.684 -0.684 -1.732 -1.970 -1.286 0.000
+0.000 1.928 2.954 2.598 1.026 -1.026 -2.598 -2.954 -1.928 0.000
+0.000 2.571 3.939 3.464 1.368 -1.368 -3.464 -3.939 -2.571 0.000
+0.000 3.214 4.924 4.330 1.710 -1.710 -4.330 -4.924 -3.214 0.000
+</pre>
+<p>
+<img src=m5x10_plotoverline2b.png>
+<p><hr>
+<img src=m5x10_plot_value_mouseover.png>
+<p>
+Q: why doesn't the mouseover show the *exact* values in the image?<br>
+A: because it's doing interpolation.<br>
+Q: but what if I don't want it to interpolate, but rather show only the nearest point actual value?<br>
+<p><hr>
+<img src=m5x10_range2.png>____
+<img src=m5x10_plotoverline_range.png>
+<!------------------------------->
+<hr>
+<h3>VOI confusion</h3>
+Why can't I specify a single row VOI?
+<p>
+<img src=m5x10_voi_error.png>
+<p>
+<img src=m5x10_voi_no_error.png>
+
+<!------------------------------->
+<hr>
+<h3>Selection</h3>
+Playing with the View -> Selection Inspector frame.
+<p>
+<img src=select_points_on_bding_box_id_range.png>

@@ -1,0 +1,148 @@
+<title>Sculpture, Geometry and Computer Science (Modeling the Indiana Arc)</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+
+<h1>Sculpture, Geometry and Computer Science</h1>
+As part of Computer Science Education Week in December 2010, I worked with students from a 
+local public school to do some computer modeling of a sculpture found on the campus of IU-Bloomington.
+This project was mentioned in the <a href=http://www.whitehouse.gov/blog/2010/12/10/celebrating-computer-science>OSTP Blog of the White House</a> (yes, <i>the</i> White House).
+It was great fun and would not have been possible without the enthusiastic 
+encouragement of the artist, <a href=http://www.charlesperry.com/>Charles Perry</a>.
+Sadly, Mr. Perry passed away a few short months afterward.
+We went on to present this project at the SIAM CSE conference in 2011.
+<p>
+<li><a href=siam-cse11-IndianaArc.pdf>Presentation at SIAM CSE 2011</a> (Reno, NV)
+<p>
+<img src=../images/IN-Arc-snow.png width=200 height=200>
+<img src=Jay_snow.jpg width=240 height=200>
+<img src=sketch_jay.jpg width=142 height=200>
+<img src=arc-model-twisted-wire.jpg width=180 height=200>
+<img src=arc-model-twisted.jpg width=187 height=200>
+<hr>
+<p>
+<h2>Student Survey #1</h2>
+<a
+href=http://www.surveymonkey.com/s/6GTGR9F>http://www.surveymonkey.com/s/6GTGR9F</a>
+- simple questions about the sculpture itself<br>
+<p>
+
+<!----------------------->
+<hr>
+<p>
+<li><a href=modeling-intro.pdf>modeling-intro.pdf</a>
+<li><a href=../IndianaArcMath/>link to page</a> of earlier modeling effort using <a
+href=http://www.vistrails.org>VisTrails</a>
+<p>
+
+<!----------------------->
+<h2>Installing the free, open source software</h2>
+We will be using the <a href=http://www.python.org>Python</a> programming language and the <a
+href=http://vtk.org>Visualization
+Toolkit</a> (VTK) library for the graphics.  In addition, we'll use some other
+Python-based tools.
+
+Download them and install them in this order (these are all for the Windows operating system).
+The installation process for the first 4 executables should be straightforward and consist
+of clicking through 'Next's and 'Finish' on a dialog window.  For the VTK compressed folder,
+you will double click it and then click the 'Extract' at the top of the folder window.
+<ol>
+<li><a href=http://www.python.org/ftp/python/2.6.6/python-2.6.6.msi>Python (version 2.6)</a>
+<li><a href=http://sourceforge.net/projects/numpy/files/NumPy/1.5.1/numpy-1.5.1-win32-superpack-python2.6.exe/download>numpy</a> 
+- for fast numerics (not really needed yet, but could be useful later; but if your
+installations take a long time, you can skip it)
+<li><a href=http://launchpad.net/pyreadline/1.6/1.6.1/+download/pyreadline-1.6.1.win32.exe>pyreadline</a> - makes for a nicer IPython session
+<li><a href=http://ipython.scipy.org/dist/0.10.1/ipython-0.10.1.win32-setup.exe>IPython</a> - an enhanced interactive Python shell
+<li><a href=http://visualisation.tudelft.nl/~cpbotha/files/vtk_itk/vtk-5.4/VTK-5-4-2-Py26-VS9sp1-win32-cpbotha.net.zip>VTK compressed folder (with Python classes)</a>
+- extract this compressed folder someplace easy, that you'll remember (e.g. for me: c:\users\randy\vtk)
+</ol>
+<pre>
+Start -> Control Panel -> System -> Advanced system settings -> Environment Variables:
+User variables (at top): 
+New: PATH  c:\python26;c:\users\randy\vtk\bin
+New: PYTHONPATH  c:\users\randy\vtk\lib\site-packages
+</pre>
+
+<!----------------------->
+<h2>Using IPython</h2>
+<li> Start key (lower-left) -> All Programs -> IPython (folder) -> IPython
+(right click and "Pin to Start Menu")
+<li> then just: Start key -> IPython 
+<li> try tab-completion of commands
+<li> to quit: ctrl-z then Enter
+
+Inside IPython, can use commands like:
+<pre>
+pwd  (print working directory/folder)
+cd (change to a different directory/folder)
+ls (list directory/folder contents)
+import sys
+print sys.path
+--> [...,'c:\\users\\randy\\vtk\\lib\\site-packages', ...]
+x = 13
+x = x+1
+print x
+import math (import a Python module named 'math')
+dir(math) (shows all functions and attributes in the math module)
+print math.pi
+print math.sin(math.pi/2)
+run pythonScript   
+(e.g. 'run fruit', after downloading the fruit.py script below and having it in your working directory)
+</pre>
+
+<!----------------------->
+<h2>Python scripts</h2>
+<li> <a href="fruit.py"">fruit.py</a> - how to create a Class in Python
+<p>
+VTK-related scripts:
+<li> <a href="axes.py"">axes.py</a> - display a 3D axes in VTK<br>
+<img src=axes.jpg>
+<pre>
+- run this script from your IPython session with the command: run axes
+- you can rotate the rendered geometry by holding/dragging your left mouse button in the window
+</pre>
+<li> <a href="c1.py"">c1.py</a> - generate/display a circle of spherical "glyphs"<br>
+<img src=c1.jpg>
+<li> <a href="c1b.py"">c1b.py</a> - generate/display a twisted, broken circle of glyphs<br>
+<img src=c1b.jpg>
+<li> <a href="c1q.py"">c1q.py</a> - generate/display polygons (quadrilaterals) between 2 curves<br>
+<img src=c1q.jpg>
+
+<!----------------------->
+<h2>Aside: Geometry and the Imagination (Hilbert and Cohn-Vossen)</h2>
+This book was co-authored by David Hilbert, probably the greatest mathematician who lived in the 20th
+century.
+Unfortunately, the Google books version of this book does not contain the preface, written by
+Hilbert in Gottingen, Germany, dated June 1932.  There, he states that this book is:
+"a presentation of geometry in large brush-strokes, so to speak, and based on the
+approach through visual intuition, should contribute to a more just appreciation of mathematics
+by a wider range of people than just the specialists.  For it is true, generally speaking, that
+mathematics is not a popular subject, ...  The reason for this is to be found in the common superstition
+that mathematics is but a continuation, a further development, of the fine art of arithmetic, of
+juggling with numbers.  Our book aims to combat that superstition, by offering, instead of formulas,
+figures that may be looked at and that may easily be supplemented by models which the reader
+can construct.  This book was written to bring about a greater enjoyment of mathematics ...
+We want to take the reader on a leisurely walk, as it were, in the big garden that is geometry,
+so that each may pick for himself a bouquet to his liking."
+
+
+<li><a href=http://books.google.com/books?id=d6sBd9h1HbMC&printsec=frontcover&dq=geometry+and+the+imagination+hilbert&source=bl&ots=L2pb-mQiFu&sig=P2bn9vIDuiOhJK0qiGObINvxfPg&hl=en&ei=NHwcTcnPJtTonQeI5vWQBA&sa=X&oi=book_result&ct=result&resnum=2&ved=0CCYQ6AEwAQ#v=onepage&q&f=false>Google books link</a>
+<li>page 6: involute
+<li>page 46: sphere packings
+<li>page 107: equilateral triangle and automorphism
+<li>page 191 (not in GBooks): catenoid and Monkey saddle
+<li>page 210 (not in GBooks): minimal surfaces; soap surfaces; helicoid
+<li>page 305 (not in GBooks): one-sided surfaces
+<p>
+This book presents "models" as line drawings and physical models.  We will expand on that with
+computer models.
+<p>
+Note: Even though Hilbert was a great mathematician, that's not to say he didn't 
+make mistakes ... (list his 3 predictions).
+
+<!----------------------->
+<h2>Future directions</h2>
+<li>create variations of the Indiana Arc
+<li>submit for stress analysis to the supercomputers in the IU Data Center
+<li>create an artistic animation video of the Arc (set to music?) and post on youtube
+
+<p>
+Email me with any questions you may have:  heiland--at--indiana.edu or randy.heiland--at--gmail.com

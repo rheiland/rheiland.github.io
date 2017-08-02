@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+   <TITLE>  NeuroPy (Heiland)
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>NeuroPy: A tool to analyze neuron firing</h1>
+</CENTER>
+
+The point of this exercise is to explore the possiblity of using an existing open source 
+application (ParaView) for visualizing and analyzing neurons (firing) in cortical networks. 
+<hr>
+<p>
+<img src=Prefs-auto-update.png width=400 height=200>
+<p>
+Set background, edge, etc colors and auto-update via Preferences.
+<hr>
+<p>
+<img src=neurons-2Dglyphs.png width=400 height=300>
+<p>
+Initially, played with (20x20 grid) POLYDATA having both SCALAR and VECTOR data.
+<hr>
+<img src=neurons_SP.png width=400 height=300>
+<img src=neurons_SP_glyphs.png width=400 height=300>
+<p>
+Switched to simpler STRUCTURED_POINTS (Image) grid with just SCALAR data (0/1; firing).
+<hr>
+<p>
+<img src=neurons_512.png width=400 height=500>
+<p>
+Showing a 512 grid (16x32) (notice we can choose from variety of glyphs):
+<hr>
+<li><a href=matlab_paraview>MATLAB-ParaView page</a>
+<li><a href=firing>firing page</a>
+<li><a href=calcTE>calc TE timing page</a>

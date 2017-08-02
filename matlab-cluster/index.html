@@ -1,0 +1,139 @@
+<html>
+<head>
+<style>
+body
+{
+background-color:white;
+}
+pre { background-color:#DDFFDD; color: blue; }
+</style>
+<title>Heiland: MATLAB-cluster</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</head>
+<h1>Running MATLAB on a cluster (at IU)</h1>
+<h2>Getting an account</h2>
+First, get an account (not sure if a student still needs a professor's approval or not).
+I would probably recommend getting an account on Quarry, as it seems to be less utilized than Big Red II, but suit yourself. Once you have an account, you should verify that you also
+have a directory created on the Data Capacitor, e.g. /N/dc2/scratch/your-username
+<p>
+<a href=https://itaccounts.iu.edu/>https://itaccounts.iu.edu/</a>
+--> <a href=https://ams.iu.edu/skit/SkitMain.aspx>https://ams.iu.edu/skit/SkitMain.aspx</a>
+<p>
+General info at:
+<li><a href=https://kb.iu.edu>https://kb.iu.edu</a>
+<li><a href=https://cybergateway.uits.iu.edu/iugateway/index>https://cybergateway.uits.iu.edu/iugateway/index</a>
+
+<p>
+Help at email addr: <b>hps-admin@iu.edu</b>
+
+<h2>Use Cases</h2>
+There are probably two primary use cases for running MATLAB on a cluster:
+<li><b>generate</b> independent (perhaps parameter-dependent) datasets
+<li><b>analyze</b> existing, multiple datasets
+<p>
+We will demonstrate how to do the former first.
+
+<h2>Limits on MATLAB licenses</h2>
+I've been told that we (all of IU) have only 100 licenses to run MATLAB jobs. 
+That's not many, especially if a class is trying to do, say, a parameter study
+involving 1000s of runs. (One more reason why I personally prefer an Octave, or better
+yet, Python approach. Note that Octave is not currently available on the clusters). 
+
+<h2>Copying data</h2>
+To copy data to/from the cluster, you will need some type of secure copy program. 
+On Mac/Linux, you should have 'scp'. On Windows, you might use 'putty'.
+
+<h2>Batch jobs</h2>
+Here's an example TORQUE(OpenPBS) script, matlab_mult.pbs, to submit MATLAB jobs.
+Obviously, one would want to change the email address for being notified of the job 
+starting/stopping.
+<pre>
+
+#!/bin/bash 
+#PBS -l nodes=1:ppn=1,walltime=30:00 
+#PBS -t 1-3
+#PBS -M heiland@iu.edu 
+#PBS -m abe 
+#PBS -N matlabTest 
+#PBS -o matlabTest.out
+#PBS -e matlabTest.err
+
+cd /N/u/heiland/Quarry/matlab
+
+matlab -nojvm -nodisplay -nosplash -r "myfunc($PBS_ARRAYID)" 
+
+</pre>
+And here's the relevant MATLAB script, myfunc.m, that gets invoked.
+The 'arrayID' input parameter comes from the index range specified by "#PBS -t [range]".
+For demonstration purposes, this is used as a parameter representing the sin 
+function's period.
+<p>
+Notice that I create an output data file on a shared disk space, in this case,
+the Data Capacitor: /N/dc2/scratch/heiland
+<pre>
+
+function myfunc(arrayID)
+ 
+%display(arrayID);
+
+%a = str2num(a);
+%display(a)
+x=0:pi/100:2*pi;
+y2=sin(double(arrayID)*x);
+%plot(x,y2)
+mydata = [x;y2];
+
+% Create a unique filename using the 'arrayID' 
+fname = strcat('/N/dc2/scratch/heiland/data',num2str(int32(arrayID)));
+fname = strcat(fname,'.dat');;
+fileID = fopen(fname,'w');
+% If you want a header line, e.g.:
+%fprintf(fileID,'%6s %12s\n','x','y');
+
+% Create a CSV (comma separated values) ascii file:
+fprintf(fileID,'%6.2f, %6.2f\n', mydata);
+fclose(fileID);
+quit;
+
+</pre>
+
+Once you have these, you would submit your job via 'qsub':
+<pre>
+
+[heiland@q0143 ~]$ qsub matlab_mult.pbs
+
+</pre>
+
+You can check on the status of your job via 'qstat' (qstat -u [username]):
+<pre>
+
+[heiland@q0143 ~]$ qstat -u heiland
+
+</pre>
+
+Assuming the scripts run successfully, you should have output data
+created on the Data Capacitor scratch space. Be warned, that is exactly
+what it sounds like, "scratch" space, meaning temporary. You should copy
+it elsewhere as soon as you can.
+<p>
+After copying the data files from the cluster to my Mac:
+<pre>
+
+scp heiland@quarry.uits.indiana.edu:/N/dc2/scratch/heiland/data* .
+
+</pre>
+
+I can then use MATLAB/Octave (or Python, etc) to plot results, e.g.:
+<pre>
+
+m=csvread('data1.dat');
+plot(m(:,1),m(:,2))
+
+</pre>
+
+<hr>
+<p>
+<img src=data1.png width=300 height=200>
+<img src=data2.png width=300 height=200>
+<img src=data3.png width=300 height=200>
+</head>

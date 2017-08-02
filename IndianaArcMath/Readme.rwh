@@ -1,0 +1,3 @@
+
+ll *.png|awk '{print "<img src=" $9 ">"}' > index.html
+

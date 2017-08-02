@@ -1,0 +1,549 @@
+<html>
+<TITLE>
+Heiland: MMVR96 paper
+</TITLE>
+</head>
+<BODY BGCOLOR="#FFFFFF">
+
+<H2>Virtual Reality Volumetric Display Techniques for 3-D Medical Ultrasound</H2>
+<dl>
+<dt>
+<dd> Randy W. Heiland, Battelle Northwest (rw_heiland@pnl.gov)
+<dd> Richard J. Littlefield, Battelle Northwest (rj_littlefield@pnl.gov)
+<dd> Dr. Christian Macedonia, Madigan Army Medical Center
+</dl>
+<dd>(appeared in Medicine Meets Virtual Reality: 4 (1996))
+
+<H3>Abstract</H3>
+<!--------------------------->
+<P>
+Ultrasound imaging offers a safe, inexpensive method for obtaining
+medical data.  It is also desirable in that data can be acquired at
+real-time rates and the necessary hardware can be compact and
+portable.  The work presented here documents our attempts at providing
+interactive 3-D visualization of ultrasound data.  We have found
+two public domain volume rendering packages to be quite useful and
+have extended one to perform stereographic volume visualization.
+Using a relatively inexpensive pair of commercial stereo glasses, 
+we believe we have a found a combination of tools that offers a
+viable system for enhancing 3-D ultrasound visualization. 
+</P>
+
+<H3>Introduction</H3>
+<!--------------------------->
+<P>
+Ultrasound is the imaging modality of choice in many medical
+situations because it provides very useful information for diagnosis
+and is safe and inexpensive.  In current practice, ultrasound produces
+only two-dimensional images, representing slices through the body.
+These can be quite difficult to interpret, and require the
+ultrasonographer to mentally integrate the information to form an
+image of the suspect area.  Considerable skill is often required even
+to position the sensor so as to acquire a potentially useful image or
+combination of images.  
+</P>
+<P>
+If these difficulties could be addressed, ultrasound could provide a
+diagnostically valuable, low-cost imaging modality suitable for
+situations where a rapid diagnosis at a remote site is needed.
+Currently, the Army (through the ARPA Advanced Biomedical Technologies
+Initiative) is looking to develop a portable 3-D ultrasonic imaging
+system for use in diagnosing battlefield injuries.  Our work is
+sponsored by that initiative.
+</P>
+<P>
+Three-dimensional (3-D) ultrasound offers the potential to alleviate
+the problems addressed above.  Because 3-D volumes show more context
+than 2-D slices, it becomes easier for users to understand spatial
+relationships and detect abnormal conditions.  Positioning the sensor
+so as to acquire useful images is also easier with 3-D, because
+volumetric data can readily be rotated and realigned to good viewing
+positions, largely independent of the original sensor position.
+</P>
+<P>
+In order to make 3-D ultrasound a practical reality, however,
+improvements are required in two areas.  
+The first area requiring improvement is 3-D ultrasound image
+acquisition.  One approach is to mechanically scan the sensor head of
+a conventional ultrasound unit, perpendicular to its imaging plane, so
+as to produce a sequence of conventional B-scan images.  The sequence
+is then treated as a 3-D image.  This approach is reasonably easy and
+effective, but suffers from long image acquisition time (seconds) and
+from relatively poor focus along one axis due to the thickness of the
+ultrasound beam.  A second approach is to use 2-D arrays of unfocused
+transducers, combined with holographic or synthetic aperture
+reconstruction techniques.  This approach potentially offers both
+rapid image acquisition and excellent resolution on all axes, but
+requires a high computational rate in order to run in real time.
+At this time, ultrasonic holographic array technology is only at the
+proof-of-principle stage.  Both approaches are being pursued by an
+ARPA-funded research project currently underway as a collaboration
+between Battelle Northwest and Madigan Army Medical Center.
+</P>
+<P>
+The second area requiring improvement is 3-D volumetric display.
+Ultrasound presents some difficulties that are not found in other 3-D
+imaging modalities such as CT and MRI.  Foremost among these are that
+1) ultrasound images are typically quite "cluttered", with significant
+backscatter and intensity variations occurring throughout tissue
+volumes, and that 2) because of image aperture limitations and because
+ultrasound is inherently directional, the apparent brightness of
+tissues and interfaces depends on their position and orientation.
+Combined, these two aspects make it extremely difficult to explicitly
+reconstruct anatomically correct 3-D surfaces from ultrasound images.
+This is a sharp contrast to CT and MRI, where explicit surface
+reconstruction and display is often the method of choice.  Thus, in
+dealing with 3-D ultrasound, we are faced with the dilemma that humans
+are not good at visualizing 3-D "clouds" of data, but that is exactly
+what the imaging process provides.  An excellent article that presents
+the state of the art circa 1992 is found in [Bajura].  Our work 
+aims to address two open-ended problems discussed in that work:  
+visual cues and real-time volume visualization.
+
+</P>
+<P>
+We have had good success in producing easily interpreted displays
+of 3-D ultrasound data through a unique combination of individually
+standard display techniques, including:
+<UL>
+<LI>  stereo display (using a commercial LCD headset),
+<LI>  real-time rotation and rocking,
+<LI>  nonlinear intensity and opacity maps,
+<LI>  a gradient-based lighting model, and
+<LI>  simple shadows,
+</UL>
+all operating on the original 3-D volume (no explicit surface 
+reconstruction).  
+</P>
+<P>
+<!Posakony's '56 paper?>
+</P>
+<P>
+The remainder of the paper is outlined as follows:
+in the next section section, we provide a general introduction to 
+volume visualization and
+discuss existing algorithms for visualizing 3-D medical data.
+Section 3 describes our experiences using volume rendering to visualize 
+3-D ultrasound data.  The last section summarizes and discusses plans for
+future related work.
+</P>
+
+
+<H3>Volume Visualization</H3>
+<!--------------------------->
+
+<P>
+Volume visualization can be defined as a process that uses computer graphics
+to display structure contained in a three-dimensional dataset.  This
+volumetric dataset can be thought of as a discretized function, F, over some
+bounded domain.  The domain's topology varies from one application to 
+another, but quite often is rectilinear:
+</P>
+
+<dd>    F(Xi,Yj,Zk), i=1,Nx, j=1,Ny, k=1,Nz
+
+<P>
+This is a generalization of the "cuberille" model [Chen]
+where the spacings, dx,dy,dz, along the three orthogonal axes are equal.
+CT and MR data typically have equal spacing along intra-slice 
+directions (dx=dy), 
+but the distance (dz) between slices is often larger in order to minimize
+ionizing radiation exposure.  Scanned ultrasound data often has the
+same format.  The remainder of this section will be in the context of
+rectilinear volumetric scalar data.
+</P>
+<P>
+There are currently two general techniques for visualizing volumetric data:
+surface rendering and volume or direct rendering.  They are inherently
+different in both the underlying algorithms and the results produced.
+We provide an overview of the more popular algorithms in the remainder
+of this section.
+<!
+However, volume rendering can be considered a superset of
+surface rendering in that the former may be able to reproduce results of
+the latter - albeit, more expensively.  The converse is not true.
+>
+The distinction in the results produced by the two techniques is that a
+surface renderer typically generates polygonal geometry, whereas a
+volume renderer generates an image.  Because surface rendering
+preceded volume rendering in the genealogy of computer graphics
+algorithms, graphics
+workstations have evolved to be extemely fast polygon renderers.
+This, at least in part, accounts for the large collection of papers and
+software aimed at surface rendering.  
+Volume rendering has become increasingly popular since the 
+SIGGRAPH '88 publication of three papers on the subject
+[Sabella,Upson,Drebin].
+There seems to be an ongoing debate as to whether surface rendering or
+volume rendering is superior.  Little information is published that tries
+to make a comparison between the two [Udupa].  As we hinted in the
+Introduction, certain medical imaging modalities may lend
+themselves better to one visualization technique over another.
+</P>
+<P>
+Probably the most prevalent
+algorithm to perform surface rendering on volumetric data is 
+Marching Cubes [Lorenson].  This algorithm constructs a polygonal isosurface 
+from rectilinear scalar data as follows:
+<UL>
+<LI> for each cube (voxel) consisting of eight vertices, determine the
+topology of the isosurface through that cube
+<LI> using an enumerated case table of topologies, compute the geometry
+of the triangles for the isosurface via some interpolant
+<LI> for improved shading, compute the gradients at the cube vertices and
+then interpolate to obtain triangle vertex normals.
+</UL>
+</P>
+
+<P>
+The SIGGRAPH '88 papers mentioned above offer a glimpse into
+the classification of volume rendering algorithms.  The two
+broad classes are image-order and object-order.  An image-order algorithm
+casts rays from image pixels into the volumetric data.  For each voxel that
+a ray intersects, relevant information is accumulated to compose the final 
+pixel value.  An object-order algorithm operates on the volumetric
+data in memory-order and essentially projects (splats) the
+voxels onto the image in either front-to-back or back-to-front order.
+The front-to-back method is essentially a volumetric Z-buffer algorithm.
+What these two classes of algorithms have in common is
+the basic functionality of mapping the scalar volumetric data, F,
+into both an intensity (color) function, I(F(x,y,z)), and
+an opacity function, O(F(x,y,z)).  These are collectively
+known as transfer functions.  Allowing a user to (interactively) modify these
+functions permits improved visualization of relevant structure(s) within
+the data.
+</P>
+
+<P>
+Drebin et al presented an algorithm for transforming the shaded volumetric data
+into the viewing coordinate system to allow for a projection, via 
+compositing [Porter], along an axis
+of the stored volume.  This work was clarified and extended in [Hanrahan]
+which decomposed the viewing transformation into a sequence of three shearing
+matrices.  A further improvement to this basic concept of aligning voxels
+(object space) with pixels (image space) is described in [Lacroute94].
+In this work, object space is mapped into a sheared object space which is
+ideally suited for projecting (compositing) into image space.  Furthermore,
+the authors 
+take advantage of spatial coherence by implementing scanline-based
+data structures in both object space and image space in order to speed up the
+rendering algorithm.  Moreover, they offer three variants of the algorithm:
+<UL>
+<LI> render a fixed, preclassified volume, but with an arbitrary viewing
+transform and arbitrary shading parameters (fastest) {A classified volume
+is one that has an opacity assigned to each voxel}
+<LI> render a fixed volume with an associated min-max octree; arbitrary
+classification, viewing transform, and shading
+(slower)
+<LI> render a fixed volume with no precomputed data structures (slowest).
+</UL>
+</P>
+An implementation of this algorithm is available in the public domain and
+is known as the VolPack library.
+
+<P>
+Another volume-rendering technique uses 3-D texture hardware to speed up
+the projection of object space to image space [Cabral,Cullip].  One such
+architecture capable of performing this is the Silicon Graphics RealityEngine.  SGI has a public domain implementation of such an algorithm, known as Volren.
+</P>
+
+
+<H3>Results</H3>
+<!--------------------------->
+
+We began our investigation with the visualization of ultrasound data 
+from a breast phantom containing internal cysts.  The data was obtained by another research group at Battelle Northwest using a holographic ultrasonic imaging technique [Sheen].  
+We were initially given a
+512x512x128 dataset of floating point values and told that the data 
+should be log scaled for better viewing.  To make the data volume more manageable we first averaged each of the 128 slices to 256x256 resolution.
+
+<P>
+We wanted to first render this particular dataset using a volume rendering technique and therefore downloaded the Volren package.  After converting our data into TIFF images, one of the required formats for Volren, we discovered that our machine had only enough texture memory to handle
+a 128x128x64 (or equivalent size) volume.  We therefore averaged our
+128 slices down to 128x128 resolution and then averaged pairs of slices
+to obtain a 128x128x64 volume.  Figure 1 shows the resulting
+volume rendering as well as the Volren graphical user interface (GUI).
+We found Volren to be a very powerful tool for demonstrating
+the concept of volume rendering to others.  The GUI allowed for interactive
+control of transfer functions that we did not expect to be possible at the
+beginning of our project.  Combined with dynamic viewing (rotation and 
+scaling), Volren provided us terrific initial results.  However, with the
+demand for the SGI Onyx RealityEngine at a premium, we sought other
+avenues for visualizing our volumetric data.
+ <! No session monitoring, scripting; powers of 2 dims!>
+</P>
+
+<! Next line commented out for reference>
+<!<IMG WIDTH=128 HEIGHT=128 ALIGN=middle VSPACE=00 HSPACE=10 SRC="foo.gif">
+<P>
+<IMG HSPACE=50 VSPACE=00 SRC="breast.volren.gif">
+</P>
+<pre>
+    Figure 1.  Breast phantom data rendered using Volren.
+</pre>
+
+<P>
+To satisfy our curiosity at how well a surface renderer would perform
+on this same data, we computed several isosurfaces of differing isovalues.
+Figure 2 shows one such surface that closely resembles the Volren
+rendering.  (The isosurfaces were computed and rendered using the AVS
+visualization package.)
+</P>
+<P>
+<IMG WIDTH=256 HEIGHT=256 HSPACE=50 SRC="breast.iso.150.gif">
+<IMG  SRC="breast_volpack.gif">
+</P>
+<pre>
+     Figure 2. Isosurface of breast      Figure 3. Volume rendering
+	       phantom data.                       using VolPack.
+</pre>
+
+<P>
+Next, we downloaded the
+<A HREF="http://graphics.stanford.edu/software/volpack/"> VolPack 
+volume rendering library</A>
+and began
+learning the mechanics of it.  There is sufficient documentation in
+the form of a user's guide, man pages, and example datasets and programs.
+Though we were no longer bound by the texture memory limit, we kept
+the breast phantom data at 128x128x64 for comparison.  Figure 3
+shows an image rendered using VolPack with appropriately chosen transfer 
+functions to approximate the Volren and isosurface renderings.
+</P>
+<P>
+Figure 4 is the first frame in an MPEG animation showing a rotation of
+the breast data.  These images were generated using the VolPack library.
+Note that depth-cueing is a user-specified option.
+</P>
+<P>
+<A HREF="breast_normal.mpg">
+<IMG HSPACE=10 ALIGN=middle SRC="breast_normal.gif">
+</A> 
+Figure 4. <A HREF="breast_normal.mpg">MPEG rotation</A>
+<!(164K, 180 frames, 128x128)>
+(164K, 128x128)
+</P>
+
+<P>
+In Figure 5, we show a volume rendered image, using Volren, of the face
+of a fetus with a cleft palate.  The data was taken with a 
+conventional B-scan ultrasound
+imaging unit.  The original volume consists of 50 slices at 190x236 resolution.
+Figure 6 is the first image of an MPEG
+animation generated using VolPack.  Note the shadows which, in addition to
+the lighting model, serve as helpful 3-D visual cues.
+Here, we have chosen transfer functions
+that allow for deeper penetration of the facial skin in an attempt to visually reveal the cleft palate.
+</P>
+<P>
+<IMG HSPACE=10 ALIGN=middle SRC="cleft.volren.gif">
+Figure 5. Volren on fetus face.
+</P>
+
+<P>
+<A HREF="cleft.mpg">
+<IMG HSPACE=10 ALIGN=middle SRC="cleft_volpack.gif">
+</A>
+Figure 6. <A HREF="cleft.mpg">MPEG animation </A>
+<!(272K, 240 frames, 256x256)>
+(272K, 256x256)
+</P>
+
+<P>
+Figure 7 shows the image from a volume rendering of another fetus dataset.
+Again the related MPEG animation was generated using VolPack and demonstrates
+its scaling and translation transformations. 
+</P>
+<P>
+<A HREF="fetus.mpg">
+<IMG HSPACE=10 ALIGN=middle SRC="fetus.gif">
+</A>
+Figure 7. <A HREF="fetus.mpg">MPEG animation </A>
+<!(107K, 130 frames, 256x256)>
+(107K, 256x256)
+</P>
+
+
+<P>
+One of our goals for this project was to provide stereoscopic
+displays of volume rendered images.  Using the VolPack library, we
+generated left and right stereo pairs of images.  From these we could
+provide either cross-eye stereo pairs or interlaced
+scanline stereo images which we viewed using the Virtual i.o i-glasses!
+shown in Figure 8.
+</P>
+<P>
+<IMG HSPACE=10 ALIGN=middle SRC="iglasses.gif">
+Figure 8. The Virtual i.o i-glasses!
+</P>
+
+<! Our experience using VolPack has been quite positive.  It is a 
+well-written and well-documented library written in C.
+It provides the basic functionality required: lighting model, depth-cueing,
+shadows.>
+
+<P>
+Figures 9 and 10 are MPEG rotations (fast and slow) of cross-eye
+stereo images.  Figure 11 is an MPEG rotation of interlaced scanline
+stereo images which can be properly viewed wearing a pair of i-glasses!.
+<P>
+<A HREF="crosseye_small.mpg">
+<IMG HSPACE=10 ALIGN=middle SRC="crosseye.gif">
+</A> 
+Figure 9. <A HREF="crosseye_small.mpg">MPEG rotation </A>
+<!(132K, 22 frames, 320x128)>
+(132K, 320x128)
+</P>
+<P>
+<! ----- href="crosseye_big.mpg" >
+<IMG HSPACE=10 ALIGN=middle SRC="crosseye.gif">
+Figure 10. MPEG rotation (unavailable)
+<! ------------ (486K, 180 frames, 320x128)>
+(486K, 320x128)
+
+<P>
+<IMG HSPACE=10 ALIGN=bottom SRC="stereo.gif">
+<! -------"stereo440_144.mpg">
+<p>
+<dd>Figure 11. MPEG rotation (unavailable)
+<!(943K, 144 frames, 440x440)>
+(943K, 440x440)
+
+
+<P>
+In addition to visualizing ultrasound data, we also experimented with
+volume-rendering CT and MR data from the 
+<A HREF="http://www.nlm.nih.gov/research/visible/visible_human.html">
+Visible Human Project</A>.
+Figure 12 shows a slice of CT data from the lower abdomen with clipping
+lines that we used to delimit a subregion around the spine.  Extracting
+a volume of data in this fashion, we used the VolPack library to generate
+the images in Figures 13 and 14.  Here we have chosen
+appropriate transfer functions to 
+hilight the spine (bone) from the rest of the tissue.  
+</P>
+<P>
+<IMG HSPACE=50 ALIGN=middle SRC="vhp.s1713.gif">
+Figure 12. CT slice with clipping lines.
+</P>
+<P>
+<IMG HSPACE=50 SRC="spine1.gif">
+<IMG  SRC="spine2.gif">
+</P>
+<pre>
+     Figure 13. Lower spine             Figure 14. Another view.
+	        from CT data.                       
+</pre>
+
+
+<H3>Future Work</H3>
+<!--------------------------->
+
+In a related project at Battelle Northwest, we are investigating 
+extensions to the work described here.  We have embedded the stereographic
+volume-rendering into an immersive virtual environment that 
+allows a user to interactively view and perform simple editing of the 
+volumetric data [Heiland].  
+
+We are in the process of porting the VolPack library and our stereographic
+image application to a Macintosh PowerPC as an extension to the NIH Image application.
+
+Finally, we plan to incorporate and experiment with a 
+parallel version of VolPack when it becomes available [Lacroute95].
+
+
+<H3>Acknowledgments</H3>
+<!--------------------------->
+
+This work was supported by funds from the Advanced Research Projects Agency
+(ARPA) project, contract number DAMD17-94-C-4127.  Initial research in
+volume visualization was funded by a 
+a Laboratory Directed Research and Development (LDRD)
+project through 
+the Environmental Molecular Sciences Laboratory (EMSL) at
+Pacific Northwest National Laboratory (PNL).
+Additional support was through a LDRD project in
+the Medical Technologies and Systems Initiative at PNL.
+PNL is a multiprogram national laboratory operated by Battelle Memorial
+Institute for the U.S. Department of Energy under Contract
+DE-AC06-76RLO 1830.
+The National LIbrary of Medicine and the Visible Human Project provided
+CT and MR data.  Finally, we would like to thank the following
+individuals:  Dr. Rick Satava, our project manager at ARPA, for his
+consistent encouragement; 
+Phil Lacroute for timely replies to questions about 
+VolPack; Todd Kulick and Brian Cabral for answering questions
+about Volren, and our colleagues Dale Collins, Dave Sheen, and
+Parks Gribble for providing holographic ultrasound data.
+
+
+<H3>References</H3>
+<!--------------------------->
+
+<OL>
+<LI>Bajura M, Fuchs H and Ohbuchi R.  Merging virtual objects with the real 
+world:  Seeing ultrasound images.
+Proceedings of SIGGRAPH '92. In Computer Graphics 26(2):203-210.
+
+<LI>Cabral B, Cam N, and Foran J. Accelerated Volume Rendering and Tomographic Reconstruction Using Texture Mapping Hardware.
+Proceedings of SIGGRAPH '95:91-98.
+
+<LI>Chen LS, Herman GT, Reynolds RA, and Udupa JK.  Surface Shading in the Cuberille Environment.  IEEE Computer Graphics and Applications, 
+December 1985: 33-43.
+
+<LI>Cullip TJ and Neumann U.  Accelarating Volume Reconstruction with 3D
+Texture Hardware.  Univ of North Carolina, Chapel Hill, Tech Report TR93-0027.
+
+<LI>Drebin RA, Carpenter L, and Hanrahan P.  Volume Rendering.  
+Proceedings of SIGGRAPH '88. In Computer Graphics 22(4):65-74.
+
+<LI>Hanrahan P.  Three-Pass Affine Transforms for Volume Rendering.  
+Proceedings of Workshop on Volume Visualization 1990.
+In Computer Graphics 24(5):71-78.
+
+<LI>Heiland RW, May RA, Mauceri S.  A Low-Cost Immersive Virtual Environment 
+for Volume Visualization.  In preparation.
+
+<LI>Lacroute P and Levoy M.  Fast Volume Rendering Using a Shear-Warp 
+Factorization of the Viewing Transformation.
+Proceedings of SIGGRAPH '94: 451-458.
+<A HREF="http://www-graphics.stanford.edu/papers/shear/">(Web page)</A>
+
+<LI>Lacroute P.  Real-Time Volume Rendering on Shared Memory Multiprocessors 
+Using the Shear-Warp Factorization.  To appear in Proceedings of the 1995 
+Parallel Rendering Symposium.
+
+<LI>Levoy, M.  Display of Surfaces from Volume Data.  
+IEEE Computer Graphics and Applications 8(3):29-37, 1988.
+
+<LI>Lorensen WE and Cline HE.  Marching cubes: A high resolution 3D
+surface construction algorithm.
+Proceedings of SIGGRAPH '87:163-169.
+
+<LI>Neumann U.  Volume Reconstruction and Parallel Rendering Algorithms:  A 
+Comparative Analysis.  Ph.D. Dissertation, University of North Carolina - 
+Chapel Hill. 1993.
+
+<LI>Porter T and Duff T.  Compositing digital images.
+Proceedings of SIGGRAPH '84. In Computer Graphics 18(3):253-259.
+
+<LI>Sabella P.  A Rendering Algorithm for Visualizing 3D Scalar Fields.  
+Proceedings of SIGGRAPH '88. In Computer Graphics 22(4):51-58.
+
+<LI>Sheen DM, Collins HD, and Gribble RP. Ultra-Wideband Holographic 3-D 
+Ultrasonic Imaging of Breast and Liver Phantoms.
+MMVR '96 (these proceedings).
+
+<LI>Udupa JK and Hung HM.  Surface versus volume rendering: A comparative 
+assessment.  Proceedings of the First Conference on Visualization in 
+Biomedical Computing.  Atlanta, GA.  May 22-25, 1990.
+
+<LI>Upson C and Keeler M.  V_BUFFER: Visible Volume Rendering.  
+Proceedings of SIGGRAPH '88. In Computer Graphics 22(4):59-64.
+</OL>
+
+</P>
+
+<PNLP>
+</body>
+</html>

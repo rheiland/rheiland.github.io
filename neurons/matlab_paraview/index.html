@@ -1,0 +1,107 @@
+<HTML>
+<HEAD>
+   <TITLE>NeuroPy: MATLAB-ParaView</TITLE>
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>NeuroPy: MATLAB-ParaView</h1>
+</CENTER>
+
+<!----------------------------------------->
+<hr>
+<p>
+<!----------------------------------------->
+<pre>
+on Quarry:  provide a MATLAB function that dumps VTK Image formatted file (.vti):
+
+<li><a href="test_vti.m">test_vti.m</a>
+<li><a href="TE2vti.m">TE2vti.m</a>
+
+.../TEpackage0.6>  more test_vti.m 
+load ../data_oct2010/2010_09_14_0_000_ASDF.mat
+TEmatrix = ASDFTEdelay(asdf_raw,1);
+fname = 'm150.vti'
+TE2vti(fname,TEmatrix);
+
+</pre>
+<hr>  <!----------------------------------------->
+<li><a href="http://paraview.org/">paraview.org</a>
+(<a href="http://paraview.org/paraview/resources/software.html">download</a>)
+<p>
+<hr>  <!----------------------------------------->
+<img src=Prefs-auto-update.png width=400 height=200>
+<p>
+Need to open Preferences and toggle on "Auto Accept" for real-time actions.
+<p>
+<hr>  <!----------------------------------------->
+<p>
+<img src=pv_m150_fullrange.png>
+<p>
+<pre>
+File -> Open (the m150.vti file)
+  display window: left (or middle) mouse button drags object; right mouse button scales
+
+Object Inspector/Display panel > Edit Color Map > 
+   (top) Color Scale 
+      > Choose Preset (select whatever colormap)
+      > "Rescale Range" or "Rescale to Data Range"
+   (top) Color Legend
+      > toggle "Show Color Legend"  (mousing over colorbar allows drag/scale)
+</pre>
+<hr>  <!----------------------------------------->
+<p>
+<img src=pv_m150_fullvoi_blue_red_plotOverLine.png>
+<p>
+<pre>
+Filters -> Common -> Extract Subset 
+  - lets you select subset of entire data
+Filters -> Data Analysis -> Plot Over Line 
+  - lets you create and (hold down Shift) drag up/down a "line source", generating a 2D plot
+You can then File->Save State then later File->Load State
+(~/dev/paraview-play/neurons_m150.pvsm)
+</pre>
+
+<hr>  <!----------------------------------------->
+<h3>PV 3.8 vs. PV 3.10</h3>
+Loading the same PV state file into each version, I see that 3.10 offers additional (unwanted)
+plots for the PlotOverLine filter:
+<p>
+<img src=pv-3.8.png>
+<p>
+<img src=pv-3.10.png>
+<p>
+I manually entered the Point1 & Point2 coords.  Ideally, I'd like to be able to translate in
+Y by a integral (+/- 1) unit, not a continuous (float) amount.
+Shift-select the line will at least constrain it in X and Z.
+<p>
+Here's the underlying image data - showing the single scalar array (TE):
+<pre>
+% more m150.vti 
+&lang;?xml version="1.0"?>
+&lang;VTKFile type="ImageData" version="0.1" byte_order="LittleEndian">
+&lang;ImageData WholeExtent="0 149 0 149 0 0" Origin="0 0 0" Spacing="1 1 1">
+&lang;Piece Extent="0 149 0 149 0 0">
+&lang;PointData Scalars="TE">
+&lang;DataArray type="Float64" Name="TE" NumberOfComponents="1" format="ascii">
+0.000000000000 0.000000504614 0.000000001189 0.000000233241 0.000000339648 ...
+</pre>
+<p>
+Another difference in 3.8 vs. 3.10 is the "Information" on the PlotOverLine1 object - in 3.8,
+the range of the vtkValidPointMask is [0,1]; in 3.10, it's [1,1].
+<p>
+Also, fwiw, I get an error msg:
+<p>
+<img src=pv-error.png>
+<hr>  <!----------------------------------------->
+<p>
+<img src=pv-3.10-TEonly.png>
+<p>
+The fix seems to be: select the plot window, select the Display tab on the Obj Inspector,
+check another var and then un-check it.  This will display only the TE, as desired.
+(Note that on this last screen capture, we also made the line resolution=150 instead of
+100).
+<hr>
+<li><a href=../firing>firing page</a>
+<li><a href=..>up</a>

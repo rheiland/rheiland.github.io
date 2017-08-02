@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+<TITLE>Deformed bubbles: instructions</TITLE>
+<link rel="shortcut icon" type="image/png" href="../../../../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>Instructions for Deformed Bubbles</h1></CENTER>
+<p>
+
+If the points constitute a topological sphere (i.e., is a single, deformed
+bubble), then you can probably just use <b>vtkSurfaceReconstructionFilter()</b>.
+However, if there are disjoint bubbles, then you first need to perform the
+<b>powercrust</b> algorithm to do the surface triangulation and then use a
+VTK script to visualize it.
+<p>
+For starters, be sure your data file contains only the 3D points (no line
+indicating how many points there are, etc.).
+<p>
+<pre>
+rf. modi4:/u/ncsa/heiland/Bubbles/Data
+% alias python /u/ncsa/heiland/Python-1.6a2/python
+% setenv LD_LIBRARY64_PATH /u/ncsa/heiland/VisBench/vtk64:$LD_LIBRARY64_PATH
+ or just the following if LD_LIBRARY64_PATH isn't defined:
+% setenv SGI_ABI -64
+% setenv LD_LIBRARY64_PATH .:/u/ncsa/heiland/VisBench/vtk64
+% setenv PYTHONPATH  .:/u/ncsa/heiland/VisBench/vtk64:/u/ncsa/heiland/Python-1.6a2/Lib
+</pre>
+
+<!--------------------------------------------------------->
+<hr>
+Single bubble:
+<pre>
+% python movie.py -1 -1 surfpoints00.dat
+  -- can do multiple files at once:
+% python movie.py -1 -1 surfpoints00.dat   surfpoints01.dat   surfpoints02.dat
+</pre>
+The first two parameters ("-1 -1", here) after the script name are the 
+'neighborhoodsize' and 'samplespacing' parameters to 
+vtkSurfaceReconstructionFilter.  Using "-1 -1" will cause it to default, and
+the default values will be printed out, e.g.:<br>
+<pre>
+----default:
+nb= 20
+ss= 2.09585142136
+</pre>
+To make a finer mesh, you would decrease the 'samplespacing' parameter, e.g.:
+<pre>
+% python movie.py -1 1.0 surfpoints00.dat 
+</pre>
+
+<!--------------------------------------------------------->
+<hr>
+Multiple bubbles:
+<pre>
+% powercrust -m 100000 -s 9427 -i surfpoints07.dat
+  -- This creates 'pc.off'.
+  -- Rename the powercrust output file if you want to save it.
+  -- In fact, for doing a lot of files, you'd want to make a shell script.
+% mv pc.off pc07.dat
+
+--  Visualize results using a VTK script:
+% python polyTri.py pc07.dat surfpoints07
+  -- creates surfpoints07.ppm
+</pre>
+
+Hopefully, the VTK-Python scripts are somewhat self-explanatory, 
+allowing you to 
+make changes as you desire.  For example, to change the background color, you
+would modify the line "ren.SetBackground", using R,G,B as params; (1,1,1)=white,
+(0,0,0)=black.  To change the color of the bubble or the X & Y labels, search
+for 'SetColor' in the script.
+
+<p>
+<! ---------------------------------------------------------------->
+<hr>
+back to my <a href="http://randyheiland.com">home page</a>
+</BODY>
+</HTML>

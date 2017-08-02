@@ -1,0 +1,133 @@
+<HTML>
+<HEAD>
+<TITLE>Scattered pts on spheres</TITLE>
+<link rel="shortcut icon" type="image/png" href="../../../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>Scattered Points on Spheres</h1></CENTER>
+<p>
+
+<! ------------------------------------>
+<p>
+Random points on two "touching" unit spheres (i.e., radius=1) (1000 pts/sphere):
+<p>
+<img src=sphere2Pts_1000each.gif><br>
+<a href="sphere2.py">sphere2.py</a> (Python script)
+<p>
+The surface area of a single unit sphere = 4*pi*r^2 = 12.5663706144
+<p>
+The <b>goal of this page</b> is to produce a triangulation of this point set 
+that results in two spheres that intersect at a point.
+
+<! ------------------------------------>
+<p>
+<hr width="75%" align=left noshade>
+<p>
+Results of <b>vtkDelaunay3D</b> -- not what we're after...<br>
+
+<p>
+<img src=scatSphDel1.gif>
+<img src=scatSphDel2.gif><br>
+<a href="scatSphDel.py">scatSphDel.py</a> (Python script)
+<p>
+<! --------------------------------->
+<hr width="75%" align=left noshade>
+<p>
+Results of <b>vtkSurfaceReconstructionFilter</b> (--> vtkContourFilter (=0.0))
+(vtkSurfaceReconstructionFilter is an implementation by 
+<a href="http://www.eastman.ucl.ac.uk/~thutton/">Tim Hutton</a>
+of <a href="http://www.research.microsoft.com/~hoppe/">Hugues Hoppe's</a> 
+research.
+<p>
+<img src=scatSphRecon.1000.20.0.1.gif>
+<! -- vtkSmoothPolyDataFilter >
+<img src=scatSphRecon.rotate.gif><br>
+<a href="scatSphRecon.py">(scatSphRecon.py)</a>
+Notice the undesirable "wall" artifact produced by this algorithm for this 
+dataset.  (However, this is expected since this dataset is not well-suited
+for Hoppe's algorithm).
+
+<p>
+<! --------------------------------->
+<hr width="75%" align=left noshade>
+<b>Variants of alpha shapes</b>
+<p>
+Using the <a href="http://www.netlib.org/voronoi/hull.html">hull program</a>:
+<p>
+<img src=alpha.500.m.100.gif>
+<img src=alpha.500.m.100.wire.gif><br>
+
+<! --------------------------------->
+<hr width="45%" align=left noshade>
+<p>
+Using <a href=http://biogeometry.duke.edu/software/alphashapes/software.html>Alpha Shapes</a>:
+<p>
+<a href="alvis1.gif"><img src=alvis1.gif width=300 height=200></a>
+<a href="alvis2.gif"><img src=alvis2.gif width=300 height=200></a>
+
+<! --------------------------------->
+<p>
+<hr width="75%" align=left noshade>
+<p>
+<b><a href="http://www.cs.ucdavis.edu/~amenta/powercrust.html">Power Crust algorithm</a></b> (just using default parameters for the most part)<br>
+<pre>
+powercrust -m 100000 -s 9427 -i pts.2000
+</pre>
+<p>
+<img src=polyTri.gif>
+<img src=polyTri_wire.gif><br>
+<a href="polyTri.py">polyTri.py</a> - Python script to read in pc.off output produced by powercrust, triangulate it, and compute surface area.<br>
+Computed (total) surfArea =  24.8593860606
+<p>
+<img src=clean.gif>
+<img src=clean_wire.gif><br>
+<a href="clean.py">clean.py</a> - Python script to read in pc.off output produced by powercrust, triangulate it, clean it, decimate it, and compute surface area.<br>
+Computed (total) surfArea =  24.59468921
+
+<! -------------------->
+<p>
+<hr width="75%" align=left noshade>
+Adding more spheres (all lie in Z=0.0 plane). <p>
+<p> 
+<img src=polyTri4.gif><br>
+Top two each have R=0.8; bottom have R=1.0.<br>
+Actual surface area: 8.042*2 + 12.566*2 = 41.217<br>
+Computed surfArea =  40.7856982027
+<p>
+<img src=sphere6.gif>
+<img src=polyTri6.gif><br>
+R=1.0, 0.8, 0.5
+<p>
+Actual surface area: ???<br>
+Computed surfArea =  47.064713984
+<p>
+<img src=polyTri6zoom.gif><br>
+Zoom in on smaller (intersecting) spheres.
+<p>
+<! --------------------------------->
+<hr width="75%" align=left noshade>
+<b>vtkSurfaceReconstructionFilter on this dataset</b>
+<p>
+<img src=scatSphRecon6.gif>
+<img src=scatSphRecon6_rot.gif><br>
+(using default NeighborhoodSize and SampleSpacing: nb= 20
+ss= 0.205118626356)
+
+<! --------------------------------->
+<p>
+<hr width="75%" align=left noshade>
+<b>Deformed bubbles</b>
+<p>
+See <a href="../bubble">this page for deformed 
+bubbles</a> using some computed data from 
+<a href="http://www.clarkson.edu/chemeng/faculty_pages/mclaughlin.html">Prof. John McLaughlin</a>
+ and Dongying Qian at Clarkson University.
+
+<p>
+<! ---------------------------------------------------------------->
+<hr>
+back to my <a href="http://www.ncsa.uiuc.edu/~heiland">home page</a>
+</BODY>
+</HTML>

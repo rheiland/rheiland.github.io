@@ -1,0 +1,43 @@
+#
+# from bertrand.mignon@watco.be
+ 
+import java
+from pawt import swing
+from java.awt import GridLayout, BorderLayout
+from pawt.swing import JButton , JFrame, JPanel, JTextField
+from java.lang import Double
+
+def exit(e): java.lang.System.exit(0)
+def digit(e): txtField.text = txtField.text + e.source.text
+def opt(e): txtField.text = txtField.text + e.source.text
+def calc(e):   txtField.text = Double.toString(eval(txtField.text+"0.0"))
+
+def reset(e) : txtField.text=""
+
+frame = JFrame("JPython Calculator", visible = 0,windowClosing=exit)
+
+frame.contentPane.setLayout(BorderLayout(10,10))
+
+btnPanel = JPanel(GridLayout(4,3))
+for char in ["7","8","9","4","5","6","1","2","3","0",".","+/-"] :
+  btnPanel.add(JButton(char,actionPerformed=digit))
+
+optPanel = JPanel(GridLayout(4,1))
+for char in ["/","*","-","+"] :
+  optPanel.add(JButton(char,actionPerformed=opt))
+
+opt2Panel = JPanel(GridLayout(1,2))
+opt2Panel.add(JButton("OFF",actionPerformed=exit))
+opt2Panel.add(JButton("ON/C",actionPerformed=reset))
+opt2Panel.add(JButton("=",actionPerformed=calc))
+
+
+txtField = JTextField(40)
+frame.contentPane.add(txtField,BorderLayout.NORTH)
+frame.contentPane.add(btnPanel,BorderLayout.CENTER)
+frame.contentPane.add(optPanel,BorderLayout.EAST)
+frame.contentPane.add(opt2Panel,BorderLayout.SOUTH)
+
+frame.setSize(300,200)
+frame.visible=1
+frame.pack

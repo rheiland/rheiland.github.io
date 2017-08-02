@@ -1,0 +1,34 @@
+<title>pv-volrend</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+
+<h2>Volume Rendering</h2>
+By default, I tend to consider <a href="http://vtk.org">VTK</a>-based tools first:
+<li>VTK-Python script directly (assuming you've built it yourself or found binaries)
+<li>ParaView (below)
+<li> (eventually?) <a
+href="http://www.kitware.com/news/home/browse/VTK?2010_11_29&Kitware+Offers+Free+Access+to+VolView">VolView</a>
+
+<h2>ParaView volume rendering</h2>
+<hr>  <!----------------------------------------->
+<li><a href="http://paraview.org/">paraview.org</a>
+(<a href="http://paraview.org/paraview/resources/software.html">download</a>)
+<p>
+<hr>  <!----------------------------------------->
+<img src=Prefs-auto-update.png width=400 height=200>
+<p>
+Need to open Preferences and toggle on "Auto Accept" for real-time actions.
+<hr>  <!----------------------------------------->
+<li><a href="http://paraview.org/">paraview.org</a>
+<li><a href="http://vtk.org/VTK/resources/software.html">all VTK's data
+(large-ish)</a> - rf. "Data" under current release
+<li>just <a href=ironProt.vtk>ironProt.vtk</a> (ascii header, binary data)
+<p>
+<img src=volrend-iron.jpg>
+<p>
+<li>Open the ironProt.vtk file (it should auto-create the blank/black view)
+<li>create a new/blank viewing window (e.g. click on "vertical split" icon above existing
+window)
+<li>select "3D View"
+<li>you can delete an unwanted window ("X")
+<li>I also created the slice filter (Filter menu) as something extra
+<p><hr>

@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+   <TITLE>  RPi (Heiland)
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<h1>Raspberry Pi</h1>
+
+What's not to like about the <a href="http://www.raspberrypi.org/">Raspberry Pi</a>? 
+It's very inexpensive, runs <a href="http://python.org">Python</a>, and is fun!
+Wolfram now even provides <a href="http://www.raspberrypi.org/archives/5282">Mathematica</a> for free. Wow!
+<hr>
+<img src=mathem_1.png>
+<hr>
+<p>
+The RPi can also run Python (and its rich ecosystem of 3rd party packages). 
+<p>
+<img src=ipython-pylab.png>
+<p>
+<hr>
+Here's the same surface from Mathematica above, using numpy and matplotlib:
+<p>
+<pre>
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import numpy as np
+
+X = np.arange(-3, 3.2,.25)
+Y = np.arange(-2, 2.2,.25)
+X, Y = np.meshgrid(X, Y)
+Z = np.sin(X + Y**2)
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='cool', linewidth=1, antialiased=True)
+ax.set_zlim(-3.01, 3.01)
+
+fig.colorbar(surf, shrink=0.5, aspect=1)
+plt.show()
+</pre>
+<img src=mathem_3d_mpl.png>
+<hr>
+<h2>Distributed Computing</h2>
+Something else you can do on your Pi is build an MPI library and create a cluster, as has
+already been reported on the web (<a href=http://www.southampton.ac.uk/~sjc/raspberrypi/>here</a> and <a href=http://blogs.nvidia.com/blog/2013/07/19/secret-recipe-for-raspberry-pi-server-cluster-unleashed/>here</a>). Here's my own proof of concept after building mpich (from source):
+<pre>
+pi@raspberrypi ~/mpich_build/examples $ mpirun -np 4 ./cpi
+Process 3 of 4 is on raspberrypi
+Process 2 of 4 is on raspberrypi
+Process 0 of 4 is on raspberrypi
+Process 1 of 4 is on raspberrypi
+pi is approximately 3.1415926544231239, Error is 0.0000000008333307
+wall clock time = 0.110020
+</pre>
+<p>
+

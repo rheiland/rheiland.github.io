@@ -1,0 +1,56 @@
+
+<head>
+<title>
+ParallelBFS
+</title>
+<link rel="shortcut icon" type="image/png" href="../../../lorenz-zoom.png" >
+</head>
+
+<h2>ParallelBFS issue</h2>
+10/5/09: We take a look at an issue posted on the VTK-dev list on 10/1/09, asking why the
+<a
+href=http://public.kitware.com/cgi-bin/viewcvs.cgi/Examples/Infovis/Cxx/ParallelBFS.cxx?view=log>ParallelBFS</a>
+ was commented out in the Examples/Infovis/Cxx/CMakeLists.txt.  After taking a look, I
+concur that the example could indeed be built, assuming VTK_USE_PARALLEL_BGL is set, and
+therefore I committed the change.  Moreover, the user indicated a seg fault when he attempted to
+build/run the example.  Not knowing exactly what his environment was (other than LAM MPI), I'll
+simply state that the example seems to work for me.<br>
+Addendum: it seems the user committed a fix
+that perhaps got around the seg fault.
+<p>
+As always, comments welcome.
+
+<p>
+My environment is (and I simply do mpirun on my laptop, no remote cluster):
+<pre>
+<li>OSX 10.5.8
+<li>cmake version 2.6-patch 4
+<li>VTK from CVS
+<li>Boost 1.40 (which includes PBGL)
+<li>Open MPI 1.3.3
+
+<p>
+Running the original code (100K verts, 10K edges) serially:
+<p>
+<img src=ParallelBFS_orig.png>
+<p>
+<hr>
+Let's decrease the # verts (=100) and edges (=10) so we can see something:<br>
+Comment: it would seem that the 'SetNumberOfEdges' has no effect, probably due to the
+'StartWithTreeOn' (but I haven't looked into it).
+<p> 
+<img src=ParallelBFS_100v_10e_np1.png>
+<hr>
+Can we run it with 2 nodes?: mpirun -np 2 ParallelBFS<br>
+Yes, but a couple of comments:
+<li>The initial rendering seems to have "shadow" verts, or somesuch.  We eliminate them by
+doing a selection and resize to refresh the rendering.
+<li>The random graph is reproducible on each run (implying a constant seed for the randomness)
+<p>
+<img src=ParallelBFS_100v_10e_np2.jpg>
+<img src=ParallelBFS_100v_10e_np2_select.jpg>
+<img src=ParallelBFS_100v_10e_np2_resize.jpg>
+<hr>
+<p>mpirun -np 3 ParallelBFS:<p>
+<img src=ParallelBFS_100v_10e_np3.png>
+

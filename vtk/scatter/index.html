@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+   <TITLE>  Heiland: VTK/scattered data
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>VTK for Scattered Data</h1></CENTER>
+<p>
+
+<! ---------------------------------------------------------------->
+<p>
+This is a page showing some of VTK techniques/results for visualizing 
+scattered data.  We begin with just 2D data.
+<p>
+<a href="del2d.py">del2d.py (Python script)</a>:<br>
+100 random 2D points between [-0.5,0.5] (+ 4 corner points), each assigned a 
+scalar = simple distance function from the origin.
+<p>
+Using vtkDelaunay2D (wireframe and shaded):
+<p>
+<img src=del100wire.gif>
+<img src=del100.gif>
+<p>
+It is apparently possible to force the output to conform to a particular 
+polygonal mesh (e.g., square; rf. class doc), but I didn't attempt this here.
+<p>
+<! --------------------------------->
+<hr width="75%" align=left noshade>
+<p>
+<a href="shep.py">shep.py (Python script)</a>:<br>
+Using vtkShepardMethod (interpolates the scattered data onto a StructGrid).
+<br>
+Note that results will vary considerably depending on values of various
+params (e.g., MaximumDistance, SampleDimensions) for this class, as well as
+the scalar range used for the mapper.
+<br>
+It goes without saying that one needs
+to interpret the results of any interpolant with care.
+<p>
+(The name of the image reflects the parameters that were used for the script).
+<br>
+<img src=shep100_0.2_50_wire.gif alt="shep100_0.2_50_wire.gif">
+<img src=shep100_0.2_50.gif alt="shep100_0.2_50.gif">
+<! ---------------------------------------------------------------->
+<p>
+<hr width="100%" align=left noshade>
+<p>
+500 points:<p>
+Delaunay2D:<br>
+<p>
+<img src=del500wire.gif>
+<img src=del500.gif>
+<! --------------------------------->
+<hr width="75%" align=left noshade>
+<p>
+
+<! ---------------------------------------------------------------->
+<hr>
+</BODY>
+</HTML>

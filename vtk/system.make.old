@@ -1,0 +1,70 @@
+VTK_OBJ       = /home/heiland/vtkJava
+
+RANLIB        = :
+CC            = /usr/bin/cc
+CFLAGS        =  -fPIC  \
+                 -I/usr/X11R6/include  -D_HP_NO_FAST_MACROS \
+		-DHAVE_LIMITS_H	-DHAVE_UNISTD_H 
+
+CXX           = /usr/bin/c++
+CXXFLAGS      =  -fPIC  \
+                 -I/usr/X11R6/include   \
+		-D_HP_NO_FAST_MACROS -DHAVE_LIMITS_H -DHAVE_UNISTD_H
+
+USER_CFLAGS   = -g -O2
+USER_CXXFLAGS = -g -O2
+
+X_EXTRA_LIBS  = 
+X_PRE_LIBS    =  -lSM -lICE
+XLIBS         =  -L/usr/X11R6/lib
+prefix        = /usr/local
+exec_prefix   = ${prefix}
+LIB_RUNTIME_DIR = ${prefix}/lib
+
+BUILD_TCL     = build_tcl
+CLEAN_TCL     = clean_tcl
+BUILD_JAVA    = build_java
+CLEAN_JAVA    = clean_java
+BUILD_PYTHON    = build_python
+CLEAN_PYTHON    = clean_python
+
+USE_GRAPHICS_LIBS   = -L${VTK_OBJ}/graphics -lVTKGraphicsTcl
+USE_IMAGING_LIBS    = -L${VTK_OBJ}/imaging -lVTKImagingTcl
+USE_PATENTED_LIBS   = -L${VTK_OBJ}/patented -lVTKPatentedTcl
+USE_CONTRIB_LIBS    = -L${VTK_OBJ}/contrib -lVTKContribTcl
+
+USE_GRAPHICS_JAVA   = -L${VTK_OBJ}/graphics -lVTKGraphicsJava
+USE_IMAGING_JAVA    = -L${VTK_OBJ}/imaging -lVTKImagingJava
+USE_PATENTED_JAVA   = -L${VTK_OBJ}/patented -lVTKPatentedJava
+USE_CONTRIB_JAVA    = -L${VTK_OBJ}/contrib -lVTKContribJava
+
+USE_TOOLKIT_FLAGS    =  -I${srcdir}/../graphics -DVTK_USE_GRAPHICS -I${srcdir}/../imaging -DVTK_USE_IMAGING -I${srcdir}/../patented -DVTK_USE_PATENTED -I${srcdir}/../contrib -DVTK_USE_CONTRIB 
+TOOLKIT_DEPENDS      = 
+
+VTK_TCL_SHLIB_TARGET = vtktcl
+VTK_SHLIB_BUILD_FLAGS = -shared
+VTK_SHLIB_LINK_FLAGS = -rdynamic
+VTK_LIB_EXT          = .so
+DL_LIBS              = -ldl
+SHLIB_LD_LIBS        = 
+SHLIB_SUFFIX         = .so
+
+THREAD_LIBS          = 
+
+GRAPHICS_API_OBJ     =  ${OGLR_OBJ}
+GRAPHICS_API_FLAGS   =  ${MESA_INCLUDE} -DVTK_USE_OGLR 
+GRAPHICS_API_LIBS    =  ${MESA_LIB}
+
+
+# install support
+#
+# The following definition can be set to non-null for special systems
+# like AFS with replication.  It allows the pathnames used for installation
+# to be different than those used for actually reference files at
+# run-time.  INSTALL_ROOT is prepended to $prefix and $exec_prefix
+# when installing files.
+INSTALL_ROOT    =
+INSTALL         = install-sh -c
+LIB_INSTALL_DIR = $(INSTALL_ROOT)$(exec_prefix)/lib
+BIN_INSTALL_DIR = $(INSTALL_ROOT)$(exec_prefix)/bin
+

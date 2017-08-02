@@ -1,0 +1,23 @@
+\documentclass[11pt]{article}
+%%\usepackage{html}
+\usepackage{epsfig}
+
+%\hoffset -0.15in
+\hoffset -0.45in
+\setlength{\textwidth}{6.0in}
+\newcounter{fignum}
+\setcounter{fignum}{1}
+\newcommand{\DLfig}{\addtocounter{fignum}{1}\thefignum.\ }
+
+\begin {document}
+
+\newpage
+\begin{figure}
+\centerline{\psfig{figure=front.eps,height=16.0cm}}
+\caption{Front view of bubbles}
+\label{fig:tempPOD}
+\end{figure}
+
+%-----------------------------------------------------
+\newpage
+\end {document}

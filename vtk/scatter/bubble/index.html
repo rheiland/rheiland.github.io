@@ -1,0 +1,122 @@
+<HTML>
+<HEAD>
+<TITLE>Heiland: deformed bubbles</TITLE>
+<link rel="shortcut icon" type="image/png" href="../../../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>Deformed Bubbles</h1></CENTER>
+<p>
+
+Using some computed data from 
+<a href="http://www.clarkson.edu/~jmclau/">Prof. John McLaughlin</a>
+ and Dongying Qian at Clarkson University.
+<p>
+<i>
+We are interested in determining the criterion for bubble breakup in
+turbulent flow. We are using the lattice Boltzmann method to compute
+the behavior of a bubble in a homogeneous turbulence field under
+zero-gravity conditions.
+In a typical run, we create a 
+single bubble in the middle of the computational box. Then, we
+turn on a random stirring force that creates turbulence. If the
+turbulence is strong enough, the bubble breaks up into one or
+more smaller bubbles. Even if the bubble doesn't break, it
+develops into very complicated shapes if the turbulence is strong.
+</i>
+<p>
+<i>
+This work was supported by the Engineering Research Program
+of the Office of Basic Energy Sciences at the Department of
+Energy under grant DE-FG02-88ER13919. It was also supported
+by a grant from DuPont.
+</i>
+<p>
+(For background into the vis tools being used here, 
+<a href="../sphere">refer to this page</a>.)
+<p>
+<img src=blob1.gif>
+<img src=blob2.gif><br>
+<img src=blobTri_def_ss2.46.gif><br>
+surfArea =  3917.12371075
+<p>
+<img src=blobTri_ss1.0.gif>
+<img src=blob1SurfRecon.gif>
+<br>
+surfArea =  3942.01223861
+<br>
+As long as there is just one bubble, the vtkSurfaceReconstructionFilter works
+quite well.  (There are a couple anomalies on the finer mesh -- a tiny hole and a tiny 
+bump).  If your browser supports VRML files, you can <a href="blob.wrl">download
+the VRML data</a> (~1M).
+
+<! --------------------------------->
+<p>
+<hr width="75%" align=left noshade>
+<b>Results of a time series</b>
+<p>
+0-10: Left-to-right, top-to-bottom:
+<p>
+<img src=surfpoints00.dat.gif>
+<img src=surfpoints01.dat.gif>
+<img src=surfpoints02.dat.gif>
+<img src=surfpoints03.dat.gif>
+<img src=surfpoints04.dat.gif>
+<img src=surfpoints05.dat.gif>
+<img src=surfpoints06.dat.gif>
+<img src=surfpoints07.dat.gif>
+<img src=surfpoints08.dat.gif>
+<img src=surfpoints09.dat.gif>
+<img src=surfpoints10.dat.gif>
+<img src=blob10_rot.gif>
+<p>
+Surface area calculations:
+<pre>
+0) 3275.04006944
+1) 3408.17386152
+2) 3495.83317411
+3) 3655.28416597
+4) 3534.66402797
+5) 4027.3778629
+6) 4140.53521925
+7) 4356.96326184
+8) 4643.39795774
+9) 5505.60795537 (bogus due to split across periodic BCs)
+10) 4956.31038353 (bogus due to split across periodic BCs)
+</pre>
+<img src=areaPlot.gif>
+
+<! --------------------------------->
+<p>
+<hr width="75%" align=left noshade>
+<p>
+<img src=rotImg/surfpoints00.dat.gif>
+<img src=rotImg/surfpoints01.dat.gif>
+<img src=rotImg/surfpoints02.dat.gif>
+<img src=rotImg/surfpoints03.dat.gif>
+<img src=rotImg/surfpoints04.dat.gif>
+<img src=rotImg/surfpoints05.dat.gif>
+<img src=rotImg/surfpoints06.dat.gif>
+
+<! --------------------------------->
+<p>
+<hr width="75%" align=left noshade>
+<p>
+To insert these into a report, here is a (gzipped) .eps file containing a tiled
+image (4x3 images), and a .tex file showing how to display it:
+<p>
+<li><a href="front.eps.gz">front.eps.gz</a>
+<li><a href="pic1.tex">pic1.tex</a>
+
+<! --------------------------------->
+<p>
+<hr width="75%" align=left noshade>
+<p>
+See this <a href="./instruct">page of instructions</a> for doing it yourself.
+<p>
+<! ---------------------------------------------------------------->
+<hr>
+back to my <a href="http://randyheiland.com">home page</a>
+</BODY>
+</HTML>

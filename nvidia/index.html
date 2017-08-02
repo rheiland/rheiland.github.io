@@ -1,0 +1,350 @@
+<head>
+<title>Heiland: nvidia stuff</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</head>
+
+<h2>GeForce 3D Vision (stereo glasses)</h2>
+
+<li><a
+href=http://www.nvidia.com/object/GeForce_3D_Vision_Main.html>www.nvidia.com/object/GeForce_3D_Vision_Main.html</a>
+<! ------------------------------------------------------------------------->
+<h3>Linux</h3>
+<pre>
+System->Prefs->More Prefs->nvidia x server settings
+
+Linux-x86_64
+nvidia driver version:  180.29
+
+GPU 0 (Quadro FX 5600)
+mem 1536 MB
+PCI Express 16x
+X screens: Screen 0
+Display: Apple Cinema HDDisplay (DFP-1)
+
+GPU 1 (Quadro NVS 290)
+256 MB
+PCI Express 16x
+X screens: none
+Display: none
+</pre>
+
+I spent a good bit of time trying (and failing) to get stereo working under Linux.  Somewhat painful in that
+we didn't/don't have root on magrathea (.osl.iu.edu; the machine in question) and sysadmins are hesitant to install new
+drivers (understandably): 
+
+<pre>
+The best place is the help desk:
+
+https://www.cs.indiana.edu/cgi-bin/csg/wreq/req?list-1
+
+Thanks!!
+Lynne =)
+
+-----Original Message-----
+From: Randy Heiland [mailto:heiland@indiana.edu] 
+Sent: Thursday, April 16, 2009 10:21 AM
+To: Lynne A Crohn
+Cc: 'Rob Henderson'
+Subject: magrathea driver request
+
+I'm not sure to whom I should send such requests - feel free to  
+educate me, but...
+
+Sometime, could we please get an updated driver installed on magrathea:
+
+http://developer.nvidia.com/object/opengl_3_driver.html
+
+presumably, the Linux 64-bit version (and, I guess, the Windows one  
+too).
+
+thanks, Randy
+------------------------------------------------------------
+--> reply from Bruce (Shei, Shing-Shong):
+
+So it's not available in the currently installed version
+(180.29)?  It's not as simple as just running the installation
+script as it will generate a kernel module which needs to be
+rebuilt each time we upgrade the kernel.  We use DKMS to automate
+this process and the latest DKMs-aware RPM from Dell is at
+180.29.  Do you really need 180.37.04?
+
+Thanks,
+Bruce
+------------------------
+<hr>
+Finally, Bruce gave me sudo access to
+'nvidia-xconfig' and I made various attempts at that.
+
+[heiland@magrathea Help]$ nvidia-xconfig -A|grep stereo
+  --allow-dfp-stereo, --no-allow-dfp-stereo
+      Enable or disable the "AllowDFPStereo" X configuration option.
+  --force-stereo-flipping, --no-force-stereo-flipping
+      Normally, stereo flipping is only performed when a stereo drawable is visible. This option
+      forces stereo flipping even when no stereo drawables are visible.
+  --stereo=STEREO, --no-stereo
+      Enable or disable the stereo mode.  Valid values for STEREO are: 1 (DCC glasses), 2
+      (Blueline glasses), 3 (Onboard stereo), 4 (TwinView clone mode stereo), 5 (SeeReal digital
+
+
+[heiland@magrathea Help]$ sudo nvidia-xconfig --stereo=4
+... (restart)
+[heiland@magrathea heiland]$ sudo nvidia-xconfig --allow-dfp-stereo
+...
+
+Option "AllowDFPStereo" "True" added to Screen "Screen0".
+Backed up file '/etc/X11/xorg.conf' as '/etc/X11/xorg.conf.backup'
+New X configuration file written to '/etc/X11/xorg.conf'
+
+
+to test:
+[heiland@magrathea heiland]$ glxgears -stereo
+Error: couldn't get an RGB, Double-buffered, Stereo visual
+
+<p>
+<! ------------------------------------------------------------------------->
+<hr>
+Trying to use chimera (molecular vis app) in stereo:
+<pre>
+chimera --stereo
+-->
+Unable to find hardware stereo support (bad stereo value "1"
+Couldn't configure togl widget)
+</pre>
+
+Info returned from <b>glxinfo</b> cmd:
+<pre>
+name of display: :0.0
+display: :0  screen: 0
+direct rendering: Yes
+server glx vendor string: NVIDIA Corporation
+server glx version string: 1.4
+server glx extensions:
+    GLX_EXT_visual_info, GLX_EXT_visual_rating, GLX_SGIX_fbconfig,
+    GLX_SGIX_pbuffer, GLX_SGI_video_sync, GLX_SGI_swap_control,
+    GLX_EXT_texture_from_pixmap, GLX_ARB_create_context, GLX_ARB_multisample,
+    GLX_NV_float_buffer, GLX_ARB_fbconfig_float, GLX_NV_swap_group,
+    GLX_EXT_framebuffer_sRGB, GLX_NV_multisample_coverage
+client glx vendor string: NVIDIA Corporation
+client glx version string: 1.4
+client glx extensions:
+    GLX_ARB_get_proc_address, GLX_ARB_multisample, GLX_EXT_visual_info,
+    GLX_EXT_visual_rating, GLX_EXT_import_context, GLX_SGI_video_sync,
+    GLX_NV_swap_group, GLX_NV_video_out, GLX_SGIX_fbconfig, GLX_SGIX_pbuffer,
+    GLX_SGI_swap_control, GLX_ARB_create_context, GLX_NV_float_buffer,
+    GLX_ARB_fbconfig_float, GLX_EXT_fbconfig_packed_float,
+    GLX_EXT_texture_from_pixmap, GLX_EXT_framebuffer_sRGB,
+    GLX_NV_present_video, GLX_NV_multisample_coverage
+GLX version: 1.3
+GLX extensions:
+    GLX_EXT_visual_info, GLX_EXT_visual_rating, GLX_SGIX_fbconfig,
+    GLX_SGIX_pbuffer, GLX_SGI_video_sync, GLX_SGI_swap_control,
+    GLX_EXT_texture_from_pixmap, GLX_ARB_create_context, GLX_ARB_multisample,
+    GLX_NV_float_buffer, GLX_ARB_fbconfig_float, GLX_NV_swap_group,
+    GLX_EXT_framebuffer_sRGB, GLX_NV_multisample_coverage,
+    GLX_ARB_get_proc_addresOpenGL vendor string: NVIDIA Corporation
+OpenGL renderer string: Quadro FX 5600/PCI/SSE2
+OpenGL version string: 3.0.0 NVIDIA 180.29
+OpenGL extensions:
+    GL_ARB_color_buffer_float, GL_ARB_depth_texture, GL_ARB_draw_buffers,
+    GL_ARB_draw_instanced, GL_ARB_fragment_program,
+    GL_ARB_fragment_program_shadow, GL_ARB_fragment_shader,
+    GL_ARB_half_float_pixel, GL_ARB_half_float_vertex,
+    GL_ARB_framebuffer_object, GL_ARB_geometry_shader4, GL_ARB_imaging,
+    GL_ARB_map_buffer_range, GL_ARB_multisample, GL_ARB_multitexture,
+    GL_ARB_occlusion_query, GL_ARB_pixel_buffer_object,
+    GL_ARB_point_parameters, GL_ARB_point_sprite, GL_ARB_shadow,
+    GL_ARB_shader_objects, GL_ARB_shading_language_100,
+    GL_ARB_texture_border_clamp, GL_ARB_texture_buffer_object,
+    GL_ARB_texture_compression, GL_ARB_texture_cube_map,
+    GL_ARB_texture_env_add, GL_ARB_texture_env_combine,
+    GL_ARB_texture_env_dot3, GL_ARB_texture_float,
+    GL_ARB_texture_mirrored_repeat, GL_ARB_texture_non_power_of_two,
+    GL_ARB_texture_rectangle, GL_ARB_texture_rg, GL_ARB_transpose_matrix,
+    GL_ARB_vertex_array_object, GL_ARB_vertex_buffer_object,
+    GL_ARB_vertex_program, GL_ARB_vertex_shader, GL_ARB_window_pos,
+    GL_ATI_draw_buffers, GL_ATI_texture_float, GL_ATI_texture_mirror_once,     GL_SUN_slice_accum
+
+   visual  x  bf lv rg d st colorbuffer ax dp st accumbuffer  ms  cav
+ id dep cl sp sz l  ci b ro  r  g  b  a bf th cl  r  g  b  a ns b eat
+
+    GL_S3_s3tc, GL_EXT_texture_env_add, GL_EXT_abgr, GL_EXT_bgra,
+    GL_EXT_blend_color, GL_EXT_blend_equation_separate,
+    GL_EXT_blend_func_separate, GL_EXT_blend_minmax, GL_EXT_blend_subtract,
+    GL_EXT_compiled_vertex_array, GL_EXT_Cg_shader, GL_EXT_bindable_uniform,
+    GL_EXT_depth_bounds_test, GL_EXT_direct_state_access,
+    GL_EXT_draw_buffers2, GL_EXT_draw_instanced, GL_EXT_draw_range_elements,
+    GL_EXT_fog_coord, GL_EXT_framebuffer_blit, GL_EXT_framebuffer_multisample,
+    GL_EXT_framebuffer_object, GL_EXTX_framebuffer_mixed_formats,
+    GL_EXT_framebuffer_sRGB, GL_EXT_geometry_shader4,
+...
+</pre>
+
+<! ------------------------------------------------------------------------->
+<hr>
+<h3>Windows</h3>
+Giving up on Linux and switching to Windows, fortunately I see that I have Admin privileges.  I tried to
+install the driver that came with the GeForce 3D Vision CD.  Didn't work.
+<p>
+The simple test (from the installation guide) that tells you whether or not stereo is working is the following.
+If you can't see the embedded/stereoscopic sub-image, you're told to stop and visit a medical doctor :)
+<p>
+<img src=nvidia_test_img.jpg>
+
+Note that, in addition to updating the driver (below), I also had to make sure the settings were enabled for
+the Viewsonic 120Hz monitor (I think I may have also had to set the 120Hz in the Ctl Panel too):
+<p>
+<img src=nvidia-settings-PC.jpg>
+
+<hr>
+<p>
+<img src=fence-bike-l-r.jpg>
+The Stereo Viewer allows reading in pairs of (left, right) images and then displays in proper stereo mode for the glasses.
+<hr>
+---- Original driver:
+<pre>
+under Vista 64-bit
+DirectX 10.0
+
+Quadro FX 5600 and Quadro NVS 290
+driver vers  178.23
+</pre>
+
+---- After updating driver:
+<pre>
+computer name:  bl-csci-gpu.ads.iu.edu
+
+domain:  ads.iu.edu
+
+Ctl Panel->Device Mgr->Display adapters->Quadro FX 5600; NVS 290
+  driver date: 4/22/09
+          version:  7.15.11.8265
+
+Ctl Panel->NVIDIA Control Panel -> System Info (link at bottom-left):
+Quadro FX 5600
+Quadro NVS 290
+
+Driver version (on both cards): 182.65
+
+Allow connections from computers running any version of Remote Desktop
+</pre>
+<! ------------------------------------------------------------------------->
+<h3>Links</h3>
+<li><a
+href=http://www.nvidia.com/object/GeForce_3D_Vision_Main.html>www.nvidia.com/object/GeForce_3D_Vision_Main.html</a>
+<li><a href=http://en.wikipedia.org/wiki/LCD_shutter_glasses>en.wikipedia.org/wiki/LCD_shutter_glasses</a>
+<li><a href=http://developer.nvidia.com/object/3d_stereo_dev.html>developer.nvidia.com/object/3d_stereo_dev.html</a>
+<li><a href=http://www.anandtech.com/video/showdoc.aspx?i=3493>AnandTech review (multi-part)</a>
+<li><a href=http://forums.nvidia.com/index.php?showforum=40>forums.nvidia.com/index.php?showforum=40</a>
+<li><a href=http://forums.nvidia.com/index.php?showtopic=5848>forums.nvidia.com/index.php?showtopic=5848</a>
+<li><a href=http://forums.nvidia.com/lofiversion/index.php?t32033.html>forums.nvidia.com/lofiversion/index.php?t32033.html</a>
+<li><a href=http://forums.nvidia.com/lofiversion/index.php?t96112.html>forums.nvidia.com/lofiversion/index.php?t96112.html</a>
+<li><a href=http://www.mtbs3d.com/cgi-bin/newsletter.cgi?news_id=44/>www.mtbs3d.com/cgi-bin/newsletter.cgi?news_id=44/</a>
+<li><a href=http://deneau.info/noah/stereo/>deneau.info/noah/stereo/</a>
+
+<p>
+Linux:
+<li><a
+href="http://www.phoronix.com/forums/showthread.php?p=59142">www.phoronix.com/forums/showthread.php?p=59142</a>
+
+<hr>
+<! ------------------------------------------------------------------------->
+<h3>PyOpenGL issues</h3>
+<pre>
+---  Nov 17 '08 ---
+Andy's problem w/ nvidia drivers on Windows...
+>>> from OpenGL.GL.ARB.shader_objects import *
+>>> bool(glShaderSourceARB)
+False
+
+but on our Macs:
+>>> from OpenGL.GL.ARB.shader_objects import *
+>>> bool(glShaderSourceARB)
+True
+
+>>> import OpenGL as OGL
+>>> dir(OGL)
+['ALLOW_NUMPY_SCALARS', 'ERROR_CHECKING', 'ERROR_LOGGING', 'ERROR_ON_COPY', 'FULL_LOGGING', 'FormatHandler',
+'GL', 'PlatformPlugin', 'UNSIGNED_BYTE_IMAGES_AS_STRING', '__builtins__', '__doc__', '__file__', '__name__',
+'__path__', '__version__', 'arrays', 'constant', 'constants', 'contextdata', 'converters', 'error',
+'extensions', 'images', 'lazywrapper', 'logs', 'platform', 'plugins', 'raw', 'version', 'wrapper']
+>>> OGL.version
+<module 'OpenGL.version' from '/Library/Python/2.5/site-packages/PyOpenGL-3.0.0b8-py2.5.egg/OpenGL/version.pyc'>
+>>> dir(OGL.version)
+['__builtins__', '__doc__', '__file__', '__name__', '__version__']
+>>> OGL.version.__version__
+'3.0.0b8'
+
+--------------------------------------------------------
+
+rwh1c-PC.py (workaround to error below):
+
+import os, sys, time
+import Image
+
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
+
+debug = True
+constantSize = True
+
+#rwh
+#glutInit (sys.argv)
+# Workaround for problems with PyOpenGL in Windows
+if bool(glShaderSource) == False:
+
+   glutInit(sys.argv)
+
+   from OpenGL.GL.ARB.shader_objects import *
+   from OpenGL.GL.ARB.vertex_shader import *
+   from OpenGL.GL.ARB.fragment_shader import *
+
+   glutInit(sys.argv)
+   glutCreateWindow('barf')
+   import OpenGL.GL.ARB.shader_objects
+
+   glShaderSource = glShaderSourceARB
+
+GL_FRAGMENT_SHADER = 0x8B30
+GL_VERTEX_SHADER = 0x8B31
+GL_COMPILE_STATUS = 0x8B81
+GL_LINK_STATUS = 0x8B82
+GL_INFO_LOG_LENGTH = 0x8B84
+
+
+glutWindowHandle = glutCreateWindow('tex1b')
+
+import OpenGL.GL.EXT.framebuffer_object
+print bool(OpenGL.GL.EXT.framebuffer_object.glGenFramebuffersEXT )
+from OpenGL.GL.EXT.framebuffer_object import *
+...
+- Hide quoted text -
+
+
+On May 11, 2009, at 10:48 AM, Randy Heiland wrote:
+
+    True
+    flat radiance (7240, 5433)
+    rendered radiance (965, 724)
+    (965, 724)
+    entering create Texture
+    entering setup Texture
+    entering setup Texture
+    entering setup Texture
+    Traceback (most recent call last):
+     File "C:\Users\heiland\workspace\Adobe-trunk\src\GPU\gtex1g.py", line 319, in <module>
+       main(sys.argv[1:])
+     File "C:\Users\heiland\workspace\Adobe-trunk\src\GPU\gtex1g.py", line 310, in main
+       program = initGLSL()
+     File "C:\Users\heiland\workspace\Adobe-trunk\src\GPU\gtex1g.py", line 102, in initGLSL
+       glShaderSource(fragmentShader, fragmentSource)
+     File "C:\Python26\lib\site-packages\OpenGL\wrapper.py", line 1284, in __call__
+       return self.finalise()( *args, **named )
+     File "C:\Python26\lib\site-packages\OpenGL\wrapper.py", line 481, in wrapperCall
+       result = self.wrappedOperation( *cArguments )
+     File "C:\Python26\lib\site-packages\OpenGL\platform\baseplatform.py", line 299, in __call__
+       self.__name__, self.__name__,
+    OpenGL.error.NullFunctionError: Attempt to call an undefined function glShaderSource, check for
+bool(glShaderSource) before calling
+
+</pre>

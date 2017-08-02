@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+   <TITLE>Authentication graphs and Python
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+<!BODY BGCOLOR="#000000" text="#FFFFFF">
+<h1>Authentication graphs and Python</h1></CENTER>
+<p>
+At the 2015 SIAM Workshop on Network Science, I presented a poster on the analysis of a rather large authentication dataset. 
+The public dataset was made available from Los Alamos National Laboratory (LANL) and represented over 700 million anonymized authentication events over a nine-month period.[1][2]
+<p>
+Our poster submission demonstrated the use of Python to analyze and visualize the data. 
+Since our scripts relied on various Python modules not found in the standard library, we recommended using the Anaconda 
+Python distribution (3.x) which contained those modules (and a lot more). One key module that we used, to perform some of 
+the network analysis, was NetworkX. Another module, to plot results, was matplotlib. We also demonstrated how one could use the IPython Notebook in a browser.
+<p>
+An authentication event was represented as a simple entry: "time,user,computer", where "time" was in seconds offset from the beginning, 
+and "user, computer" were anonymized entries with unique numeric identifiers (e.g. U214,C148). We preprocessed the dataset to 
+generate two files: one containing just the time values, another representing the user-computer information as a global, static graph. 
+This type of graph, with two disjoint sets of nodes (users and computers), is known as a bipartite graph. Since the second file, containing the graph, took about 8 hours to generate, we made it publicly available in case others wanted to experiment. (Generating the first file, with only time values, just took a few minutes using one of our scripts.)
+
+Our first step was to perform a sanity check on the time values for the authentication events. Fig. 1 is a histogram plot of all events over the nine-month period. Using the matplotlib module, we can interactively select a region to zoom into and see general daily and weekly usage patterns. The script to generate this histogram is parameterized so that a user can see more detailed (or coarse) plots.
+<p>
+<img src=auth-histos2.png>
+<br>
+Fig. 1: A histogram, over time, of all authentication events (top); zooming into a 2 week window (bottom)
+<p>
+Next, we use the NetworkX module to plot the graph and zoom in on particular nodes that seem to be hubs in the network. In the following two figures, the User nodes are colored red and Computer nodes are colored white. Fig. 2 shows C148 as a hub with numerous User nodes connected to it. Fig. 3, in contrast, shows U12 connecting to numerous computers. Obviously, if we had more information about the authentication events, we might be able to determine that certain User hubs were, for example, just the result of system administrators performing maintenance. On the other hand, it may be an indication of questionable user behavior.
+<p>
+<img width=300 height=300 src=hub_c148.png>
+<img width=300 height=300 src=hub_u12.png>
+<br>
+Fig. 2: Node C148 as a hub.
+and Fig. 3: Node U12 as a hub.
+<p>
+In addition to visually inspecting the graph, we can programmatically analyze it to discover certain features, e.g., hubs or connected components. These techniques can be found in our poster and scripts.
+<p>
+<img src=Aric_Randy_crop.png>
+<br>
+Discussing results with LANL's Hagberg (left)
+<p>
+According to LANL's Aric Hagberg, there will likely be another dataset coming sometime this year that will have more metadata.
+<p>
+Our abstract, poster, Python scripts, and additional documentation can be found at 
+<a href="https://github.com/rheiland/authpy">https://github.com/rheiland/authpy</a>
+<p>
+<hr>
+[1] A. Hagberg, A. Kent, N. Lemons, and J. Neil. Credential hopping in authentication graphs. In 2014 International Conference on Signal-Image Technology Internet-Based Systems (SITIS). IEEE Computer Society, Nov. 2014.
+<br>
+[2] A. D. Kent, L. M. Liebrock, and J. C. Neil. Authentication graphs: Analyzing user behavior within an enterprise network. Computers & Security, 48:150-166, 2015.
+
+<!-------------------- PAGE FOOTER -------------------->
+<p>
+<hr>
+<i>Randy Heiland </i>
+
+</body>
+</html>

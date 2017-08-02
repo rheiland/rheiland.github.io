@@ -1,0 +1,80 @@
+<html><head>
+<body>
+
+<h1>Indy Robot Racing</h1>
+In fall 2004, the SDA Lab got involved in the 
+<a href="http://www.indyrobotracing.com/">Indy Robot Racing</a>
+project to enter
+a vehicle in the 2005 
+DARPA Grand Challenge race.  In a nutshell, the Grand Challenge is about
+having an unmanned, autonomous vehicle (not using remote control) drive 
+itself over 150-200 miles of desert-like terrain.  The project was appealing
+to us because of its requirements in image processing (for computer vision), 
+path finding, obstacle avoidance algorithms, and geographic information 
+systems - including retrieving data from remote databases.  It seemed like
+a terrific project to teach school children and the lay public about <i>visualization</i>,
+<i>information technology</i>, and simple <i>robotics</i>.
+
+<p>
+</p><h3>The 2004 Grand Challenge</h3>
+The 2004 Grand Challenge race went across the Mojave Desert from 
+Barstow, CA to Primm, NV (right across the border on I-15).
+<p>
+<img src="irrt_intro_files/mapquestBarstow.jpg"><br>
+</p><p>
+<!-- --------------------------------------------------------------------------->
+</p><h3>Data for the course</h3>
+The course was defined in a data file containing a list of:
+<li>GPS "waypoints" in latitude, longitude (GPS=Global Positioning System)
+</li><li>maximum distance the vehicle is allowed to stray from a waypoint 
+</li><li>maximum speed of the vehicle at a waypoint
+<p>
+<a href="http://sda.iu.edu/irrt/wps.jpg"><img src="irrt_intro_files/wps.jpg" height="200" width="200"></a>
+<a href="http://sda.iu.edu/irrt/path2004.jpg"><img src="irrt_intro_files/path2004.jpg" height="200" width="200"></a>
+</p><p>
+In these 2-D plots (click for larger versions), we simply plot the waypoints 
+longitude(X) and latitude(Y) as small "x"s (left) and connected as a polygonal
+line (right).  The start of the race is in the lower-left and the end at the upper-right.
+Note that when plotting the entire course, the waypoints are
+too dense to fully appreciate their separation.  We will remedy this by zooming
+into particular regions, then by doing a movie of a simulated drive along the path.
+But first, we want to create a 3-D visualization of the path, using glyphs to represent both the maximum
+speeds and the boundary limits.
+<!-- -------------------------------------------------------------------->
+</p><hr>
+<p>
+First we plot some simple (orange) glyphs as width lines perpendicular to the path that show the allowed boundary
+of a vehicle.  (Click on image for enlarged version).
+</p><p>
+<a href="http://sda.iu.edu/irrt/widths1-500.jpg"><img src="irrt_intro_files/widths1-500.jpg" height="200" width="200"></a>
+<a href="http://sda.iu.edu/irrt/widthsStart.jpg"><img src="irrt_intro_files/widthsStart.jpg" height="200" width="200"></a>
+<a href="http://sda.iu.edu/irrt/widthsSwitchback.jpg"><img src="irrt_intro_files/widthsSwitchback.jpg" height="100" width="300"></a>
+<a href="http://sda.iu.edu/irrt/widthsTwists.jpg"><img src="irrt_intro_files/widthsTwists.jpg" height="200" width="200"></a>
+<!-- -------------------------------------------------------------------->
+</p><hr>
+<p>
+Next, we add some (cyan) cylindrical glyphs to represent the maximum speeds allowed at each waypoint.
+Note that the glyphs are scaled (in both height and radius) according to max speed.  (The images are
+rendered in a perspective view, which means that in the top-down view you're seeing part of the sides
+of the cylinders).
+</p><p>
+<a href="http://sda.iu.edu/irrt/speedStart.jpg"><img src="irrt_intro_files/speedStart.jpg" height="200" width="200"></a>
+<a href="http://sda.iu.edu/irrt/speedStartTilt.jpg"><img src="irrt_intro_files/speedStartTilt.jpg" height="100" width="200"></a>
+<a href="http://sda.iu.edu/irrt/speedSwitchback.jpg"><img src="irrt_intro_files/speedSwitchback.jpg" height="100" width="200"></a>
+<a href="http://sda.iu.edu/irrt/speedCurves.jpg"><img src="irrt_intro_files/speedCurves.jpg" height="100" width="200"></a>
+<a href="http://sda.iu.edu/irrt/speedEnd.jpg"><img src="irrt_intro_files/speedEnd.jpg" height="200" width="200"></a>
+<!-- -------------------------------------------------------------------->
+</p><hr>
+<p>
+We also experimented with fitting splines through the waypoints, but this really gets to be a bigger
+question of determining the proper points to interpolate, based upon the waypoints and the allowed widths. 
+I still like the idea of using splines to help determine speed/acceleration.
+<p>
+Finally, we overlay satellite images from <!--- a href="http://terraserver.microsoft.com/"-->TerraServer.
+</p><p>
+<a href="http://sda.iu.edu/irrt/startTS.jpg"><img src="irrt_intro_files/startTS.jpg" height="200" width="200"></a>
+<a href="http://sda.iu.edu/irrt/widthsEndInterstate.jpg"><img src="irrt_intro_files/widthsEndInterstate.jpg" height="200" width="200"></a>
+<a href="http://sda.iu.edu/irrt/speedEndInterstate.jpg"><img src="irrt_intro_files/speedEndInterstate.jpg" height="200" width="200"></a>
+<img src="irrt_intro_files/IRRTInterstate.jpg" height="200" width="200">
+<p>
+</body></html>

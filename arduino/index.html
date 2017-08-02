@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+   <TITLE>  Arduino (Heiland)
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<h1>Arduino</h1>
+<a href="https://www.arduino.cc">Arduino</a> is an incredibly popular 
+DIY-type company that
+promotes hands-on learning for electronics and computer programming using
+low-cost hardware (microcontrollers) and 
+<a href="https://www.arduino.cc/en/main/software">free software development kits</a>. You can buy one of their boards on <a href="http://www.amazon.com/s/ref=nb_sb_ss_c_0_13?url=search-alias%3Delectronics&field-keywords=arduino+board&sprefix=arduino+board%2Caps%2C246&rh=n%3A172282%2Ck%3Aarduino+board">Amazon</a>, 
+for example.
+<p>
+Here are some pictures of a project that my son did for his high school
+electronics class. It is an Ardunio Duemilanove board controlling an
+LED cube. 
+<p>
+<img src=arduino_board.png>
+<img src=IMG_4254.png>
+<p>
+<video width="600" height="900" controls="controls">
+<source src="LED_cube.mp4" type="video/mp4">
+</video>
+
+<p>
+And here's the code for a particular sequence of LED flashes:
+<code>
+<pre>
+void setup()
+{
+  pinMode(2,OUTPUT);
+  pinMode(3,OUTPUT);
+  pinMode(4,OUTPUT);
+  pinMode(5,OUTPUT);
+  pinMode(6,OUTPUT);
+  pinMode(7,OUTPUT);
+  pinMode(8,OUTPUT);
+  pinMode(9,OUTPUT);
+  pinMode(10,OUTPUT);
+  pinMode(11,OUTPUT);
+  pinMode(12,OUTPUT);
+  pinMode(13,OUTPUT);
+}
+
+void loop()
+{ //set pin 11-13 high so as to light all the layers
+  digitalWrite(11,HIGH);
+  digitalWrite(12,HIGH);
+  digitalWrite(13,HIGH);
+
+  digitalWrite(6,HIGH);//set the middle column ON throughout
+
+ //light the other columns on and off in a sequence
+ for(int i=2; i<11;i++)
+  {
+    if (i==6)
+    {
+    }
+    else
+    {
+      digitalWrite(i,HIGH);
+      delay(100);
+      digitalWrite(i,LOW);
+    }
+  }
+}
+</pre>
+</code>
+<hr>
+If you're wanting to experiment with microcontrollers, I
+encourage you to purchase an Arduino kit and start playing!
+

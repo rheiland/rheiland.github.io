@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+   <TITLE>robot data</TITLE>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<h2>Points from robot data</h2>
+<pre>
+The original (ascii) data was a list of 3D points:
+
+% head releasingpoint-thetaDelta=1-delta=0.01-6-9.txt
+0.21	0	0.971
+0.21	0	1.011
+0.22	0	0.061
+0.22	0	1.001
+0.23	0	0.051
+0.23	0	0.701
+0.23	0	0.721
+0.23	0	0.751
+0.23	0	0.771
+0.23	0	0.851
+
+% tail releasingpoint-thetaDelta=1-delta=0.01-6-9.txt
+0.729845	-0.0150587	0.581
+0.729845	-0.0150587	0.591
+0.729845	-0.0150587	0.631
+0.739843	-0.0152649	0.391
+0.739843	-0.0152649	0.451
+0.739843	-0.0152649	0.511
+0.739843	-0.0152649	0.681
+0.739843	-0.0152649	0.701
+0.739843	-0.0152649	0.721
+0.739843	-0.0152649	0.731
+</pre>
+<hr>
+<h2>Open source s/w</h2>
+I wrote a <a href=http://www.python.org>Python</a>/<a href=http://www.vtk.org>VTK</a> script to read in this file and 
+write a binary (or ascii) VTK-formatted file of these points and vertices.
+We can then use the <a href=http://www.paraview.org>ParaView</a> app to display and explore this data.
+
+<hr>
+<p>
+<img src=pv-verts.png>
+<p>
+Just displaying the points.
+<hr>
+<img src=pv-clip1.png>
+<p>
+Introducing a clipping plane.
+<hr>
+<img src=pv-sphere.png>
+<p>
+<img src=pv-sphere2.png>
+<p>
+Overlaying a semi-transparent sphere to (sort of) show "voids".
+<p>
+<hr>
+<! ---------------------------------------------------------------->
+<hr>
+<i>Randy Heiland</i>
+</BODY>
+</HTML>

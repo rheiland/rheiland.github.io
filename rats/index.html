@@ -1,0 +1,41 @@
+<head>
+<title>RatBot unit test</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</head>
+
+I created the following unit test to see if I could detect a "Block" 2 spaces ahead.
+I created one new file, RatUTest.java, and edited 3 other files, provided here:
+<li>src/main/<a href="RatUTest.java">RatUTest.java</a>
+<li>src/main/<a href="RatBotsRunner.java">RatBotsRunner.java</a>  - test 'main' program
+
+<p>
+I also edited the following classes so I could fix the initial conditions:
+<li>src/world/<a href="RatBotWorld.java">RatBotWorld.java</a>   - edited initializeGridForRound()
+<li>src/gui/<a href="RatBotsArena.java">RatBotsArena.java</a>   - edited initializeArena()
+
+<p>
+Alternatively, here's the entire code (from the /src folder on down):
+<li><a href="ratUnitTest.zip">ratUnitTest.zip</a> 
+
+<hr>
+The following shows the grid (with my initial conditions), the rat's path, and the resulting output:
+<p>
+<img src=RatUTest.jpg>
+<pre>
+   loc 1 ahead= (9, 12)
+----     a1= null
+---------   loc 2 ahead= (10, 12)
+---------     a2= null
+   loc 1 ahead= (10, 12)
+----     a1= null
+---------   loc 2 ahead= (11, 12)
+---------     a2= null
+   loc 1 ahead= (11, 12)
+----     a1= null
+---------   loc 2 ahead= (12, 12)  
+---------     a2= null   <---------------NOTE: can't detect 2 ahead
+   loc 1 ahead= (12, 12)
+----     a1= Block   <---------------NOTE: can detect 1 ahead
+---------   loc 2 ahead= (13, 12)
+---------     a2= null
+</pre>

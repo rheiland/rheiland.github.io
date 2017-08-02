@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<TITLE> HDF 3D Grid Viewer</TITLE>
+<META NAME="KEYWORDS" CONTENT="HDF, VTK, scientific visualization">
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>HDF 3D Grid Viewer</h1></CENTER>
+This tool uses a Java Swing GUI together with Java-wrapped VTK libraries 
+to provide visualization of (local) HDF file dataset(s) containing 
+3D structured grids with scalar data.<br>
+(Here's a <a href="CAPS.html">snapshot</a> of the tool)
+
+<! ---------------------------------------------------------------->
+<h2>Setup</h2>
+<p>
+Currently, only the SGI n32 (mips-4) Java-wrapped VTK libraries are provided.
+Check to see that you have a Java VM (and that it's version ?? or later).
+<pre>
+% java -version
+java version "3.1.1 (Sun 1.1.6)"
+</pre>
+
+<p>
+(??)Verify your JAVA_HOME env var is set -- or set it, e.g.:
+<pre>
+% setenv JAVA_HOME /usr/java
+</pre>
+
+<p>
+You will need a program called 'hdf-xml' (that parses the HDF file).
+Either copy it from the following directory into a directory found in your
+PATH, or append to your PATH this directory where it's located:
+<pre>
+/afs/ncsa/user/heiland/HDF
+</pre>
+
+<p>
+Point your LD_LIBRARYN32_PATH (and/or LD_LIBRARY_PATH?) to the shared libraries:
+<pre>
+% setenv LD_LIBRARYN32_PATH /afs/ncsa/user/heiland/Java/vtk2.3:/afs/ncsa/packages/vtk/vtk2.3/IRIXn32_6.4/lib
+% setenv LD_LIBRARY_PATH /afs/ncsa/user/heiland/Java/vtk2.3:/afs/ncsa/packages/vtk/vtk2.3/IRIXn32_6.4/lib
+
+(maybe also)
+% setenv SGI_ABI -n32
+</pre>
+
+<p>
+Point your Java CLASSPATH to the tool's classes, the VTK classes, the 
+Swing jar, etc.
+<pre>
+% setenv CLASSPATH /usr/java/lib/classes.zip:/afs/ncsa/user/heiland/Java/HDFVis:/afs/ncsa/user/heiland/Java/classes:/afs/ncsa/user/heiland/Java/swing-1.1.1beta2/swingall.jar
+</pre>
+
+<! ---------------------------------------------------------------->
+<h2>Usage</h2>
+<p>
+To run (this can also be run remotely and displayed on your SGI wkst):
+<pre>
+% java GV mydata.hdf  (where "mydata.hdf" is a valid HDF4 data file).
+
+e.g.,
+% java GV /afs/ncsa/user/heiland/HDF/storm.hdf
+</pre>
+
+<p>
+If your setup was successful, the tool will popup a window with a GUI on
+the left side and a 3D viewing area on the right.  Grab a corner of the
+window and increase its size to have the viewing area fill the 
+righthand side.  If the first dataset (SDS) of the specified HDF file is a
+3D structured grid then you'll see a bounding box of the domain.
+<p>
+Select the <b>Browse</b> button and find/select the HDF file that you
+specified on startup.  This will parse the HDF file and fill the tree
+widget.  (Depending on the size of the HDF file and whether or not ranges
+are specified, this may take a few seconds to complete).  
+Once the file is finished being parsed, you'll see a "root" folder with a
+"handle" next to it.  Clicking on a "handle" will open/close that folder (as
+will double-clicking on the folder itself).
+To select a (3D, scalar) dataset for viewing, simply click on its name 
+in the tree.
+Opening the dataset folder will reveal the Type, Dimension, and Range of
+the data.  Selecting a dataset will also cause that dataset's range 
+to be applied to the Isosurface widget and the Colormap.
+
+<p>
+The remaining widgets are:
+<ul>
+<li>XYZ Scale  - to scale the grid (floating point values)
+<li>XYZ Stride - to subsample the grid (integer values)
+<li>Isosurface - only one is currently allowed
+<li>Slice - orthogonal slicing planes (use the combo box next to the Slice 
+slider to select which plane to move)
+<li>Colormap - the data value range that get mapped into the colormap
+</ul>
+
+<p>
+For interactive viewing, with the mouse cursor in the viewing area, holding
+down the:<br>
+<li> left button - rotation
+<li> middle button - translation
+<li> right button - (vertical motion) zooming
+<li> "w"/"s" - wireframe/solid
+
+
+<! ---------------------------------------------------------------->
+<p>
+<hr>
+</BODY>
+</HTML>

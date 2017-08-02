@@ -1,0 +1,128 @@
+<HTML>
+<HEAD>
+   <TITLE>  Heiland: VTK streamlines
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+<!BODY BGCOLOR="#000000" text="#FFFFFF">
+<h1>VTK streamlines test</h1></CENTER>
+This shows the funky problems associated with a concatenated SG dataset
+and trying to advect streamlines thru them...
+<p>
+<img src="glyphsZoomSlines3.jpg">
+<img src="glyphsZoomSlines2.jpg">
+<p>
+The glyphs in the right image are on a subgrid, subsampled 
+by 2 in the vertical.
+The seeds for the streamlines are a single "line" (colored in yellow) 
+sampled from the original SGrid.  (Integration is done both forward
+and backward).
+In the left image, the seed line is to the left of the discontinuity; in
+the right image, the seed line is to the right.
+<p>
+Question: why does a streamline seem to pass over the discontinuity
+only if going from a less (vertex) dense region to a more or equally
+dense region? 
+
+<p>
+<img src="Kgrid.gif">
+<p>
+Here's the (gzipped ASCII) StructGrid data file, <a href="Kgrid.vtk.gz">Kgrid.vtk.gz</a>.<br>
+Here's a Python script <a href="Kgrid.py">Kgrid.py</a> to read the data
+and display the above image.
+<p>
+<!----------------------------------------------------------------->
+<hr>
+The problem, explained to me by Berk Geveci at Kitware, is that 
+there is a degenerate
+cell (zero width) at the discontinuity.  This causes the streamline to 
+terminate.
+<p>
+The following simple example illustrates this 
+(<a href="simpler.py">simpler.py</a>, <a href="simpler.vtk">simpler.vtk</a>).
+In the second image, there are 2 pairs of vertices that coincide, causing the
+streamline alg to terminate.  In the first image, these points are separated
+slightly, and the streamline proceeds normally. 
+
+<p>
+<img src="simpler1.gif">
+<img src="simpler2.gif">
+
+<!----------------------------------------------------------------->
+<p>
+<hr>
+<p>
+Continuing the saga, I've offset the coincident vertices of the grid, but
+still have problems with the streamlines terminating early:
+<p>
+Here's the gzipped data file, <a href="smallerGrid.vtk.gz">smallerGrid.vtk.gz</a>.<br>
+Here's a Python script, <a href="stream1.py">stream1.py</a>, which
+extracts/displays a slice of the struct grid and generates a single streamline.
+<p>
+<img src="smaller0.gif">
+<img src="smaller1.gif">
+<img src="smaller2.gif">
+<p>
+The streamline terminates early with a traceback:
+<p>
+<b>vtkStreamer.cxx: </b>
+<pre>
+    // Calculate the next step using the integrator provided
+    if (integrator->ComputeNextStep(pt1.x, pt1.v, xNext, 0, step)
+        == -1)
+      {
+      break;
+      }
+</pre>
+
+<p>
+<b>vtkRungeKutta2.cxx:</b>
+<pre>
+  // Obtain the derivatives at x_i + dt/2 * dx_i
+  if (!this->FunctionSet->FunctionValues(this->Vals, this->Derivs))
+    {
+    return -1;      // <-----------------
+    }
+</pre>
+
+
+<p>
+<b>vtkInterpolatedVelocityField.cxx:</b>
+<pre>
+      this->LastCellId =
+        this->DataSet->FindCell(x, this->Cell, this->GenCell, -1, 0,
+                    subId, this->LastPCoords, this->Weights);
+      if (this->LastCellId != - 1)
+        {
+        this->DataSet->GetCell(this->LastCellId, this->GenCell);
+        }
+      else
+        {
+        return 0;    // <---------------
+        }
+</pre>
+
+
+<p>
+<b>vtkPointSet.cxx:</b>
+<pre>
+rwh> (vtkPointSet::FindCell) #3
+rwh> (vtkPointSet::FindCell) -----
+rwh> (vtkPointSet::FindCell) #4
+
+  //sometimes the initial cell is a really bad guess so we'll
+  //just ignore it and start from scratch as a last resort
+  if ( initialCellProvided )
+    {
+printf("rwh> (vtkPointSet::FindCell) #3\n");
+    return this->FindCell(x, NULL, gencell, cellId, tol2,
+                          subId, pcoords, weights);
+    }
+  else
+    {
+printf("rwh> (vtkPointSet::FindCell) #4\n");
+    return -1;
+    }
+</pre>

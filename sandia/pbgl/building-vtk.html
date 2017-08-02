@@ -1,0 +1,54 @@
+
+<html>
+<title>Heiland: building VTK</title>
+<h3>Building VTK</h3>
+<pre>
+export BOOST_ROOT=/full-path-to/boost_1_40_0_build
+
+cd /path-to-vtk-build/
+cmake /Users/heiland/Documents/workspace/VTK/
+or, if you prefer ccmake:
+ccmake /Users/heiland/Documents/workspace/VTK/
+
+turn on shared libs, examples, BOOST, PARALLEL, VTK_USE_64BIT_IDS
+CARBON ON
+COCOA OFF 
+configure... (e.g. 'cmake .')
+turn on  USE_MPI
+configure... (e.g. 'cmake .')
+turn on VTK_USE_PARALLEL_BGL
+configure... (e.g. 'cmake .')
+
+optionally, build with:
+VTK_USE_MYSQL:BOOL=ON
+
+I also do:
+CMAKE_BUILD_TYPE:STRING=Debug
+</pre>
+<h3>Env vars</h3>
+<pre>
+DYLD_LIBRARY_PATH=.:/Users/heiland/dev/boost_1_40_0_build/lib:/Users/heiland/dev/Lumsdaine/Sandia/build-8-27-09/bin:(other stuff)
+
+BOOST_ROOT=/Users/heiland/dev/boost_1_40_0_build
+</pre>
+
+<h3>VTK Parallel tests</h3>
+<pre>
+.../VTK/Parallel/Testing/Cxx$ ls
+CMakeLists.txt                         PrmMagnify.cxx                         TestPRMATGraphSource.cxx
+CVS/                                   SocketClient.cxx			      TestPRandomGraphSource.cxx
+DistributedData.cxx                    SocketServer.cxx                       TestPShadowMapPass.cxx
+DistributedDataRenderPass.cxx          TestDistributedDataCompositeZPass.cxx  TestPStream.cxx
+DummyController.cxx                    TestDistributedDataShadowMapPass.cxx   TestProcess.cxx
+ExerciseMultiProcessController.cxx     TestExodusTime.cxx*                    TestSockets.py
+ExerciseMultiProcessController.h       TestMultiBlockExodusWrite.cxx          TestTemporalCacheSimple.cxx
+GenericCommunicator.cxx                TestPBGLCollapseGraph.cxx              TestTemporalCacheTemporal.cxx
+MPIController.cxx                      TestPBGLCollectGraph.cxx               TestTemporalFractal.cxx*
+PBGLNamedVertexGraph.cxx               TestPBGLEdgesPedigrees.cxx             ThreadedCommunicator.cxx
+PBGLRandomGraph.cxx                    TestPBGLGraphSQLReader.cxx             TransmitImageData.cxx
+PBGLSqlLiteExample.cxx                 TestPBGLGraphSQLReaderFile.cxx         TransmitImageDataRenderPass.cxx
+PSLACReaderLinear.cxx                  TestPBGLPedigrees.cxx                  TransmitRectilinearGrid.cxx
+PSLACReaderQuadratic.cxx               TestPBGLPipeline.cxx                   TransmitStructuredGrid.cxx
+ParallelIso.cxx                        TestPCompositeZPass.cxx                enron.dbs
+</pre>
+<html>

@@ -1,0 +1,341 @@
+
+<head>
+<title>
+Python-vtkSQL
+</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</head>
+
+From the MySQL client:
+<pre>
+Server version: 5.0.51a MySQL Community Server (GPL)
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| enron              |
+| mysql              |
+| test               |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql> use enron
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select database();
++------------+
+| database() |
++------------+
+| enron      |
++------------+
+1 row in set (0.00 sec)
+
+mysql> show tables;
++----------------------+
+| Tables_in_enron      |
++----------------------+
+| email_address_arcs   |
+| email_arcs_lastnames |
+| email_arcs_temp      |
+| email_arcs_temp2     |
+| employeelist         |
+| message              |
+| recipientinfo        |
+| referenceinfo        |
++----------------------+
+8 rows in set (0.01 sec)
+
+mysql> select * from employeelist;
++-----+-----------+---------------+-------------------------------+
+| eid | firstName | lastName      | Email_id                      |
++-----+-----------+---------------+-------------------------------+
+|  18 | Lynn      | Blair         | lynn.blair@enron.com          |
+|  17 | Mike      | Grigsby       | mike.grigsby@enron.com        |
+|  16 | Michelle  | Cash          | michelle.cash@enron.com       |
+...
+| 127 | Kenneth   | Lay           | kenneth.lay@enron.com         |
+| 129 | Jeffrey   | Skilling      | jeff.skilling@enron.com       |
+...
+
+mysql> select * from email_arcs_lastnames limit 20;
++---------+-------------+--------+
+| sendID  | recvID      | weight |
++---------+-------------+--------+
+| Blair   | Rapp        |      4 | 
+| Blair   | McCarty     |      8 | 
+| Blair   | Schoolcraft |     59 | 
+| Blair   | Fossum      |     13 | 
+| Blair   | Watson      |     57 | 
+| Blair   | Donoho      |     19 | 
+| Blair   | Blair       |    354 | 
+| Blair   | McConnell   |     20 | 
+| Blair   | Lokay       |     24 | 
+| Blair   | Barbo       |     17 | 
+| Blair   | Hayslett    |      4 | 
+| Blair   | Corman      |    190 | 
+| Blair   | Horton      |      3 | 
+| Blair   | Harris      |     20 | 
+| Blair   | Scott       |      2 | 
+| Blair   | Lokey       |      5 | 
+| Blair   | Geaccone    |      2 | 
+| Grigsby | Martin      |      7 | 
+| Grigsby | Tycholiz    |    237 | 
+| Grigsby | Dorland     |      8 | 
++---------+-------------+--------+
+20 rows in set (0.00 sec)
+
+
+</pre>
+
+<!-------------------------------------------->
+<hr>
+<li><a href=sql2.py>sql2.py</a>
+<pre>
+-->
+et # rows=  2235
+et # cols=  3
+vt # rows=  151
+vt # cols=  3
+ --- variant array info ---
+name =  None
+num comp =  1
+num tup =  3
+num val =  3
+</pre>
+<p>
+Zooming in/out will auto-expand/reduce # of vertex labels.
+
+<hr>
+<p>
+Usage: sql2.py layoutIdx where layout=['pass through', 'circular', 'simple 2d', 'force directed', 'fast 2d', 'clustering
+2d', 'random', 'community 2d']: 
+<p>
+Skipping over 'pass through', we show the other layouts in order:<p>
+<img src=enron-circular.jpg>
+<img src=enron-simple2d.jpg>
+<img src=enron-forcedirected.jpg>
+<img src=enron-fast2d.jpg>
+<img src=enron-clustering2d.jpg>
+<img src=enron-random.jpg>
+<p>
+And for 'community 2d', we get:
+<pre>
+vtkCommunity2DLayoutStrategy did not find a "community" array.
+so the layout will not pull communities together like it should
+</pre>
+<hr>
+If we compute the vertex degree, we can then label and color vertices by their degree:
+<p>
+<img src=enron-vertexDegree.jpg>
+<pre>
+degree=vtkVertexDegree()
+degree.SetInputConnection(source.GetOutputPort())
+degree.Update()
+view.SetVertexLabelArrayName("VertexDegree")
+view.SetVertexColorArrayName("VertexDegree")
+</pre>
+<img src=enron-vertexDegreeName.jpg>
+<img src=enron-labelEID.jpg>
+<p>
+Displaying either the lastName or EID label and zooming in on the "winner":
+<pre>
+view.SetVertexLabelArrayName("lastName")
+or:
+view.SetVertexLabelArrayName("eid")
+</pre>
+
+<hr>
+<p>
+<img src=graph-layout-fast2.jpg>
+<br>
+<pre>
+layout=  vtkFast2DLayoutStrategy (0x6abaa0)
+  Debug: Off
+  Modified Time: 1385
+  Reference Count: 3
+  Registered Events: 
+    Registered Observers:
+      vtkObserver (0x6a0da0)
+        Event: 6
+        EventName: ProgressEvent
+        Command: 0x6a2170
+        Priority: 0
+        Tag: 1
+  Graph: (none)
+  EdgeWeightField: weight
+  RandomSeed: 123
+  MaxNumberOfIterations: 200
+  IterationsPerLayout: 200
+  InitialTemperature: 5
+  CoolDownRate: 50
+  RestDistance: 0
+  EdgeWeightField: weight
+</pre>
+<!------------------------------------------------------>
+<hr>
+<img src=graph-layout-cluster1.jpg>
+<img src=graph-layout-cluster2.jpg>
+<br>
+<pre>
+layout=  vtkClustering2DLayoutStrategy (0x6a2390)
+  Debug: Off
+  Modified Time: 720
+  Reference Count: 3
+  Registered Events: 
+    Registered Observers:
+      vtkObserver (0x6e3420)
+        Event: 6
+        EventName: ProgressEvent
+        Command: 0x6a2170
+        Priority: 0
+        Tag: 1
+  Graph: (none)
+  EdgeWeightField: weight
+  RandomSeed: 123
+  MaxNumberOfIterations: 200
+  IterationsPerLayout: 200
+  InitialTemperature: 5
+  CoolDownRate: 50
+  RestDistance: 0
+  CuttingThreshold: 0
+  EdgeWeightField: weight
+</pre>
+<!------------------------------------------------------>
+<hr>
+<!-- img src=graph-circular.jpg -->
+<!----------------------------------------------->
+<hr>
+<h3>Q: How might we take advantage of mpi4py?</h3>
+<pre>
+mpiexec -n 5 python helloworld.py
+Hello, World!! I am process 0 of 5 on iub-vpn-192-109.noc.indiana.edu.
+Hello, World!! I am process 1 of 5 on iub-vpn-192-109.noc.indiana.edu.
+Hello, World!! I am process 2 of 5 on iub-vpn-192-109.noc.indiana.edu.
+Hello, World!! I am process 3 of 5 on iub-vpn-192-109.noc.indiana.edu.
+Hello, World!! I am process 4 of 5 on iub-vpn-192-109.noc.indiana.edu.
+
+where helloworld.py is:
+#!/bin/env python
+"""
+Parallel Hello World !!!
+"""
+
+from mpi4py import MPI
+import sys
+
+hwmess = "Hello, World!! I am process %d of %d on %s.\n"
+myrank = MPI.COMM_WORLD.Get_rank()
+nprocs = MPI.COMM_WORLD.Get_size()
+procnm = MPI.Get_processor_name()
+sys.stdout.write(hwmess % (myrank, nprocs, procnm))
+</pre>
+<!------------------------------------------------------>
+<hr>
+<h3>PBGLRandomGraph in Python?</h3>
+<pre>
+import mpi4py.MPI as mpi
+from vtk import *
+from random import randint
+numProcs = mpi.COMM_WORLD.size
+myRank = mpi.COMM_WORLD.rank
+V = 10
+E = 15
+if myRank == 0:
+  print '[node 0]  numProcs = ',numProcs
+  print "[node 0]  Build distributed directed graph (V=",V*numProcs, "  E=",E*numProcs
+else:
+  print '[node ',myRank,']'
+helper=vtkPBGLDistributedGraphHelper()
+graph=vtkMutableUndirectedGraph()
+#dir(vtkDataObject)
+#print 'numProcs=',vtkDataObject.DATA_NUMBER_OF_PIECES()
+#print 'myRank=',vtkDataObject.DATA_PIECE_NUMBER()
+
+vertPropArray=vtkVariantArray()
+vertPropArray.SetNumberOfValues(1)
+labelArray=vtkStringArray()
+labelArray.SetName("label")
+dsa=vtkDataSetAttributes()
+dsa = graph.GetVertexData()
+dsa.AddArray(labelArray)
+
+for v in range(V):  
+  vLabel = str(myRank*10 + v)
+  labelArray.InsertValue(v,vLabel)
+  print '[node %d]  v=%d, vLabel=%s' % (myRank,v,vLabel)
+  #vertPropArray.SetValue(0,vLabel)  # SetValue not wrapped
+  vertPropArray.InsertNextTuple(0,labelArray)
+  graph.AddVertex(vertPropArray)
+
+mpi.COMM_WORLD.Barrier()
+print '--- vertPropArray:'
+print vertPropArray
+print '------------------'
+
+for e in range(E):
+  source = helper.MakeDistributedId(randint(0,numProcs), randint(0,V))
+  target = helper.MakeDistributedId(randint(0,numProcs), randint(0,V))
+  graph.AddEdge(source,target)
+
+#mpi.COMM_WORLD.Barrier()
+#print graph
+
+</pre>
+<!------------------------------------------------------>
+<hr>
+<h3>vtkPBGLGraphSQLReader in Python?</h3>
+<pre>
+# run as 'mpirun -np 2 python psr.py'
+from vtk import *
+import mpi4py.MPI as mpi
+
+total = mpi.COMM_WORLD.size
+rank = mpi.COMM_WORLD.rank
+print '# procs, rank= ',total, rank
+
+database = vtkSQLDatabase.CreateFromURL("mysql://root@localhost/enron")
+database.Open(None)
+reader = vtkPBGLGraphSQLReader()
+reader.SetDatabase(database)
+edge_query = database.GetQueryInstance()
+edge_query.SetQuery("select sendID, recvID, weight from email_arcs_lastnames")
+vertex_query = database.GetQueryInstance()
+vertex_query.SetQuery("select firstName, lastName, eid from employeelist")
+edge_table = vtkRowQueryToTable()
+edge_table.SetQuery(edge_query)
+edge_table.Update()
+et = edge_table.GetOutput()
+print 'et # rows= ',et.GetNumberOfRows()   # -> 2234
+print 'et # cols= ',et.GetNumberOfColumns()   # -> 3
+
+#reader->SetDatabase(db);
+#reader->SetVertexTable("vertices");
+#reader->SetEdgeTable("edges");
+reader.SetVertexTable("employeelist")
+reader.SetEdgeTable("email_arcs_lastnames")
+reader.SetVertexIdField("eid")
+reader.SetSourceField("sendID")
+reader.SetTargetField("recvID")
+exc=reader.GetExecutive()  # Don't use 'exec' as it's reserved
+helper=vtkPBGLDistributedGraphHelper()
+helper.GetProcessGroup()
+
+reader.UpdateInformation()
+parm1=exc.GetOutputInformation(0)
+print 'parm1= ',parm1
+
+exc.SetUpdateNumberOfPieces(exc.GetOutputInformation(0), total)
+exc.SetUpdatePiece(exc.GetOutputInformation(0), rank)
+reader.Update()  # -> generates LOTS of following error
+"""
+ERROR: In /Users/heiland/Documents/workspace/VTK/Common/vtkDataArrayTemplate.txx, line 900
+vtkLongArray (0x6c2010): unable to insert value of type 13
+"""
+
+</pre>

@@ -1,0 +1,209 @@
+# The following 3 lines were the survey:
+# (you do not need to sign your name)
+# Q1: What did you like best about this presentation?
+# Q2: What did you like least?
+#
+# This file contains the raw data of responses from the student survey - Q1 answer (on a single line), followed by Q2 answer.
+# I inserted minimal comments in the square brackets: [...]
+# It can then be processed by a Python script, for example (rf. survey.py).
+#
+#------------- period 1
+I appreciated the presentation powerpoint because I'm a visual learner
+A little bit of class participation would have been really nice too
+the info about memory was very interesting. I wish we would have had time to hear more. The cockroach experiment was gross but very intersting.
+a lot of things were talked about that I have no idea about. They seemed very complex and would be difficult for us to understand in one class period
+hearing about what synapses have to do with memory
+include basic overview @ the beginning
+he made the presentation interesting and didn't try to be too in depth about any one thing
+there was not a lot of interaction with the audience
+the visuals - photos and graphs - were the most helpful in understanding the concepts. Also, the side stories you told were interesting.
+some slides were too dense and not explained thoroughly
+the memory hypothesis
+I didn't understand the point from the Powerpoint
+He gave good visual aids. Had good volume, speaking rate. It was a very good presentation.
+it was a little dry. it's just not my cup of tea.
+all of the visuals were really good
+I didn't really understand the computer language part
+neuroscience
+none
+the small info about the cockroach neurons
+IU [Indiana University]. Everything else in the presentation.
+Grasping an understanding of neuroscience. I really was interested in the neuron mapping of the brain.
+analysis
+Had some interesting points like all about the neurons and the brain
+sometimes got off track and talked about random stuff
+connectome and neurons interacting
+mathematical equations
+the personal stories
+the presentaton/powerpoint was a bit dry
+the simplification of complex topics
+lack of time
+I really liked the topic and listening about neuroscience.  I learned a lot.
+I didn't understand all of the concepts and it bothered me, but I'm not upset that he talked about them.
+I liked the visuals. They helped with the explanations.
+It was hard for me to understand because I don't know anything about computer programming or neuroscience.
+I liked the bit on neuroscience and I liked his sense of humor throughout the presentation.
+I didn't feel like he clarified some topics enough. He was a little all over the place when he was talking.
+the pictures
+the lack of astrophysics
+I liked the pictures and the concept is very interesting.
+I would like to know the practicality of the [cockroach?] experiment. Could it lead to breakthroughs in medicine?
+the part about making the bug leg dance
+nothing
+I liked the concepts and ideas given
+a little bit dull
+I liked all the pictures and how well the presenter presented his information
+I felt some of the material was a bit over my head; meaning it was a little complicated.
+I liked the section talking about the neurons
+Don't say you're nervous. You did fine.
+[blank]
+[blank]
+there was a lot of info
+slides were kinda boring and no hands on stuff.
+the fact that now I know I can order a bug in the mail and snip off its legs for science
+the whole presentation was rather dry
+learning about Python
+cockroach leg made me a little queasy
+the visual images shown to us
+it was awkward at times, not enough explanation
+that you really described the topic in depth and went over every little thing
+That it was long, but I'm not really into the topic so that is probably why it seemed like forever. TOO MUCH INFO!
+#
+#
+#------------- period 2
+the cockroach leg thing
+it was all good
+pictures in every slide made it easier to understand the concept. And how Mr. Heiland explained some of the concept. It was easy to understand.
+But when Calculus was involved in some concept, I did not understand.
+I really liked it all! It's really interesting. the pictures helped me understand it more because neuroscience is hard to grasp w/o visualizing it :P
+nothing
+the experiment with the cockroach
+it was good
+experiments being done right now.
+I didn't think it had much to do with what we were doing in school.
+enjoyed seeing [brain??] and learning about brain & neurons.
+[blank]
+[blank]
+[blank]
+the presentation was interesting and relevant
+[blank]
+the info about programming and how it is used to help with science
+confusing sometimes
+the powerpoint was very informative. I really liked all of the info.
+the powerpoint was a little bland to look at.
+that the cockroach leg will keep beat with the music
+it was a very good presentation, very interesting.
+how much info I got out of it. Equations.
+[blank]
+programming info
+[blank]
+very informative, I liked it a lot.
+didn't have enough time.
+the ability he has to work with the brain. Had no idea of all the neurons.
+Some of the words were hard to follow without prior knowledge.
+#
+#
+#------------- period 5
+i thought it was interesting
+it may have been a bit too advanced
+good job
+lots of white & words; quiet voice; needs a few more picts/demonstrations
+the cool pictures
+it seemed random to have computer language things in there
+when you talked about how memories work in the brain
+the whole thing was interesting, nothing was bad
+very informative; made me think about stuff with physics, chemistry, biology that I didn't think about before
+a little confusing, high level stuff!
+the cockroach leg experiment
+trying to understand the neuron
+the presentation was very well done and it introduced me to a topic I knew very little about
+the topic wasn't something I was very interested in
+very informative
+a little technical <??>
+the science of it, neuroscience sounds really interesting.  I like how you connected it to things we understand like circuitry electronics
+didn't get to see cockroach
+it was very interesting and not too complex to understand
+there was still a lot of details that were hard to understand
+the transfer entropy diagram, I thought it was interesting. Seeing Python used for something more than scripting.
+not having more time.
+I thought the Python program was very interesting in how it functioned and worked.  The spiker box was pretty interesting too.
+I didn't enjoy the Phet Colorado page because I didn't see how it connected completely.
+the brain is such a fascinating subject!
+it was a bit over my head with Python
+very interesting
+seemed stretched to connect to circuitry/electronics
+lots of information provided
+how does it relate to our H.S. physics class; need background info
+I enjoyed all of the presentation.
+nothing
+the idea that the entire presentation was about.  Neurons are interesting.
+it dragged on a little too long.
+vision slide - two faces or a vase?  cockroach leg - I want to watch the youtube video
+information is over my head
+[student drew 2 faces/vase pictures]
+it was a little hard to understand
+learning about the complexity of neurons and our brains
+the way the information was delivered was a bit dull & difficult to understand
+learned a lot about nerves (??) myself; the quote; cockroach
+a lot of info in short time, hard to understand sometimes
+it was very interesting
+everything was interesting
+interesting subject matter & points
+slides weren't too visually interesting, e.g. black text on white background
+I was very interested in the topic and learned very much.  I feel like I better understand what is necessary to go into this field.
+wish there was more time.
+overviews of neuroscience concepts, they were interesting; cockroach was good too
+mathematical models, very complex and difficult to understand
+#
+#
+#------------- period 6
+it was really different
+nothing
+the computer programming
+the cockroach... gross
+very informative
+a bit overwhelming
+I liked how the presentation described, in simple terms, how mathematical models can represent neural activity
+I least liked that it was all on a Powerpoint! I would have been really interested to SEE something.
+I liked the material and some applications like the cockroach leg thing.
+I didn't like how confusing the material was. Maybe a demonstration would not only help explain the material, but also make it more interesting.
+Lots of in-depth info, good explanations.
+Animal testing!
+Learning how brains work.
+Wish we had talked about how the spiking affects psychology. [In Search of Memory, Eric Kandel!!]
+The giant squid thing - that was cool.
+Didn't understand 90% of what he said.
+Enjoyed learning about neurons in the human brain. Especially how neurons affect human action and thought.
+Some of the equations were very confusing to understand.
+Cockroach leg dancing to the music.
+Nothing, the presentation was very good.
+Some of the info was interesting.
+It was kind of boring and kind of confusing.
+How it was straightforward
+[blank]
+I like the thing about the cockroach leg, that was cool. 
+Nothing really, it was all interesting
+The cool facts given.
+The lecture - try to make it more interactive.
+Showed history of neuron modeling.
+The lengthy explanation of formulas.
+I liked all of the pictures and examples.
+I didn't understand all of it. I wasn't sure what some things meant.
+The Hodgkin-Huxley model about the gian squid, also the cockroach leg information
+The Izhikevich model - I had trouble understanding.
+It was very factual and had a lot of information. I could tell he really knew all his info and it was interesting to learn about something so different from what I am exposed to in my life.
+The lack of interaction. It was hard to stay engaged by just listening to info.
+The slides on Python.
+Some of the slides were hard to comprehend.
+It was really neat to hear about what we're doing in a different way.
+The equations and computer programming and connection between slides was sometimes confusing.
+Talking about slicing the mouse brain and keeping it alive. Cockroach's dancing.
+Describing how to use Python.
+The presentation was very factual and intriquing.
+It was an interesting topic, but I wasn't really sure of the complete relevance to what we're learning about currently.
+Mr. Heiland really understood his topic and was very knowledgeable about it.
+The presentation was kind of hard to understand.
+Presentation was concise and well explained.
+Limited class time.
+Very Informative, intelligent, and educational.
+Not quite the exact content for high school students, pretty confusing/complicated.

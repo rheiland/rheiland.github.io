@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+   <TITLE>  Heiland: KLTool pkg
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>KLTool: A tool for analyzing spatiotemporal data</h1>
+(Authors: R.Heiland, D.Armbruster, E.Kostelich)
+</CENTER>
+<p>
+One of these days maybe I'll get around to modernizing KLTool, e.g., converting
+SGI gl to OpenGL, using a different GUI library, etc., but til then here's
+the gl code.  It should still run on most SGI workstations (it does on mine).
+I also have some helpful scripts for plotting and, given enough demand from
+users, can make available sometime.
+<p>
+If you use KLTool for some publication, I'd appreciate a reference.
+This tool was part of my <a href="../thesis">thesis</a> in the 
+<a href="http://math.la.asu.edu/">Dept. of Mathematics</a>
+at Arizona State University.
+<p>
+If there are missing pieces in the download, send me <a href="mailto:heiland--at--indiana.edu">email</a>.
+
+<p>
+<! ---------------------------------------------------------------->
+<li><a href="kltool.tar.gz"> kltool.tar.gz</a> (246k) - just the executable (SGI n32 gl app)
+<li><a href="kltoolpkg.tar.gz"> kltoolpkg.tar.gz</a> (92k) - KLTool source code
+<li><a href="manual1.tex"> manual1.tex</a> | <a href="manual1.dvi"> manual1.dvi</a> | <a href="manual1.ps.gz"> manual1.ps.gz (Postscript)</a> - a manual of sorts
+<li><a href="kltoolInputPanel.jpg"> image of the Input Panel</a> (for the K-S data)
+<p>
+Other pkgs required if you build from source:
+<li><a href="FORMS.tar.gz"> FORMS.tar.gz</a> (184k) - GUI lib source code
+<li><a href="utio.tar.gz"> utio.tar.gz</a> (44k) - I/O lib by Eric Kostelich.
+<p>
+Example datasets:
+<li><a href="couette.tar.gz"> couette.tar.gz</a> (86k) - Couette-Taylor (1D) data
+<li><a href="kol.tar.gz"> kol.tar.gz</a> (4.5m) - Kolmogorov flow (2D) data
+<li><a href="ks.tar.gz"> ks.tar.gz</a> (360K) - Kuramoto-Sivashinsky equation (1D) data
+<li><a href="flames.tar.gz"> flames.tar.gz</a> (37K) - flames (1D) data (smaller dataset of 200 vectors)
+
+<p>
+<!More datasets can be made available upon request - e.g., 2D data.>
+
+<p>
+If you do build the tool from the source code, I recommend the following
+directory structure (note that the tarballs may impose some of this; check
+via <b>tar tf foo.tar</b>):
+<pre>
+Create a top directory to contain the pieces, e.g.:
+
+% mkdir ASU
+
+and from there, the following:
+/ASU
+  /lib
+  /utio
+  /kltool
+    /FORMS
+    /Include
+    /couette
+    /ks
+    /kol
+    /flames
+    /doc
+</pre>
+
+<p>
+<! ---------------------------------------------------------------->
+<hr>
+<i>Randy Heiland</i>
+</BODY>
+</HTML>

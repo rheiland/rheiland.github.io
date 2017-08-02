@@ -1,0 +1,201 @@
+<HTML>
+<HEAD>
+   <TITLE>  Heiland: VTK
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>VTK Info</h1></CENTER>
+I've been using the Visualization Toolkit <a href=http://vtk.org>(VTK)</a> since it first came out
+in the 1990s. It's an amazing library for doing vis and it's open source!
+<p>
+WARNING: while VTK is still very much an active project, this page reflects past work and is out of date
+with the current API.
+<p>
+<hr width="50%" align=left noshade>
+Looking into <a href="../vtk4.0">VTK 4.0</a>...
+<p>
+<! ---------------------------------------------------------------->
+<h2>Linux</h2>
+<p>
+Here are the basic steps I took to get <a href="Linux/">VTK built on Linux</a> (WARNING: archived page).
+
+<! ---------------------------------------------------------------->
+<hr width="50%" align=left noshade>
+<h2>Java</h2>
+<p>
+Here's a simple Java program to display a sphere (based on Paul Hsieh's example
+sent to the VTK mail list). 
+<p>
+<a href="sphere.java">sphere.java</a>
+<pre>
+Compile:
+% javac sphere.java
+Run:
+% java sphere
+</pre>
+<p>
+<a href=sphere.gif><img src="sphere.small.gif"></a>
+
+<p>
+Here are a couple of files that provide a Swing/VTK framework for GUI/rendering:
+<br>
+<a href="Viewer.java">Viewer.java</a>
+<a href="VTKPanel.java">VTKPanel.java</a>
+<hr>
+Files from a Nov. '01 dist of VTK/Wrapping/Java:<br>
+<a href="vtkPanel.java">vtkPanel.java</a>
+<a href="SimpleVTK.java">SimpleVTK.java</a>
+<a href="VText.java">VText.java</a>
+
+<!--------------------------->
+<hr width="50%" align=left noshade>
+<p>
+<b>Related links:</b>
+<p>
+<a href="http://metalab.unc.edu/pub/Linux/docs/faqs/Threads-FAQ/html/">Linux Threads FAQ</a>
+<br>
+PThread mutex
+<br>
+
+<p>
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>Python</h2>
+I contributed the <a href="tcl2py.py">tcl2py.py</a> Python script which in turn helped translate
+several of the Tcl scripts to Python that are now available in the VTK 
+package (e.g., graphics/examplesPython).
+<h3>Linux/Python</h3>
+
+<table width=40%>
+<tr>
+<td width="20%" align=center>
+<a href=borromean.gif><img src="borromean.small.gif"></a>
+</td><td width="20%" align=center>
+<a href=tk23.gif><img src="tk23_small.gif"></a>
+</td><td width="20%" align=center>
+<a href=moebius.gif><img src="moebius_small.gif"></a>
+</td><td width="20%" align=center>
+</td>
+<tr>
+<td width="20%" align=center>
+<a href="borromean.py">borromean.py</a>
+</td><td width="20%" align=center>
+<a href="tknotTube.py">tknotTube.py</a>
+</td><td width="20%" align=center>
+<a href="moebius.py">moebius.py</a>
+
+</td>
+</tr>
+</table>
+<p>
+A table of <a href="knots.html">toroidal knots</a>.
+<p>
+(you'll want <a href="colors.py">colors.py</a> too)<br>
+
+
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>Scattered data</h2>
+Here are some experiments showing results of:
+<ul>
+<li><a href="scatter">scattered data interpolation
+on 2D data</a> 
+<li><a href="scatter/sphere">surface reconstruction for random points on 
+spheres</a>
+<li><a href="scatter/bubble">surface reconstruction for scattered points on 
+deformed bubbles</a>
+</ul>
+
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>Jython</h2>
+Go <a href="Jython">here</a>.
+
+<! ---------------------------------------------------------------->
+<!-- 
+<hr size=5 noshade> 
+<h2>Jython</h2>  
+<h3>Linux/Jython</h3>
+<p>
+<b>Linux:</b> Red Hat 6.1 <br>
+<b>VTK:</b> version 3.2 <br>
+<b>Jython:</b> Jython<a href="http://www.jython.org">Jython</a>
+---------------------------------------------------------------->
+
+<p>
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>GUIs</h2>
+It's just a matter of time before some snazzy GUIs will be
+(hopefully) contributed by the large VTK user community.  
+Here are some related links:
+<li><a href="http://brighton.ncsa.uiuc.edu/prajlich/vtkPipeline/">vtkPipeline.tcl</a>
+<li><a href="http://www.principiamathematica.com">Principia Mathematica</a> (Windows-based)
+<li><a href="http://www.esat.kuleuven.ac.be/~vtkedit/index.shtml">vtkEditor</a>
+<p>
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>Sample code:</h2>
+
+Here's a hack to display <a href="http://www.rcsb.org/pdb/">PDB</a> files: <a href="pdb_v4.cxx">pdb_v4.cxx</a>.
+(Thanks to Jean Favre for 
+updating my VTK3.x version to VTK4.x).
+
+It only handles the 'ATOM' (or 'HETATM')
+and 'CONECT' keywords, doesn't *generate* bonds (but displays specified bonds),
+doesn't scale atoms, etc.
+For more on Chemistry-related s/w, check out the
+<a href="http://www.umass.edu/microbio/rasmol/">RasMol & Chime</a> 
+homepage.
+<p>
+<a href="wheel.pdb">wheel.pdb</a>
+<p>
+<a href="nanotube.pdb">nanotube.pdb</a>
+<img src="nano.small.gif">
+<a href="caffeine.pdb">caffeine.pdb</a>
+<img src="caffeine.small.gif">
+<a href="diffGear.pdb.gz">diffGear.pdb.gz</a>
+<img src="diffGear.gif">
+<p>
+<a href="fineMotion.pdb.gz">fineMotion.pdb.gz</a>
+<img src="fineMotion.gif">
+
+<p>
+Go <a href="http://www.imm.org/Parts/">here</a> for more nano-machines.
+
+<!---------------------------------->
+<hr width="50%" align=left noshade>
+<h3>Polyhedra</h3>
+<a href="dodec.py">dodec.py</a>
+<img src=dodecSmall.gif>
+<a href="dodecFoldup.py">dodecFoldup.py</a>
+<a href=dodecFoldup.gif><img src=dodecFoldupSmall.gif></a>
+<!---------------------------------->
+<hr width="50%" align=left noshade>
+<h3>Other stuff</h3>
+<a href="torus.py">torus.py</a>
+<img src=torus.gif>
+
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>vtkOffScreen</h2>
+For those interested in doing offscreen rendering in OpenGL, here's a 
+snapshot <a href="vtkOffScreen.tar.gz">(vtkOffScreen.tar.gz)</a>
+of John Shalf's vtkOpenGLOffscreenRenderWindow class, etc..
+<p>
+Here's an additional class I found necessary to do textures:<br>
+<a href="vtkOpenGLOffscreenTexture.h">vtkOpenGLOffscreenTexture.h</a><br>
+<a href="vtkOpenGLOffscreenTexture.cxx">vtkOpenGLOffscreenTexture.cxx</a>
+<p>
+Here's a more recent version of vtkOpenGLOffscreenRenderWindow that I
+am using with a nightly version of vtk from ~Sept 12, 2000:<br>
+<a href="vtkOpenGLOffscreenRenderWindow.h">vtkOpenGLOffscreenRenderWindow.h</a><br>
+<a href="vtkOpenGLOffscreenRenderWindow.cxx">vtkOpenGLOffscreenRenderWindow.cxx</a><br>
+<a href="PyRenderWindow_GetPixelData.cxx">PyRenderWindow_GetPixelData.cxx</a> - an example of manually Python-wrapping the 'GetPixelData' method.
+<! ---------------------------------------------------------------->
+<hr>
+</BODY>
+</HTML>

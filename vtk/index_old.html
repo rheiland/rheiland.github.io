@@ -1,0 +1,226 @@
+<HTML>
+<HEAD>
+   <TITLE>  Heiland: VTK
+</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>VTK Info</h1></CENTER>
+VTK, <a href="http://www.kitware.com/vtk.html">The Visualization Toolkit</a>,
+is a remarkable visualization software package.  It's also <b>free</b>!
+
+<! ---------------------------------------------------------------->
+<!hr width="50%" align=left noshade>
+<!Here are some VTK <a href="doc" documentation tools</a>
+
+<! ---------------------------------------------------------------->
+<p>
+<hr width="50%" align=left noshade>
+<h2>Java</h2>
+<h3>Linux/Java</h3>
+<p>
+Here's the basic steps I took to get Java-VTK working on Linux.
+<p>
+<b>Linux:</b> Red Hat 5.1 <br>
+<b>VTK:</b> version 2.3 <br>
+<b>Java:</b> jdk_1.1.7-v1a-glibc-x86.tar.gz from <a href="http://www.blackdown.org/">Blackdown</a>
+
+<p>
+Edit VTK's /common/vtkJavaUtil.cxx.  Where the mutex routines are defined:
+<pre>
+#ifdef VTK_USE_SPROC
+// for SGI's
+  ...
+#else
+// for solaris
+  ...
+#endif
+</pre>
+&nbsp;&nbsp;&nbsp;define for Linux PThreads:
+<pre>
+#define USE_PTHREADS
+#ifdef USE_PTHREADS
+#include "pthread.h"
+pthread_mutex_t vtkGlobalMutex;
+#define VTK_GET_MUTEX()   pthread_mutex_lock(&vtkGlobalMutex)
+#define VTK_RELEASE_MUTEX()  pthread_mutex_unlock(&vtkGlobalMutex)
+</pre>
+
+<!--------------------------->
+<hr width="50%" align=left noshade>
+<p>
+My relevant env vars:
+<pre>
+CLASSPATH=.:/home/heiland/Java/jdk117_v1a/vtk:/home/heiland/vtkJava/java:/home/heiland/vtkJava/java/vtk
+LD_LIBRARY_PATH=.:/usr/local/bin:/home/heiland/vtkJava/common:/home/heiland/vtkJava/graphics:/home/heiland/vtkJava/patented:/home/heiland/vtkJava/imaging:/home/heiland/vtkJava/contrib:/home/heiland/vtkJava/java:/home/heiland/tcl8.0.3/unix:/home/heiland/tk8.0.3/unix
+</pre>
+
+After unzipping, untarring the vtk distribution, I renamed the vtk home dir
+to vtkJava.  I configure for both Java and Python (the latter of course is not
+required here):
+<pre>
+% cd /home/heiland/vtkJava
+% setenv CXX /usr/bin/c++
+% setenv CC /usr/bin/cc
+% ./configure --with-mesa --with-shared --with-tcl --with-java --with-python --with-patented --with-contrib --with-tkwidget --with-x
+</pre>
+<p>
+Here's my <a href="user.make">user.make</a> and <a href="system.make">system.make</a>.
+
+Then it's just a matter of building everything :)
+<p>
+<pre>
+% make
+</pre>
+
+
+
+<!--------------------------->
+<hr width="50%" align=left noshade>
+<h3>Linux or SGI</h3>
+<p>
+(using SGI java version "3.1.1 (Sun 1.1.6)")
+<p>
+Here's a simple program to display a sphere (based on Paul Hsieh's example
+sent to the VTK mail list on 21 Aug 98, found via <a href="http://vr.ncsa.uiuc.edu/vtkusers/">NCSA's VTK archive</a>; Search Msgs/Subject 'vtkpanel'):
+<p>
+<a href="sphere.java">sphere.java</a>
+<pre>
+Compile:
+% javac sphere.java
+Run:
+% java sphere
+</pre>
+<p>
+<a href=sphere.gif><img src="sphere.small.gif"></a>
+
+<p>
+Here are a couple of files that provide a Swing/VTK framework for GUI/rendering:
+<br>
+<a href="Viewer.java">Viewer.java</a>
+<a href="VTKPanel.java">VTKPanel.java</a>
+
+<!--------------------------->
+<hr width="50%" align=left noshade>
+<p>
+<b>Related links:</b>
+<p>
+<a href="http://metalab.unc.edu/pub/Linux/docs/faqs/Threads-FAQ/html/">Linux Threads FAQ</a>
+<br>
+<a href="http://centaurus.cs.umass.edu/~wagner/threads_html/sect3.html">PThread mutex</a>
+<br>
+<a href="http://www.kitware.com/vtkdata/VTK_Linux_WWW/VTK-Linux-HOWTO.html">Slack's VTK Linux HOWTO</a> (particularly, the Installing Mesa section)
+
+
+<p>
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>Python</h2>
+I contributed the <b>tcl2py.py</b> Python script which in turn helped translate
+several of the Tcl scripts to Python that are now available in the VTK 
+package (graphics/examplesPython).
+<h3>Linux/Python</h3>
+<p>
+<b>Linux:</b> Red Hat 5.1 <br>
+<b>VTK:</b> version 2.3 <br>
+<b>Python:</b> Python-1.5.2 <a href="http://www.python.org/">python.org</a>
+
+<p>
+My Python env vars:
+<pre>
+PYTHONPATH=.:/home/heiland/vtkJava/common:/home/heiland/vtkJava/graphics:/home/heiland/vtkJava/patented:/home/heiland/vtkJava/imaging:/home/heiland/vtkJava/contrib:/home/heiland/Python-1.5.2/Lib/lib-tk
+PYTHONHOME=/home/heiland/Python-1.5.2
+</pre>
+
+<table width=40%>
+<tr>
+<td width="20%" align=center>
+<a href=flamingo.gif><img src="flamingo.small.gif"></a>
+</td><td width="20%" align=center>
+<a href=borromean.gif><img src="borromean.small.gif"></a>
+</td><td width="20%" align=center>
+<a href=tk23.gif><img src="tk23_small.gif"></a>
+</td><td width="20%" align=center>
+<a href=moebius.gif><img src="moebius_small.gif"></a>
+</td><td width="20%" align=center>
+</td>
+<tr>
+<td width="20%" align=center>
+flamingo.py
+</td><td width="20%" align=center>
+<a href="borromean.py">borromean.py</a>
+</td><td width="20%" align=center>
+<a href="tknotTube.py">tknotTube.py</a>
+</td><td width="20%" align=center>
+<a href="moebius.py">moebius.py</a>
+
+</td>
+</tr>
+</table>
+<p>
+A table of <a href="knots.html">toroidal knots</a>.
+<p>
+(you'll want <a href="colors.py">colors.py</a> too)<br>
+
+
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>JPython</h2>
+Go <a href="JPython">here</a>.
+
+<! ---------------------------------------------------------------->
+<!-- 
+<hr size=5 noshade> 
+<h2>JPython</h2>  
+<h3>Linux/JPython</h3>
+<p>
+<b>Linux:</b> Red Hat 5.1 <br>
+<b>VTK:</b> version 2.3 <br>
+<b>JPython:</b> JPython-1.1a3 <a href="http://www.python.org/jpython">JPython</a>
+---------------------------------------------------------------->
+
+<p>
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>GUIs</h2>
+It's just a matter of time before some snazzy GUIs will be
+(hopefully) contributed by the large VTK user community.  
+Here are some related links:
+<li><a href="http://brighton.ncsa.uiuc.edu/prajlich/vtkPipeline/">vtkPipeline.tcl</a>
+<li><a href="http://www.principiamathematica.com">Principia Mathematica</a> (Windows-based)
+<li><a href="http://www.esat.kuleuven.ac.be/~vtkedit/index.shtml">vtkEditor</a>
+<p>
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>Sample code:</h2>
+
+Here's a hack to display PDB files (<a href="pdb.cxx">pdb.cxx</a>).  
+It only handles the 'ATOM' (or 'HETATM')
+and 'CONECT' keywords, doesn't *generate* bonds (but displays specified bonds),
+doesn't scale atoms, etc.
+For more on Chemistry-related s/w, check out the
+<a href="http://klaatu.oit.umass.edu/microbio/rasmol/">RasMol & Chime</a> 
+homepage.
+<p>
+<a href="wheel.pdb">wheel.pdb</a>
+<p>
+<a href="nanotube.pdb">nanotube.pdb</a>
+<img src="nano.small.gif">
+<a href="caffeine.pdb">caffeine.pdb</a>
+<img src="caffeine.small.gif">
+<a href="diffGear.pdb.gz">diffGear.pdb.gz</a>
+<img src="diffGear.gif">
+<p>
+<a href="fineMotion.pdb.gz">fineMotion.pdb.gz</a>
+<img src="fineMotion.gif">
+
+<p>
+Go <a href="http://www.imm.org/Parts/">here</a> for more nano-machines.
+
+<p>
+<! ---------------------------------------------------------------->
+<hr>
+back to my <a href="http://www.ncsa.uiuc.edu/~heiland">home page</a>
+</BODY>
+</HTML>

@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+   <TITLE>  TE toolbox vis</TITLE>
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>Sanity check to visualize TE for data in the toolbox</h1>
+</CENTER>
+<li><a href=http://code.google.com/p/transfer-entropy-toolbox/downloads/list>TE toolbox</a>
+<p>
+<hr>
+<pre>
+in MATLAB, we do the following:
+
+>> load Izhik_100_0.mat
+>> whos
+  Name           Size                 Bytes  Class     Attributes
+
+  asdf         102x1               12918912  cell    
+  conmat       100x100               130088  double    sparse    
+  d              1x1                      8  double    
+  delay       1000x1000             1529944  double    sparse    
+
+>> TEmatrix = ASDFTE(asdf);
+>> size(TEmatrix)
+ans =
+   100   100
+
+>> max(max(TEmatrix))
+ans =
+   9.7589e-05
+
+>> fname='TE_d1.vti'
+
+Convert to a VTK-formatted file, which can be displayed via ParaView:
+>> TE2vti(fname,TEmatrix);
+
+------------------
+optionally, Mike suggested transforming the original asdf via following fn (it seems to make no difference):
+asdf2 = ASDFChangeBinning(asdf,1)
+
+----------------
+>> pwd()
+ans =
+/N/hd00/heiland/Quarry/Beggs/te_matlab_0.2
+
+>> dir()
+.                        ASDFTE.m                 SparseToASDF.m           test_vti.m               
+..                       ASDFToSparse.m           TE2vti.m                 transent-orig.mex        
+ASDFChangeBinning.m      CIReduce.m               TE_d1.vti                transent.c               
+ASDFChooseTime.m         Izhik_100_0.mat          TE_d1_5.vti              transent.mexa64          
+ASDFGetfrate.m           README.txt               TE_d1_changebinning.vti  
+ASDFSubsample.m          Readme.rwh               example.m          
+
+
+</pre>
+<hr>
+<p>
+<img src=TE_d1.png>
+<p>delay of 1
+<p>
+<hr>
+<img src=TE_d1_5.png>
+<p>delay of 1:5
+

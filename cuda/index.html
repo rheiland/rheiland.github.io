@@ -1,0 +1,84 @@
+<html>
+<head>
+   <title>Heiland:CUDA</title>
+<link rel="shortcut icon" type="image/png" href="lorenz-zoom.png" >
+<style>
+h1 {font-size:250%;}
+h2 {font-size:200%;}
+h3 {font-size:120%;}
+p {font-size:100%;}
+</style>
+</head>
+<body bgcolor="#FFFFFF">
+<h1>CUDA</h1>
+Thanks to the incredible popularity of computer gaming, the graphics hardware industry has evolved to bring us very fast graphics cards (GPUs) 
+from companies such as Nvidia, AMD, and others. 
+In addition to performing graphics, these cards can also be used for general-purpose computing and hence are known as GPGPUs.
+<p>
+Here, we explore CUDA, a programming language/environment from Nvidia.
+We'll experiment with CUDA 5.5 on OSX and Ubuntu.
+After installing the necessary CUDA toolkit from Nvidia's website, we can do (OSX 10.7.5, with a GeForce 9400 card with 256MB mem):
+<hr>
+<pre>
+heiland@mini:/Developer/NVIDIA/CUDA-5.5/samples/2_Graphics/Mandelbrot$ make
+/Developer/NVIDIA/CUDA-5.5/bin/nvcc -ccbin g++ -I../../common/inc  -m64 -Xcompiler -arch -Xcompiler x86_64   -gencode arch=compute_11,code=sm_11 -gencode arch=compute_13,code=sm_13 -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=\"sm_35,compute_35\"  -o Mandelbrot.o -c Mandelbrot.cpp
+/Developer/NVIDIA/CUDA-5.5/bin/nvcc -ccbin g++ -I../../common/inc  -m64 -Xcompiler -arch -Xcompiler x86_64   -gencode arch=compute_11,code=sm_11 -gencode arch=compute_13,code=sm_13 -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=\"sm_35,compute_35\"  -o Mandelbrot_gold.o -c Mandelbrot_gold.cpp
+/Developer/NVIDIA/CUDA-5.5/bin/nvcc -ccbin g++ -I../../common/inc  -m64 -Xcompiler -arch -Xcompiler x86_64   -gencode arch=compute_11,code=sm_11 -gencode arch=compute_13,code=sm_13 -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=\"sm_35,compute_35\"  -o Mandelbrot_cuda.o -c Mandelbrot_cuda.cu
+ptxas /tmp/tmpxft_000012fd_00000000-17_Mandelbrot_cuda.compute_11.ptx, line 1757; warning : Double is not supported. Demoting to float
+/Developer/NVIDIA/CUDA-5.5/bin/nvcc -ccbin g++   -m64 -Xcompiler -arch -Xcompiler x86_64    -Xlinker -rpath -Xlinker /Developer/NVIDIA/CUDA-5.5/lib   -Xlinker -framework -Xlinker GLUT -o Mandelbrot Mandelbrot.o Mandelbrot_gold.o Mandelbrot_cuda.o  -L/System/Library/Frameworks/OpenGL.framework/Libraries  -lGL -lGLU ../../common/lib/darwin/libGLEW.a
+mkdir -p ../../bin/x86_64/darwin/release
+cp Mandelbrot ../../bin/x86_64/darwin/release
+heiland@mini:/Developer/NVIDIA/CUDA-5.5/samples/2_Graphics/Mandelbrot$ ./Mandelbrot 
+[CUDA Mandelbrot/Julia Set] - Starting...
+> Device 0: <    GeForce 9400 >, Compute SM 1.1 detected
+GPU Device 0: "GeForce 9400" with compute capability 1.1
+
+Data initialization done.
+Initializing GLUT...
+Loading extensions: No error
+OpenGL window created.
+Starting GLUT main loop...
+
+Press [s] to toggle between GPU and CPU implementations
+Press [j] to toggle between Julia and Mandelbrot sets
+Press [r] or [R] to decrease or increase red color channel
+Press [g] or [G] to decrease or increase green color channel
+Press [b] or [B] to decrease or increase blue color channel
+Press [e] to reset
+Press [a] or [A] to animate colors
+Press [c] or [C] to change colors
+Press [d] or [D] to increase or decrease the detail
+Press [p] to record main parameters to file params.txt
+Press [o] to read main parameters from file params.txt
+Left mouse button + drag = move (Mandelbrot or Julia) or animate (Julia)
+Press [m] to toggle between move and animate (Julia) for left mouse button
+Middle mouse button + drag = Zoom
+Right mouse button = Menu
+Press [?] to print location and scale
+Press [q] to exit
+
+Creating GL texture...
+Texture created.
+Creating PBO...
+PBO created.
+...
+</pre>
+<hr>
+
+Note the frames/sec rendering speed is given at the top of the window. We can use the mouse to pan/zoom into the Mandelbrot set:<br>
+<img src=mandel1.png width=301 height=244>
+<img src=mandel_zoom1.png width=300 height=247>
+<hr>
+And more impressive demos from the CUDA Toolkit Samples (Ubuntu 12.04 w/ NVIDIA GeForce 9800 GT):<p>
+<img src=cuda-smokeParticles.png width=260 height=260>
+<img src=cuda-fluidsGL.png width=300 height=260>
+<img src=cuda-nbody.png width=308 height=260>
+
+
+<!------------------------ BEGIN FOOTER --------------------->
+<P>
+<HR WIDTH="100%" SIZE="2" NOSHADE ALIGN=left>
+<p>
+<!------------------------ End FOOTER --------------------->
+</body>
+</html>

@@ -1,0 +1,199 @@
+<h3>Playing w/ OpenCL/PyOpenCL</h3>
+
+<pre>
+~/Documents/workspace/pyopencl/examples$ python dump-properties.py 
+===========================================================================
+<pyopencl.Platform 'Apple' at 0x7fff0000>
+===========================================================================
+EXTENSIONS: cl_APPLE_SetMemObjectDestructor cl_APPLE_ContextLoggingFunctions cl_APPLE_clut
+cl_APPLE_query_kernel_names cl_APPLE_gl_sharing cl_khr_gl_event
+NAME: Apple
+PROFILE: FULL_PROFILE
+VENDOR: Apple
+VERSION: OpenCL 1.1 (Jun 14 2011 23:31:14)
+---------------------------------------------------------------------------
+<pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>
+---------------------------------------------------------------------------
+ADDRESS_BITS: 64
+AVAILABLE: 1
+COMPILER_AVAILABLE: 1
+DOUBLE_FP_CONFIG: 63
+DRIVER_VERSION: 1.1
+ENDIAN_LITTLE: 1
+ERROR_CORRECTION_SUPPORT: 0
+EXECUTION_CAPABILITIES: 3
+EXTENSIONS: cl_APPLE_SetMemObjectDestructor cl_APPLE_ContextLoggingFunctions cl_APPLE_clut
+cl_APPLE_query_kernel_names cl_APPLE_gl_sharing cl_khr_gl_event cl_khr_fp64
+cl_khr_global_int32_base_atomics cl_khr_global_int32_extended_atomics
+cl_khr_local_int32_base_atomics cl_khr_local_int32_extended_atomics
+cl_khr_byte_addressable_store cl_khr_int64_base_atomics cl_khr_int64_extended_atomics
+cl_khr_3d_image_writes cl_APPLE_fp64_basic_ops cl_APPLE_fixed_alpha_channel_orders
+cl_APPLE_biased_fixed_point_image_formats
+GLOBAL_MEM_CACHELINE_SIZE: 6291456
+GLOBAL_MEM_CACHE_SIZE: 64
+GLOBAL_MEM_CACHE_TYPE: 2
+GLOBAL_MEM_SIZE: 8589934592
+IMAGE2D_MAX_HEIGHT: 8192
+IMAGE2D_MAX_WIDTH: 8192
+IMAGE3D_MAX_DEPTH: 2048
+IMAGE3D_MAX_HEIGHT: 2048
+IMAGE3D_MAX_WIDTH: 2048
+IMAGE_SUPPORT: 1
+LOCAL_MEM_SIZE: 32768
+LOCAL_MEM_TYPE: 2
+MAX_CLOCK_FREQUENCY: 2200
+MAX_COMPUTE_UNITS: 8
+MAX_CONSTANT_ARGS: 8
+MAX_CONSTANT_BUFFER_SIZE: 65536
+MAX_MEM_ALLOC_SIZE: 2147483648
+MAX_PARAMETER_SIZE: 4096
+MAX_READ_IMAGE_ARGS: 128
+MAX_SAMPLERS: 16
+MAX_WORK_GROUP_SIZE: 1024
+MAX_WORK_ITEM_DIMENSIONS: 3
+MAX_WORK_ITEM_SIZES: [1024, 1, 1]
+MAX_WRITE_IMAGE_ARGS: 8
+MEM_BASE_ADDR_ALIGN: 1024
+MIN_DATA_TYPE_ALIGN_SIZE: 128
+NAME: Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz
+PLATFORM: <pyopencl.Platform 'Apple' at 0x7fff0000>
+PREFERRED_VECTOR_WIDTH_CHAR: 16
+PREFERRED_VECTOR_WIDTH_DOUBLE: 2
+PREFERRED_VECTOR_WIDTH_FLOAT: 4
+PREFERRED_VECTOR_WIDTH_INT: 4
+PREFERRED_VECTOR_WIDTH_LONG: 2
+PREFERRED_VECTOR_WIDTH_SHORT: 8
+PROFILE: FULL_PROFILE
+PROFILING_TIMER_RESOLUTION: 1
+QUEUE_PROPERTIES: 2
+SINGLE_FP_CONFIG: 63
+TYPE: 2
+VENDOR: Intel
+VENDOR_ID: 4294967295
+VERSION: OpenCL 1.1 
+IMAGE2D READ_ONLY FORMATS: RGBA-F, <unknown channel order 0x10bc>-F, <unknown channel order
+0x10bb>-F, <unknown channel order 0x10ba>-F, INTENSITY-HALF_F, RGBA-HALF_F, <unknown channel
+order 0x10bc>-HALF_F, RGBA-<unknown channel data type 268435464>, RGBA-S16, RGBA-S32,
+RGBA-S8, RGBA-SN16, RGBA-SN8, RGBA-U16, RGBA-U32, RGBA-U8, RGBA-UN16, <unknown channel order
+0x10bc>-UN16, <unknown channel order 0x10000006>-UN8, A-UN8, <unknown channel order
+0x10b7>-UN8, <unknown channel order 0x10000007>-UN8, BGRA-UN8, INTENSITY-UN8, RGBA-UN8,
+<unknown channel order 0x10bc>-UN8, <unknown channel order 0x10bb>-UN8
+
+IMAGE3D READ_ONLY FORMATS: RGBA-F, <unknown channel order 0x10bc>-F, <unknown channel order
+0x10bb>-F, <unknown channel order 0x10ba>-F, INTENSITY-HALF_F, RGBA-HALF_F, <unknown channel
+order 0x10bc>-HALF_F, RGBA-<unknown channel data type 268435464>, RGBA-S16, RGBA-S32,
+RGBA-S8, RGBA-SN16, RGBA-SN8, RGBA-U16, RGBA-U32, RGBA-U8, RGBA-UN16, <unknown channel order
+0x10bc>-UN16, <unknown channel order 0x10000006>-UN8, A-UN8, <unknown channel order
+0x10b7>-UN8, <unknown channel order 0x10000007>-UN8, BGRA-UN8, INTENSITY-UN8, RGBA-UN8,
+<unknown channel order 0x10bc>-UN8, <unknown channel order 0x10bb>-UN8
+
+---------------------------------------------------------------------------
+<pyopencl.Device 'ATI Radeon HD 6750M' at 0x1021b00>
+---------------------------------------------------------------------------
+ADDRESS_BITS: 32
+AVAILABLE: 1
+COMPILER_AVAILABLE: 1
+DOUBLE_FP_CONFIG: 0
+DRIVER_VERSION: 1.0
+ENDIAN_LITTLE: 1
+ERROR_CORRECTION_SUPPORT: 0
+EXECUTION_CAPABILITIES: 1
+EXTENSIONS: cl_APPLE_SetMemObjectDestructor cl_APPLE_ContextLoggingFunctions cl_APPLE_clut
+cl_APPLE_query_kernel_names cl_APPLE_gl_sharing cl_khr_gl_event
+cl_khr_global_int32_base_atomics cl_khr_global_int32_extended_atomics
+cl_khr_local_int32_base_atomics cl_khr_local_int32_extended_atomics
+cl_khr_byte_addressable_store cl_khr_3d_image_writes
+GLOBAL_MEM_CACHELINE_SIZE: 0
+GLOBAL_MEM_CACHE_SIZE: 0
+GLOBAL_MEM_CACHE_TYPE: 0
+GLOBAL_MEM_SIZE: 536870912
+IMAGE2D_MAX_HEIGHT: 8192
+IMAGE2D_MAX_WIDTH: 8192
+IMAGE3D_MAX_DEPTH: 2048
+IMAGE3D_MAX_HEIGHT: 2048
+IMAGE3D_MAX_WIDTH: 2048
+IMAGE_SUPPORT: 1
+LOCAL_MEM_SIZE: 32768
+LOCAL_MEM_TYPE: 1
+MAX_CLOCK_FREQUENCY: 150
+MAX_COMPUTE_UNITS: 5
+MAX_CONSTANT_ARGS: 8
+MAX_CONSTANT_BUFFER_SIZE: 65536
+MAX_MEM_ALLOC_SIZE: 134217728
+MAX_PARAMETER_SIZE: 1024
+MAX_READ_IMAGE_ARGS: 128
+MAX_SAMPLERS: 16
+MAX_WORK_GROUP_SIZE: 1024
+MAX_WORK_ITEM_DIMENSIONS: 3
+MAX_WORK_ITEM_SIZES: [1024, 1024, 1024]
+MAX_WRITE_IMAGE_ARGS: 8
+MEM_BASE_ADDR_ALIGN: 32768
+MIN_DATA_TYPE_ALIGN_SIZE: 128
+NAME: ATI Radeon HD 6750M
+PLATFORM: <pyopencl.Platform 'Apple' at 0x7fff0000>
+PREFERRED_VECTOR_WIDTH_CHAR: 16
+PREFERRED_VECTOR_WIDTH_DOUBLE: 0
+PREFERRED_VECTOR_WIDTH_FLOAT: 4
+PREFERRED_VECTOR_WIDTH_INT: 4
+PREFERRED_VECTOR_WIDTH_LONG: 2
+PREFERRED_VECTOR_WIDTH_SHORT: 8
+PROFILE: FULL_PROFILE
+PROFILING_TIMER_RESOLUTION: 37
+QUEUE_PROPERTIES: 2
+SINGLE_FP_CONFIG: 30
+TYPE: 4
+VENDOR: AMD
+VENDOR_ID: 16915200
+VERSION: OpenCL 1.1 
+IMAGE2D READ_ONLY FORMATS: RGBA-SN8, RGBA-SN16, RGBA-UN8, RGBA-UN16, RGBA-S8, RGBA-S16,
+RGBA-S32, RGBA-U8, RGBA-U16, RGBA-U32, RGBA-HALF_F, RGBA-F, BGRA-UN8, <unknown channel order
+0x10b7>-UN8, R-SN8, R-UN8, R-UN16, R-S8, R-S16, R-S32, R-U8, R-U16, R-U32, R-HALF_F, R-F,
+A-SN8, A-UN8, A-UN16, A-S8, A-S16, A-S32, A-U8, A-U16, A-U32, A-HALF_F, A-F, RG-UN8, RG-UN16,
+RG-S8, RG-S16, RG-S32, RG-U8, RG-U16, RG-U32, RG-HALF_F, RG-F, RA-UN8, RA-UN16, RA-S8,
+RA-S16, RA-S32, RA-U8, RA-U16, RA-U32, RA-HALF_F, RA-F, INTENSITY-UN8, INTENSITY-UN16,
+INTENSITY-HALF_F, INTENSITY-F
+
+IMAGE3D READ_ONLY FORMATS: RGBA-SN8, RGBA-SN16, RGBA-UN8, RGBA-UN16, RGBA-S8, RGBA-S16,
+RGBA-S32, RGBA-U8, RGBA-U16, RGBA-U32, RGBA-HALF_F, RGBA-F, BGRA-UN8, <unknown channel order
+0x10b7>-UN8, R-SN8, R-UN8, R-UN16, R-S8, R-S16, R-S32, R-U8, R-U16, R-U32, R-HALF_F, R-F,
+A-SN8, A-UN8, A-UN16, A-S8, A-S16, A-S32, A-U8, A-U16, A-U32, A-HALF_F, A-F, RG-UN8, RG-UN16,
+RG-S8, RG-S16, RG-S32, RG-U8, RG-U16, RG-U32, RG-HALF_F, RG-F, RA-UN8, RA-UN16, RA-S8,
+RA-S16, RA-S32, RA-U8, RA-U16, RA-U32, RA-HALF_F, RA-F, INTENSITY-UN8, INTENSITY-UN16,
+INTENSITY-HALF_F, INTENSITY-F
+</pre>
+<hr>
+<pre>
+~/Documents/workspace/pyopencl/examples$ !900
+python demo_mandelbrot.py 
+Traceback (most recent call last):
+  File "demo_mandelbrot.py", line 161, in <module>
+    test = Mandelbrot()
+  File "demo_mandelbrot.py", line 120, in __init__
+    self.create_image()
+  File "demo_mandelbrot.py", line 147, in create_image
+    self.draw(-2.13, 0.77, -1.3, 1.3)
+  File "demo_mandelbrot.py", line 133, in draw
+    output = calc_fractal(q, maxiter)
+  File "demo_mandelbrot.py", line 66, in calc_fractal_opencl
+    output_opencl, np.uint16(maxiter))
+  File
+"/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py",
+line 221, in kernel_call
+    global_offset, wait_for, g_times_l=g_times_l)
+pyopencl.LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+</pre>
+<hr> <!------------------------------>
+yipeee!
+<pre>
+From: Andreas Kloeckner 
+Subject: Re: [PyOpenCL] invalid work group size
+Date: August 22, 2011 12:43:05 PM EDT
+To: Randy Heiland, pyopencl-list
+
+On Mon, 22 Aug 2011 11:46:54 -0400, Randy Heiland <heiland@indiana.edu> wrote:
+pyopencl.LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+Fixed in git. For once, the error message actually hits the nail on the
+head: Apple CPU CL only supports size-1 work groups.
+</pre>
+<hr> <!------------------------------>

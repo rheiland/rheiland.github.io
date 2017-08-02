@@ -1,0 +1,55 @@
+<HTML>
+<HEAD>
+   <TITLE>  Heiland: PTP
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<h1>Learning Eclipse/PTP</h1>
+<li><a href=round1/round1.html>Round 1</a>
+<hr><p>
+Notice the red-x error icon on the Application tab:<p>
+<img src=ptp-run-configs-helloc_mpi0.png>
+<hr><p>
+The error is due to the Application program "helloc_mpi" being the incorrect name:<p>
+<img src=ptp-run-configs-helloc_mpi1.png>
+<hr><p>
+When I created my project, I gave it a name of "MPI-helloworld-c" and this is
+the name of the program that got created.  Therefore I have to Browse/change the name of the Application
+program in this panel and then it's happy:<p>
+<img src=ptp-run-configs-helloc_mpi2.png>
+
+<hr><p>
+After clicking the Run button in the above Run Configs window, I see the following.  The program
+seems to run correctly and I see the expected output in the Console panel, but I don't understand
+why I'm getting the little yellow triangle (warning/error?) icon in the Machines tab.  And if I
+hover my mouse over that icon (below),I see a slider.
+<p>
+<img src=ptp-job0.png>
+<p>
+Hovering the mouse over the icon yields this mystery slider which disappears when I move my mouse
+(Greg W. wasn't sure why this happened).
+<p>
+<img src=ptp-machines-mysterySlider.png>
+<p>
+<!---------------------------------------------------------------------->
+<hr>
+<h2>PTP Debugger (SDM = Scalable Debug Manager)</h2>
+<p>
+<li><a href=http://wiki.eclipse.org/PTP/release_notes/3.0#Installing_PTP_Server_Components>building
+<i>sdm</i></a>
+<p>
+On my system, this meant going to .../eclipse/plugins/org.eclipse.ptp.macosx.x86_3.0.0.200908291618
+and doing <i>sh BUILD</i> to build <i>bin/sdm</i>. 
+<!---------------------------------------------------------------------->
+<hr>
+<h2>CMake</h2>
+OK, moving on to using CMake in Eclipse...
+<p>
+<li><a href=http://www.itk.org/Wiki/Eclipse_CDT4_Generator>CDT4 Generator</a>
+<hr>
+<i>Randy Heiland</i>
+<! ---------------------------------------------------------------->
+</BODY>
+</HTML>

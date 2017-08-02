@@ -1,0 +1,150 @@
+<HTML>
+<HEAD>
+   <TITLE>  Heiland: VTK on Linux
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<! ---------------------------------------------------------------->
+<h2>VTK on Linux</h2>
+<p>
+<b>WARNING: archived page</b><br>
+Here are the basic steps I took to get VTK built on Linux.
+<p>
+<b>Linux:</b> Red Hat 6.1 <br>
+<b>Mesa:</b> version 3.1 from <a href="http://mesa3d.sourceforge.net/download.html">SourceForge</a><br>
+<b>VTK:</b> version 3.1 (nightly from 3/31/00) from <a href="http://www.kitware.com">Kitware</a> <br>
+<b>Tcl/Tk:</b> version 8.3 from <a href="http://dev.scriptics.com/software/tcltk/downloadnow83.tml">scriptics.com</a> <br>
+<b>Python:</b> Python-1.5.2 from <a href="http://www.python.org/download/">python.org</a><br>
+<b>Java:</b> JDK 1.2.2 from <a href="http://java.sun.com/products/jdk/1.2/download-linux.html">Sun</a>
+
+<!------------->
+<p>
+To configure VTK, I did:
+<pre>
+% setenv CXX /usr/bin/c++
+% setenv CC /usr/bin/cc
+
+where:
+[heiland@patterns]# which cc
+/usr/bin/cc
+[heiland@patterns]# which c++
+/usr/bin/c++
+
+[heiland@patterns]# ll /usr/bin/cc
+lrwxrwxrwx   1 root     root            3 Jan 29 14:39 /usr/bin/cc -> gcc*
+[heiland@patterns]# ll /usr/bin/c++
+-rwxr-xr-x   2 root     root        65996 Sep  8  1999 /usr/bin/c++*
+
+[heiland@patterns]# cc -v
+Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/egcs-2.91.66/specs
+gcc version egcs-2.91.66 19990314/Linux (egcs-1.1.2 release)
+[heiland@patterns]# c++ -v
+Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/egcs-2.91.66/specs
+gcc version egcs-2.91.66 19990314/Linux (egcs-1.1.2 release)
+
+</pre>
+and then configured as shown here from
+<i>config.status</i>:
+<pre>
+#! /bin/sh
+# Generated automatically by configure.
+# Run this file to recreate the current configuration.
+# This directory was configured as follows,
+# on host patterns:
+#
+# ./configure  --with-mesa --with-opengl --with-shared --with-tcl
+--with-python --with-patented --with-contrib --with-java --with-tkwidget --with-x --with-pthreads
+
+</pre>
+(Note for those copying/pasting: I inserted a carriage return in the above configure line.
+<p>
+<b>Note:</b> While this config and resulting build worked for me, 
+it has been pointed out that others get "multiple 
+definition" link errors when using both with-mesa and with-opengl.  Leaving
+off with-opengl apparently corrects that situation.
+(I'm not sure how I got away with it, unless
+it was due to my dabbling in hardware accelerated GLX stuff -- 
+<a href="http://utah-glx.sourceforge.net/">utah-glx</a>.)
+
+<p>
+The graphics libs that get built are of the following size for me:
+<pre>
+-rwxrwxr-x   1 heiland  heiland  15991271 Apr  1 08:02 libVTKGraphics.so*
+-rwxrwxr-x   1 heiland  heiland   5222612 Apr  1 09:16 libVTKGraphicsJava.so*
+-rwxrwxr-x   1 heiland  heiland  21181540 Apr  1 09:43 libVTKGraphicsPython.so*
+-rwxrwxr-x   1 heiland  heiland   6113786 Apr  1 08:27 libVTKGraphicsTcl.so*
+</pre>
+
+<!------------->
+<p>
+And for Tcl/Tk:
+<pre>
+#! /bin/sh
+# Generated automatically by configure.
+# Run this file to recreate the current configuration.
+# This directory was configured as follows,
+# on host patterns:
+#
+# configure  --enable-shared
+</pre>
+<p>
+After building, this generates:
+<pre>
+-rwxrwxr-x   1 root     root       576017 Mar  7 22:07 libtcl8.3.so*
+</pre>
+
+<!------------->
+<p>
+For Python (probably should have done --with-shared ??):
+<pre>
+#! /bin/sh
+# Generated automatically by configure.
+# Run this file to recreate the current configuration.
+# This directory was configured as follows,
+# on host patterns:
+#
+# ./configure  --without-gcc
+</pre>
+<p>
+After building, this generates:
+<pre>
+-rw-rw-r--   1 root     root      3292788 Mar  7 22:43 libpython1.5.a
+</pre>
+
+<!------------->
+<p>
+For Mesa-3.1, I just did: 
+<pre>
+(root     root      9472000 Jan 30 19:21 MesaLib-3_1.tar)
+./configure
+make
+</pre>
+
+
+<!--------------------------->
+<hr width="50%" align=left noshade>
+<p>
+<p>
+Here's my VTK <a href="user.make">user.make</a> and <a href="system.make">system.make</a>.
+
+Then it's just a matter of building everything :-).  Remember to set your
+CLASSPATH so it can find the Java classes if you're building with "--with-java".
+<p>
+<pre>
+% make
+</pre>
+
+<p>
+For this particular download, not all the java wrappers got compiled 
+automatically.  I had to go to the directory containing them and manually
+compile.
+<!--------------------------->
+<hr width="50%" align=left noshade>
+Here's an example of a compile/link for a C++ pgm:
+<p>
+c++  -g -O2 -fPIC -D_HP_NO_FAST_MACROS -DHAVE_LIMITS_H -DHAVE_UNISTD_H -I.  -I. -I/usr/packages/Mesa-3.1/include -DVTK_USE_MESA   -I/usr/X11R6/include -I./../../common -I./../../common/examplesCxx -I./.. -I./../../imaging -c Mace.cxx -o Mace.o
+<p>
+c++ -o Mace  -g -O2 -fPIC -D_HP_NO_FAST_MACROS -DHAVE_LIMITS_H -DHAVE_UNISTD_H -I.  -I. -I/usr/packages/Mesa-3.1/include -DVTK_USE_MESA   -I/usr/X11R6/include -I./../../common -I./../../common/examplesCxx -I./.. -I./../../imaging Mace.o  ../../patented/libVTKPatented.so ../../imaging/libVTKImaging.so ../../graphics/libVTKGraphics.so ../../common/libVTKCommon.so -L/usr/X11R6/lib -L/usr/X11R6/lib /usr/lib/libGL.so.1 /usr/packages/Mesa-3.1/src/OSmesa/osmesa.lo -ldl  \
+-L/usr/X11R6/lib -lXext -lXt -lSM -lICE -lX11  -lm

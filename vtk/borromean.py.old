@@ -1,0 +1,160 @@
+#!/usr/local/bin/python
+
+#
+# Borromean rings: no 2 are interlocking, but all 3 are!
+#
+
+from libVTKCommonPython import *
+from libVTKGraphicsPython import *
+from colors import *
+from math import *
+
+# Create the RenderWindow, Renderer and both Actors
+#
+ren = vtkRenderer()
+renWin = vtkRenderWindow()
+renWin.AddRenderer(ren)
+iren = vtkRenderWindowInteractor()
+iren.SetRenderWindow(renWin)
+
+#
+# Create polylines (vtkPolyData) for the 3 rings 
+# (we'll just duplicate everything 3 times...)
+#
+ring1Pts = vtkPoints()
+ring2Pts = vtkPoints()
+ring3Pts = vtkPoints()
+
+# Radii for basic ellipse
+r1 = 2.0
+r2 = 1.0
+npts = 20
+delta = 2*3.1415 / (npts-1)
+for i in range(0,npts):
+	t = i*delta
+#	print "t=", t, "cos(t)=", cos(t)
+	ring1Pts.InsertPoint(i,0,r1*cos(t),r2*sin(t))
+	ring2Pts.InsertPoint(i,r2*cos(t),0,r1*sin(t))
+	ring3Pts.InsertPoint(i,r1*cos(t),r2*sin(t),0)
+
+# polylines
+ring1PL = vtkCellArray()
+ring2PL = vtkCellArray()
+ring3PL = vtkCellArray()
+ring1PL.InsertNextCell(npts) 
+ring2PL.InsertNextCell(npts)
+ring3PL.InsertNextCell(npts)
+for i in range(0,npts):
+	ring1PL.InsertCellPoint(i)
+	ring2PL.InsertCellPoint(i)
+	ring3PL.InsertCellPoint(i)
+
+# polyData
+ring1PD = vtkPolyData()
+ring1PD.SetPoints(ring1Pts)
+ring1PD.SetLines(ring1PL)
+
+ring2PD = vtkPolyData()
+ring2PD.SetPoints(ring2Pts)
+ring2PD.SetLines(ring2PL)
+
+ring3PD = vtkPolyData()
+ring3PD.SetPoints(ring3Pts)
+ring3PD.SetLines(ring3PL)
+
+ring1Map = vtkPolyDataMapper()
+ring1Map.SetInput(ring1PD)
+ring2Map = vtkPolyDataMapper()
+ring2Map.SetInput(ring2PD)
+ring3Map = vtkPolyDataMapper()
+ring3Map.SetInput(ring3PD)
+
+ring1Actor = vtkActor()
+ring1Actor.SetMapper(ring1Map)
+ring1Actor.GetProperty().SetColor(1.0,0.0,0.0)
+
+ring2Actor = vtkActor()
+ring2Actor.SetMapper(ring2Map)
+ring2Actor.GetProperty().SetColor(0.0,1.0,0.0)
+
+ring3Actor = vtkActor()
+ring3Actor.SetMapper(ring3Map)
+ring3Actor.GetProperty().SetColor(0.0,0.0,1.0)
+
+# Add the actors to the renderer, set the background and size
+#
+ren.AddActor(ring1Actor)
+ren.AddActor(ring2Actor)
+ren.AddActor(ring3Actor)
+ren.SetBackground(1,1,1)
+#ren.SetBackground(0,0,0)
+
+# create implicit models of rings:
+tube1 = vtkImplicitModeller()
+tube2 = vtkImplicitModeller()
+tube3 = vtkImplicitModeller()
+
+tube1.SetInput(ring1PD)
+tube2.SetInput(ring2PD)
+tube3.SetInput(ring3PD)
+
+tube1.SetSampleDimensions(50,50,50)
+tube2.SetSampleDimensions(50,50,50)
+tube3.SetSampleDimensions(50,50,50)
+
+tube1.SetMaximumDistance(0.25)
+tube2.SetMaximumDistance(0.25)
+tube3.SetMaximumDistance(0.25)
+
+r= 2.5
+tube1.SetModelBounds(-r,r,-r,r,-r,r)
+tube2.SetModelBounds(-r,r,-r,r,-r,r)
+tube3.SetModelBounds(-r,r,-r,r,-r,r)
+
+contour1 = vtkContourFilter()
+contour1.SetInput(tube1.GetOutput())
+contour1.SetValue(0,0.25)
+contour2 = vtkContourFilter()
+contour2.SetInput(tube2.GetOutput())
+contour2.SetValue(0,0.25)
+contour3 = vtkContourFilter()
+contour3.SetInput(tube3.GetOutput())
+contour3.SetValue(0,0.25)
+
+opac = 1.0
+tube1Mapper = vtkPolyDataMapper()
+tube1Mapper.SetInput(contour1.GetOutput())
+tube1Mapper.ScalarVisibilityOff()
+tube1Actor = vtkActor()
+tube1Actor.SetMapper(tube1Mapper)
+tube1Actor.GetProperty().SetColor(red[0],red[1],red[2])
+tube1Actor.GetProperty().SetOpacity(opac)
+
+tube2Mapper = vtkPolyDataMapper()
+tube2Mapper.SetInput(contour2.GetOutput())
+tube2Mapper.ScalarVisibilityOff()
+tube2Actor = vtkActor()
+tube2Actor.SetMapper(tube2Mapper)
+tube2Actor.GetProperty().SetColor(green[0],green[1],green[2])
+tube2Actor.GetProperty().SetOpacity(opac)
+
+tube3Mapper = vtkPolyDataMapper()
+tube3Mapper.SetInput(contour3.GetOutput())
+tube3Mapper.ScalarVisibilityOff()
+tube3Actor = vtkActor()
+tube3Actor.SetMapper(tube3Mapper)
+tube3Actor.GetProperty().SetColor(blue[0],blue[1],blue[2])
+tube3Actor.GetProperty().SetOpacity(opac)
+
+ren.AddActor(tube1Actor)
+ren.AddActor(tube2Actor)
+ren.AddActor(tube3Actor)
+
+renWin.SetSize(300,300)
+
+renWin.Render()
+# render the image
+#
+iren.Initialize()
+
+iren.Start()

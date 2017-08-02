@@ -1,0 +1,1145 @@
+%  see line 328
+\hoffset -0.15in
+\voffset -0.5in
+%\documentstyle[12pt,psfig]{article}
+\documentstyle[12pt]{article}
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{.5in}
+\setlength{\textwidth}{6.0in}
+\setlength{\textheight}{8.5in}
+%\setcounter{page}{23}
+\begin{document}
+\title{KLTOOL:  A program for analyzing spatio-temporal data}
+\author{Randy Heiland \and Dieter Armbruster \and Eric Kostelich\thanks{
+	Dept.\ of Mathematics, Arizona State University, Tempe, AZ  85287-1804}}
+\date{Draft version of May 1994}
+\maketitle
+\section{Program Summary}
+\begin{enumerate}
+\item Title of program: {\sl kltool}
+\item Program obtainable by anonymous ftp from
+	\begin{center}
+	{\tt saddle.la.asu.edu}  (Internet number 129.219.44.11)
+	\end{center}
+	Directions are given in Section~\ref{sec:installation}.
+	For further information, contact:  Dieter Armbruster
+		({\tt dieter@math.la.asu.edu}) or Eric Kostelich
+		({\tt kostelich@asu.edu}).
+\item This alpha release was developed and
+	tested on Silicon Graphics Iris and Indigo workstations. 
+\item Operating system:  IRIX 4.0.1 or later.
+\item Window system:  X11 Release 4 or later with X/GL version 1.0 or later.
+\item Programming language: primarily C, with some Fortran packages.
+\item Graphics Package: SGI Graphics Library.
+\item User Interface: Forms Library (Mark H. Overmars).
+%\item Number of lines of code: about 15000.
+\item Keywords: data analysis, dynamical
+	systems,   Karhunen Lo\`{e}ve decomposition, proper
+	orthogonal decomposition, principal component analysis,
+	interactive graphics.
+\item Typical problem: Given a spatio-temporally complicated
+dataset, find a linear vector space $V$ in which one can {\sl optimally} embed
+the data.  An orthogonal basis for $V$ can be associated
+with {\sl coherent structures} in the dataset. The goal is to visualize
+the coherent structures and approximate the dataset using only a few
+basis elements (coherent structures).   In this way, the data can
+be analyzed as a low dimensional dynamical system.
+\item Method: Determination of a covariance matrix whose
+eigenfunctions are the basis for the spanning vector space.  The
+associated eigenvalues are the variances of the dataset with respect to
+those eigenfunctions. The package's primary function is to visualize
+data; to provide window and menu driven features to manipulate and
+choose subsets of the data for analysis; to calculate and display
+the eigenfunctions; and to reconstruct the dataset approximately
+and compare the ensuing error.
+A schematic overview of {\sl kltool}'s
+functionality is depicted in Figure~1.  We briefly describe the
+function of each operation:
+\begin{figure}[t]
+
+\vspace{2.5in}
+\begin{picture}(1,1)(-30,-100)
+
+\put(-10,25){\line(1,0){375}}
+
+\put(150,50){\fbox{\em{KLTOOL}}}
+\put(167,25){\line(0,1){22}}
+
+\put(-25,-10){\fbox{Input}}
+\put(-10,25){\line(0,-1){23}}
+
+\put(40,-10){\fbox{Select}}
+\put(60,25){\line(0,-1){23}}
+
+\put(110,-10){\fbox{Covariance}}
+\put(140,25){\line(0,-1){23}}
+
+\put(210,-10){\fbox{Coefficients}}
+\put(240,25){\line(0,-1){23}}
+
+\put(300,-10){\fbox{Error}}
+\put(315,25){\line(0,-1){23}}
+
+\put(340,-45){\framebox{\shortstack{Galerkin\\ Projection}}}
+\put(365,25){\line(0,-1){47}}
+
+
+\put(0,-50){\fbox{Visualize}}
+\put(25,25){\line(0,-1){63}}
+
+\put(80,-50){\fbox{Mean}}
+\put(95,25){\line(0,-1){63}}
+
+\put(160,-50){\fbox{Decompose}}
+\put(190,25){\line(0,-1){63}}
+
+\put(255,-50){\fbox{Reconstruct}}
+\put(285,25){\line(0,-1){63}}
+
+
+%\put(40,40){\oval(10,5)}
+\end{picture}
+\caption{Overview of {\sl kltool}.}
+\label{fig:overview}
+\end{figure}
+\end{enumerate}
+
+\begin{description}
+\item[Input] Reads the dataset of vectors (or some subset thereof).  
+The user specifies the spatial dimension of the vector 
+(currently, only one- or two-dimensional vectors can be visualized)
+and the vector resolution. Data formats that are supported include:
+binary C, binary Fortran, both in single and double precision, and ASCII.
+\item[Visualize] Allows viewing of the data.  One can select from a
+list of viewing modes: wireframe or colored surface, scan or landscape.
+\item[Select] Interactive selection of a subset of the data.
+\item[Mean] Compute and display the temporal average of the time series of
+vectors.
+\item[Covariance] Compute the covariance matrix, ${\bf C}$.
+\item[Decompose] Perform K-L decomposition 
+on ${\bf C}$.  (Alternatively, perform singular value decomposition). 
+This results in a bar-chart display of energy percentages
+of the eigenvalues (with a default cumulative of 95\%).
+The empirical eigenfunctions are then computed and displayed.
+\item[Coefficients] Compute and display the time series coefficients of the
+data (or approximation) projected onto the eigenfunctions.
+\item[Reconstruct] Compute and display an approximation to the original
+data using $K$ eigenfunctions.
+\item[Error] Compute and display the absolute error between the data and its
+approximation.
+\item[Gal\"{e}rkin Projection] Generate a Gal\"{e}rkin projection,
+a system of ODEs, for a PDE
+using $K$ eigenfunctions.  One must provide the PDE in a predefined syntax.
+{\em kltool's} algorithm scans the symbolic PDE, 
+searches for differentiation operators, $d(u,x,\cdot)$, and performs
+the appropriate substitution and differentiation of $K$ eigenfunctions.
+\item[Output] Selected data, eigenfunctions and approximations can be
+saved into files for later input or for post-processing. 
+A plotting interface is provided as well. 
+\end{description}
+\newpage
+\section{Tutorial}
+
+The quantitative analysis of low-dimensional chaotic dynamical systems
+has been an active area of research for many years.
+Up until now, most work has concentrated on the analysis of time series
+data from laboratory experiments and numerical simulations.
+In contrast, methods for the analysis of spatiotemporal data are not
+as well developed.
+This manual describes a computer-aided tool, called {\sl kltool},
+which operates on spatiotemporal data from nonlinear systems.
+{\sl kltool} is intended to be an easy-to-use, general-purpose 
+software package for nonspecialists.
+Its primary function is to analyze the data and extract
+a set of basic building blocks -- the eigenfunctions of the dataset.  
+These eigenfunctions are optimal, in a certain least-squares sense, and
+they can reveal coherent spatial structures within the data.
+It is then possible to reconstruct an approximation to the data using
+these eigenfunctions.  In addition to providing these analytic and 
+synthetic modes
+of operation, {\sl kltool} has other capabilities which offer insight into
+dynamical models for the data.
+The underlying mathematical analysis is well known and a short overview
+will be given in the next subsection. 
+This tutorial section will discuss four typical examples---how they
+are processed
+in {\sl kltool} and what kind of conclusions can be drawn from such an
+analysis. 
+
+\subsection{Data analysis}
+The type of data we wish to analyze are generated by some nonlinear system 
+which evolves in time and which is spatially inhomogeneous.
+We assume a scalar function $u(x,t)$ is obtained
+at discrete time values, $t_i$ and at fixed points in
+space providing a set of spatiotemporal data:
+$\{u(x,t_i)\}_{i=1}^T$.
+The components of $u(x,t_i)$ correspond to scalar measurements taken
+at fixed points in space.
+We allow for 1 and 2 dimensional spatial domains.
+Two common methods of obtaining such spatiotemporal data are from 
+laboratory experiments and numerical simulations of a mathematical model
+(typically a partial differential equation [PDE]).
+
+The problem we address is: can this complex set of data be understood and
+explained in some relatively simple manner?  Is there a quantitative 
+way to determine the underlying spatial structure of a spatio-temporal
+dataset such that the temporal evolution can be mapped into the
+evolution of the amplitudes of a few spatial orthogonal modes?
+This would seem a promising approach for two types of problems:
+Dissipative PDEs for which there exists theoretical proof of the 
+existence of a finite dimensional (hopefully low dimensional) attractor.
+This is the case the Kuramoto-Sivashisky equation, the Ginzburg-
+Landau equation, and the Navier-Stokes equation in two dimensions,
+among others.  Their time evolution
+should be describable by the standard notions of dynamical systems
+theory such as embedding dimensions, invariant manifolds and
+generic bifurcation behavior. The other type of datasets where one 
+would hope to make some progress through the identification of
+coherent structures are experimental data with good signal to noise
+ratio and the occurrence of large scale spatial structures. This type of
+analysis for turbulence was pioneered by Lumley~\cite{lum}.
+
+An alternative approach (which is the standard method)
+in analyzing such data is to perform a Fourier
+decomposition.  One hopes that only a few dominant peaks appear
+in a power spectrum of the spatial modes, suggesting relatively simple 
+spatial structures.
+However, it may be that a coherent spatial structure is 
+composed of many Fourier modes
+and a Fourier analysis would not be the best approach.
+For example, the Fourier decomposition of a time independent steady state
+of the system does not reveal much information about the dynamics
+of the system; indeed, the steady state itself is the only relevant
+structure and its identification solves the spatio-temporal data analysis
+problem. 
+
+The Karhunen-Lo\`{e}ve decomposition computes these coherent
+spatial structures directly.
+Furthermore, the structures will be optimal (in a least-squares sense)
+for a given dataset.
+Once the primary spatial structures are known, one can try to
+explain their temporal evolution within the framework of
+dynamical systems theory.
+
+\subsubsection{The Karhunen-Lo\`{e}ve Decomposition}
+The Karhunen-Lo\`{e}ve analysis is well known.  About half a dozen
+different names have been given to the procedure.  Descriptions
+of the mathematical and implementation details are given
+in~\cite{sir,pre,ber}. We review the main idea here
+and its specific implementation in {\sl kltool}.
+
+Let us consider a dataset
+$u(x,t)$ defined over a finite spatial domain $R$ and given for a finite
+interval~$0\le t\le T$. Let us further assume that the average of $u(x,t)$,
+usually written as the time average~$\langle u(x,t) \rangle$, 
+is zero. We can define a scalar product
+\begin{equation}
+(u,u') = \int_{R} u(x,t) u(x',t)\, dx.
+\end{equation}
+Theory tells us that we can choose a function $\psi_1(x)$ such that
+the projection of the dataset onto all possible functions $\psi(x)$
+\begin{equation}
+\lambda_1 = \lim_{T \rightarrow \infty} \frac{1}{T}
+	\int_{0}^{T} (\psi_1,u)^2\, dt
+\label{eq:variation}
+\end{equation}
+is maximal, where we can normalize $(\psi_1,\psi_1) = 1$.
+Proceeding inductively,
+we can now find $\psi_2$ with $(\psi_2,\psi_1) = 0$, $(\psi_2,\psi_2) =1$ and
+\begin{equation}
+\lambda_2 = \lim_{T \rightarrow \infty} \frac{1}{T}
+	\int_{0}^{T} (\psi_2,u)^2\, dt.
+\end{equation}
+In this way, we can find a unique orthonormal set of functions
+$\psi_n$ which are the eigenfunctions of the Fredholm type integral equation
+\begin{equation}
+\int_R K(x,y) \psi(y)\, dy = \lambda \psi(x)
+\end{equation}
+where $ K(x,y)$ is the time averaged correlation function
+\begin{equation}
+K(x,y) = \langle u(x,t) u(y,t)\rangle.
+\end{equation}
+These are called the {\sl empirical eigenfunctions} or
+the {\sl coherent structures}.
+It can be shown that any projection of the data $u(x,t)$
+onto a finite set of the~$\psi_j$, given by
+\begin{displaymath}
+u_N = P_N u = \sum_{k=1}^{N} a_k(t) \psi^{(k)} (x),
+\end{displaymath}
+leads to uncorrelated (with respect to the averaging process) amplitudes
+$a_k$ such that
+$\langle a_j(t) a_k(t)\rangle = \lambda_j \delta_{jk}$,
+where $\lambda_j$ the 
+variance of the data in the direction of the $k$th eigenfunction.
+Furthermore, the error is given by
+$\epsilon_N = \|u - u_N\|^2$ and is a minimum over all
+possible sets of orthonormal functions for any given~$N$. 
+The {\sl energy} of the data is defined as being the sum of the
+eigenvalues of the correlation function:
+\begin{equation}
+E = \sum_{i=1} {\lambda}_i.
+\end{equation}
+To each eigenfunction we assign an energy percentage based on
+the eigenfunction's associated eigenvalue:
+\begin{equation}
+E_k = \frac{\lambda_k}{E}
+\label{energy_pc}
+\end{equation}
+Assuming the eigenvalues are sorted largest to smallest, we have an
+ordering of the eigenfunctions from most to least energetic.
+Finally, we can reconstruct any sample vector using the eigenfunctions:
+\begin{equation}
+u(x,t_0) =  \sum_k {a_k(t_0) \psi^{(k)}(x)}
+\end{equation}            
+where the coefficients are computed from the projection of the sample vector
+onto an eigenfunction:
+\begin{equation}
+a_k(t_0) = ( u(x,t_0), \psi^{(k)}(x))
+\label{data_coef}
+\end{equation}
+Using only the first $K$ most energetic eigenfunctions, we 
+can construct an approximation $\hat{u}$ to the data~$u$ as:
+\begin{equation}
+\hat{u}(x,t) =  \sum_{i=1}^K{a_i {\psi}^{(i)}}
+\label{approx_eqn}
+\end{equation}
+
+Since we want to identify the building 
+blocks of low dimensional attractors from spatio-temporally complex data,
+we assume that we have a high resolution in space and a comparatively
+low dimensional attractor, {\sl i.e.}, we assume that
+$N >> T$ since we can sample
+the attractor with only few snapshots.  In that case, the
+practical approach to calculating the correlation function is not to 
+determine the $N \times N$ correlation matrix but to use the dual
+approach on the $T$ snapshots~\cite{sir},
+also known as the {\sl sample space setting}~\cite{pre}.
+Here we consider the snapshot vectors $u_k(x), k= 1,\ldots T$ and
+determine the empirical eigenfunctions $\psi^{(k)}(x)$
+as an admixture of the snapshots given by
+\begin{equation}
+\psi^{(k)}(x) = \sum_{j=1}^T \alpha_j^{(k)} u_j(x)
+\end{equation}
+such that (\ref{eq:variation})
+holds. The corresponding eigenvalue problem is to find the
+eigenvalues and eigenfunctions of the symmetric $T \times T$ matrix C with
+\begin{displaymath}
+C_{ij} = \frac{1}{T} (u_i(x),u_j(x))
+	= \frac{1}{T} \sum_{k=1}^N u_i(x_k)u_j(x_k).
+\end{displaymath}
+As a final note, we mention that the results of the above K-L decomposition can also be obtained via singular value decomposition (SVD).
+See~\cite{strang} for an introduction to SVD.
+Using this method, one would not compute the $T \times T$ covariance matrix.
+Instead, an $N \times T$ rectangular matrix is generated:
+\begin{eqnarray*}
+\left( u_1(x),u_2(x), \ldots ,u_T(x)\right).
+\end{eqnarray*}
+The singular values, ${\sigma}_i$, $i=1,\ldots,T$ (assuming $T <N$)
+and singular vectors of this matrix are then computed.            
+Using the fact that ${\sigma}_i^2 = \lambda_i$, the computations would
+proceed as above.
+An application and discussion of the SVD method for a PDE modeling
+fluid motion can be found in~\cite{newell}.
+A comparison of SVD and K-L, in terms of
+numerical accuracy, is discussed in~\cite{mees}.
+
+
+\subsection{Four walkthrough examples}
+\subsubsection{User interface}
+We assume that {\sl kltool} has been installed as described in
+section~\ref{sec:installation}.
+The program is started with a command line of the form
+{\tt kltool parameterfile}. 
+The user interacts with {\sl kltool} via popup menus and dialog windows.
+Multiple windows are provided to display different outputs.
+The initial call will lead to the  screen layout in Figure~\ref{input}
+consisting  of a large Data display window,
+a smaller Data Scan window, and a top row of static menus.
+The menu items are listed and explained in Section~\ref{sec:staticmenus}.
+
+Besides the static menus at the top of the screen, there are also
+window dependent menus.  These are used to perform functions related to
+a particular window.  Section~\ref{sec:windowdependentmenus}
+provides an explanation of these menus.
+
+The three buttons on the mouse are used for different things.
+RMOUSE is used to pop up a menu and select an item within the menu.  
+Press RMOUSE over a menu name (or within a window).  Hold down the
+button and move
+the cursor until you are over the item to be selected, then release the
+button.
+LMOUSE is used to pick any button within a dialog window.
+MMOUSE is used to rotate data within a window.  Hold it down and move the
+mouse.
+LMOUSE and RMOUSE are also used within a small Scan window to scan through
+a set of vectors backward and forward, respectively.
+
+Besides providing these {\sl kltool} functions, the mouse buttons can also
+be used to manually resize and position a window on the SGI workstation.
+Positioning the cursor on the border of a window and pressing LMOUSE or
+MMOUSE will cause either a resize or a move of the window.  RMOUSE will
+pop up the standard window menu.  This menu will be useful for raising 
+(lowering) one window in front of (behind) another.
+
+\subsubsection{1-d experimental data}
+The Couette-Taylor experiment is widely known among fluid dynamicists.  The
+apparatus consists of two concentric cylinders with fluid between them.
+One or both of the cylinders can rotate, inducing a flow in the fluid.
+This flow has qualitatively different states, or flow patterns,
+depending on the 
+rotation speed of the cylinders.  (In the experiment described here,
+the outer cylinder is fixed and only the inner cylinder rotates.)
+For the purpose of our analysis, 
+we were provided with data obtained by Dan Lathrop and
+Harry Swinney~\cite{Swinney} in the following manner.  
+The apparatus was photographed with a specially modified camera containing
+a charge-coupled device (CCD) array.
+A one-dimensional spatial vector of light intensity values in the 
+direction parallel to the cylinder was recorded at regular
+time intervals, providing an indication of the system's flow pattern.
+The dataset consists of 50 snapshot vectors, each with 891 
+components whose values are proportional to the light intensity.
+When you type in {\tt kltool ct-tutorial.info},
+the screen will consist of a menu bar (the static menus) at the
+top of the screen and an empty Data window. Choose {\sl Input} from the 
+{\sl kltool} static menu.  The Input parameter control panel will 
+appear (Figure 2)
+\begin{figure}
+%\psfig{figure=input_panel.ps,width=12cm}
+\caption{The Input panel}
+\label{input}
+\end{figure}
+with all possible parameter fields.
+All parameters are already set correctly through
+the input parameter file {\tt ct-tutorial.info}. 
+Select the {\sl OK} button (using LMOUSE) to read and display the data.
+You should get a picture like the one in Figure~\ref{fig:ct}.
+
+\begin{figure}
+%\psfig{figure=ct_data.ps,width=12cm}
+\caption{Typical snapshot for the Taylor-Couette data}
+\label{fig:ct}
+\end{figure}
+
+If you then popup (via RMOUSE) the Data window menu and select 
+{\sl DisplayType Landscape},
+you can see  that near both ends of the spatial vectors,
+the amplitudes are constant in time.
+These values correspond to a boundary layer at the top and 
+bottom of the Couette apparatus and are
+not relevant to the fluid behavior in the middle portion of the cylinder.
+Therefore, we make use of {\sl kltool}'s interactive data selection feature to
+remove the data near the boundaries. To do so, 
+choose the {\sl Select} item under the {\sl kltool} static menu.
+Two slider bars will appear
+at the edge of the Data window: one on the left (vertical) and one 
+at the bottom (horizontal).
+Inside each slider will be two red triangular pointers.  
+(The vertical slider is invalid for 1-D data.)
+Using LMOUSE, click and drag each triangular pointer to a desired
+lower and upper bound in the spatial domain.  When you're satisfied, select
+{\sl OK} in the feedback window and then {\sl Yes}
+if you really want to proceed.
+The data will be re-read and redisplayed.  You can always verify via the
+Input window (under {\sl kltool} menu) that the data has been ``zoomed'' by
+the Selection parameters.
+
+You can now return to {\sl DisplayType Scan} and
+scan through the dataset of 50 vectors as discussed in the last subsection.
+The clipped vectors
+are analyzed by opening up the {\sl Compute} menu and calculating the
+mean structure.  Notice the window for the Mean overlays the Data window.
+In order to view up to four windows, we open the {\sl Windows} menu and select
+{\sl 4 windows}. Since we have only determined two so far, only the data
+window and the mean will be displayed.  Next we compute the covariance matrix,
+its eigenvalues and its eigenfunctions by selecting the {\sl Decompose}
+item in the {\sl Compute} menu.  By default, the system determines as many
+eigenfuctions as are necessary to capture 95\% of the energy. 
+
+Scan through the eigenfunctions to get a feel for the quite noisy
+coherent structures. The small Scan window displays the percentage of 
+the variance captured by the
+displayed eigenfunction as well as
+the cumulative percentage for all eigenfuctions
+up to and including the displayed eigenfunction.
+The ratio of 12 eigenfunctions to 50 snapshots indicates high-dimensional
+phase space dynamics. In order to see how much the noise or the low
+energy modes affect the dataset we
+perform a reconstruction
+of the data using the first $K$ eigenfunctions. We choose {\sl Approx} in the
+{\sl Compute} window and are prompted for the number of eigenfunctions to use
+for the approximation.
+%we get the default variance, which means that the system computes enough
+%eigenfunctions to capture 95\% of the energy. 
+Notice that the
+approximation window overlays the mean window. By toggling the {\sl 
+sync} flag in the {\sl Flags} menu, we can synchronize the scanning of
+the data window and the approximation window. Scanning the data window
+now scans also through the approximation vectors thus enabling the
+user to compare the approximation to the data at any given time. An even
+better comparison is achieved by calculating the difference between 
+each data vector and its approximation. This is done by selecting {\sl
+Error} in the {\sl Compute} menu.  The resulting error 
+vectors are displayed in the lower left window.  The scaling used is 
+the same as the data and approximation windows.
+Scan through the error to get a feel for the quality of
+the approximation.
+
+A useful view of the dataset as a whole is provided with a color-coded
+contour plot (red codes the higher values, blue the lower values 
+of the dataset). This is achieved by using the popup menu 
+inside each window.  For example, go into the data window and press
+RMOUSE.  Choose {\sl Top} from the {\sl ViewAngle} submenu and {\sl Shaded}
+from the {\sl Displaytype} submenu.  Figure~\ref{fig:ct4}
+\begin{figure}
+%\psfig{figure=ct_analysis.ps, height=8cm}
+\caption{Taylor-Couette analysis: Dataset (u-l), reconstruction (u-r),
+energy percentages (l-l), error(l-r)}
+\label{fig:ct4}
+\end{figure} 
+shows a
+color contour plot of the original dataset (upper-left), a reconstruction
+using the first six eigenfunctions ($K$=2) (upper-right), and the absolute
+error (lower-right). Notice that the approximation captures the 
+large scale structures whereas the  error plots indicate small scale 
+structures in the dataset not captured by only six modes.
+
+\subsubsection{Flame Dynamics}
+As another  example of a K-L analysis of experimental data, 
+we present an analysis of 
+an experiment on the dynamics of two-dimensional flames~\cite{gor}.
+A schematic of the experiment is shown in Figure~\ref{fig:flames}.
+The apparatus consists of a flat, circular, porous plug burner
+which burns various premixed gases.  A video camera
+records the resulting flame dynamics.  
+Depending on the types of gases and
+their flow rate through the burner,
+one can observe fascinating spatiotemporal patterns of the flames.
+\begin{figure}
+\vspace*{10cm}
+\caption{Schematic illustration of flame dynamics experiment}
+\label{fig:flames}
+\end{figure}
+For input to {\sl kltool}, we chose a  regime
+that is a single closed 
+spatial structure
+which changes its shape in time.  The first few video frames
+of the dynamics are shown in Figure~\ref{fig:images}.
+\begin{figure}
+\vspace*{13cm}
+\caption{First sixteen images of flame video data}
+\label{fig:images}
+\end{figure}
+Through preprocessing
+we replaced the 2-d flame image with its boundary curve,
+which is a one dimensional spatial vector~$r(\theta)$, where
+$0\leq\theta < 2\pi$ is plotted in polar coordinates. They are 
+shown superimposed on the flame images in Figure~\ref{fig:images}.
+Run {\tt kltool flames-tutorial.info} to compute the eigenfunctions. 
+To switch between polar and rectangular coordinate systems, toggle the
+{\sl rect/polar} item under the {\sl Flags} menu.
+The resulting analysis by {\sl kltool} is shown in
+Figure~\ref{fig:flamesnap}, which shows a sample snapshot
+in the data window (upper-left), the
+mean (upper-right), the $\Psi$ energy percentages (lower-left), and $\Psi_1$
+(lower-right).  The analysis indicates that only two K-L modes are
+responsible for most of the dynamics. 
+\begin{figure}
+%\psfig{figure=flames.ps,height=8cm}
+\caption{Flames: snapshot (u-l), mean  (u-r), energy\%s (l-l),
+	eigenfunction (l-r)}
+\label{fig:flamesnap}
+\end{figure} 
+In Figure~\ref{fig:coeffs}, we plot the time series of
+coefficients for $\Psi_1$ and~$\Psi_2$.  To draw them,
+we select the {\sl Data coeffs}
+item via the {\sl Eigfns} window menu.  Another window will appear containing
+the time series of coefficients for each eigenfunction.  The scan window
+corresponds to the eigenfunction onto which the data was projected.
+\begin{figure}
+%\psfig{figure=flames_cf1.ps,height=8cm}
+%\psfig{figure=flames_cf2.ps,height=8cm}
+\caption{Flames: Coefficients of $\Psi_1$ and $\Psi_2$.}
+\label{fig:coeffs}
+\end{figure}
+Their oscillatory behavior with almost constant amplitude suggests
+that we have a
+limit cycle which is spanned by the first two K-L modes.
+%\include{flames_figs}
+
+\subsubsection{The Kuramoto Sivashinsky equation}
+The Kuramoto Sivashinsky equation (K-S)
+\begin{equation}
+u_{t} + 4 u_{xxxx} + \alpha (u_{xx} + \textstyle\frac{1}{2} (u_{x})^{2}) = 0
+\end{equation}
+has become a benchmark for many theories on global attractors.
+For small values of~$\alpha$, it has been well studied numerically for
+different boundary conditions.
+We have used a numerical simulation for $\alpha = 17.5$
+to illustrate the use of {\sl kltool} to
+produce a Gal\"{e}rkin projection onto the K-L eigenfunctions. 
+The data are generated for periodic boundary conditions.
+The dynamics for this regime are well understood~\cite{arm}
+and consist of a homoclinic cycle between fixed points 
+which are almost pure Fourier modes of the form $A e^{2 i x}$. The cycle
+appears as a sudden shift in the PDE simulation from a cosine type of 
+solution to an inverted solution with the same form and negative amplitude.
+Running {\tt ks-tutorial.info}, we load a sequence of data vectors which
+contain two such events. Scan through the dataset to inspect the inversions.
+Then select {\sl Mean} and {\sl Decompose} under the {\sl Compute} menu
+to calculate the eigenfunctions.
+
+A very common procedure for the K-L analysis is to use the set of orthogonal
+K-L eigenfunctions as a basis for an expansion of the
+dependent variable $u(x,t)$ of the form $u(x,t) = \sum a_i(t) \psi_i(x)$.
+Given a PDE, we can now choose the first $n$ K-L eigenfunctions and
+project onto the finite dimensional system spanned by those eigenfunctions.
+This projection yields an ODE for the amplitudes $a_i$, $1 \leq i \leq n$.
+These ODEs are generated when we select {\sl Galerkin} under the 
+{\sl Compute} menu
+which prompts for the name of the file
+containing the PDE in a special symbolic form.
+(A template is given in {\tt KS.pde}.)
+Upon entering the filename, the PDE is 
+parsed, a file called {\tt parse.log} is generated,
+and two distinct files
+with the right hand sides of the ODEs are created under the names
+{\tt ode.sys} and {\tt ode2.sys}.
+{\sl kltool} works with the number of eigenfunctions currently
+activated, so if you choose to do an approximation first with fewer
+eigenfunctions (say $m < n$) than originally calculated,
+then the Galerkin projection will have $m$ ODEs.
+
+There are no plans to add a simulation package for ODEs to {\sl kltool}.
+A number of excellent tools are available which
+can use the file {\tt ode.sys} as an input file
+(such as the {\sl dstool} software package~\cite{gu}).
+While {\sl Galerkin} works well for the KS equation and has been tested in a 
+limited way for other 1-d PDEs, its parsing capabilities are
+limited.  This example is intended to give the serious user a 
+guideline rather than a complete tool on how to proceed for his own PDE.
+
+\subsubsection{Kolmogorov flow}
+Our data for Kolmogorov flow analysis come from a simulation by Nicolaenko and
+She~\cite{nic8}. The data are the scalar vorticity $w(x,y,t)$ as a function
+of two space $(x,y)$ and one time dimension. They describe the time evolution
+of 2-d Navier Stokes flows under a spatially periodic, temporally constant
+forcing. Every snapshot can be represented as a 2-d surface.
+
+There are different ways to visualize these surfaces.
+Push LMOUSE inside the data window and select {\sl ViewAngle}.
+As a submenu you have the choices for your view: {\sl Front, Top, Side}.
+Another submenu lets you choose the {\sl DisplayType}: The
+surface can be represented either by a wiremesh or by color-coded
+shading. Notice that shading tends to slow down the computer considerably.
+Play with all permutations of {\sl ViewAngle} and {\sl DisplayType} to get
+a visual understanding of the data surface. Choose one and scan through 
+the dataset. Notice the increased activity inside the two circular
+eddies for $t > 80$. This represents a turbulent bursting of the flow.
+Recall that MMOUSE allows you to rotate your viewing angle continuously
+if you are in {\sl Top ViewAngle}. Rotations will
+always be performed in the window that has
+last activated the {\sl MouseRotate} (MMOUSE) button in its display window.
+Hence, if you create an approximation window,
+you can rotate its data surface independently of the other windows.
+Once you release MMOUSE, the {\sl ViewAngle} freezes and becomes
+the viewing angle of any other data window (upon its next update).
+
+Since this dataset is very large (approximately 5~MB),
+one might want to perform different types of analyses on it
+without recalculating the correlation matrix or
+the eigenvectors all the time.
+Therefore {\sl kltool} has the capability to write
+out and read in relevant information. In particular, it can record the
+eigenfunction information, the mean, the approximation and any selection
+of the data. You can verify this by using the {\sl Read} menu and reading
+in the files {\tt v-burst.mean}, {\tt v-burst.eig}, and {\tt v-burst.app}.
+You can now work with them as if they were created in an 
+interactive session of {\sl kltool}.
+\newpage
+\section{Manual}
+\subsection{Installation}
+\label{sec:installation}
+The {\sl kltool} package is available by anonymous ftp from
+{\tt saddle.la.asu.edu} (Internet number 129.219.44.11).
+To obtain it, you must have access to the Internet from your
+computer.  Type
+	{\tt ftp saddle.la.asu.edu}
+or, if this does not work, type
+	{\tt ftp 129.219.44.11}.
+When the system prompts for your name, type {\tt anonymous}.
+When the system prompts for your password, type your 
+email address.  Once you are logged in, you will see the {\tt ftp}
+prompt.  Type the command
+	{\tt cd pub/kltool}
+to get to the directory containing the {\sl kltool} software.
+Type
+	{\tt dir}
+at this point to verify that there are three subdirectories and a
+file called {\tt README}.  The latter file, which will be updated
+along with the rest of the software, contains a description of
+the contents of each of the subdirectories.  You may transfer
+this file to your computer by typing the command {\tt get README}.
+
+The installation of {\sl kltool} is not yet complete.  More demos and auxiliary
+data files will be added later.  The current status is documented in the
+README file.
+
+The subdirectories are arranged as follows:
+\begin{description}
+	\item[src]  contains a compressed tar archive and a compressed
+		  binary executable.  
+		  In response to the {\tt ftp} prompt, type the command:
+			{\tt binary}
+		  or
+			{\tt mode binary}
+
+		  If you only want the 
+		  binary executable, type:
+			{\tt get kltool.Z}
+		  To exit from {\tt ftp}, type {\tt exit} or {\tt bye}
+		  (the commands vary from system to system).
+		  You then need to uncompress the executable via:
+			{\tt uncompress kltool.Z}
+		  followed by
+		  {\tt chmod +x kltool}.
+		  This creates an executable file called {\tt kltool},
+		  which can run on your Silicon Graphics workstation.
+		  (Note that you must be running IRIX 4.0.5 or later
+		  for this to work)
+		  
+		  If you want the tar archive containing the source
+		  code, you would type:
+			{\tt get kltool.tar.Z},
+
+
+		  After you have exited from {\tt ftp}, you can 
+		  extract the source code from the archive by typing
+		  \begin{verbatim}
+			zcat kltool.tar.Z | tar xovf -
+		  \end{verbatim}
+		  To compile the code
+		  The code may be compiled just by typing {\tt make}.
+		  You will need both a C and a Fortran compiler.
+		  
+
+
+	\item[manual] This directory contains \LaTeX\ source code
+		for the manual, stored in the file {\tt manual.tex}.
+		Use the {\tt get} command from {\tt ftp} as described
+		above, run the file through \LaTeX\ and print it.
+		A PostScript version of the manual eventually will be
+		stored in {\tt manual.ps.Z}, which can be uncompressed
+		with the command
+			{\tt uncompress manual.ps.Z}.
+		The resulting PostScript file can be sent to your
+		system's PostScript printer using the local line
+		printer command.
+
+	\item[demos] There are four subdirectories containing sample data files
+		for analysis with {\sl kltool}.  They are:
+		\begin{description}
+			\item[flames] Michael Gorman's video data from a 
+				  two dimensional combustion experiment
+			\item[ks] numerical data from a simulation of the
+				  one-dimensional Kuramoto-Sivashinsky
+				  equation
+			\item[couette]	one-dimensional data which consist of
+				  consecutive frames of images from a CCD
+				  array of a Couette-Taylor experiment
+				  by Dan Lathrop and Harry Swinney
+			\item[kol]  numerical data from a simulation of
+				  2-d Kolmogorov flow by Basil Nicolaenko
+				  and Z.-S. She.
+		\end{description}
+	\end{description}
+\subsection{Getting started}
+%WHAT GOES INTO THE  .info FILE ? 
+%WHAT CAN YOU DO WITH THE INPUT PANEL
+%IS UTIO  VISIBLE AT ALL
+Once the program is running its main functions are coded in several static menus. They are pull down menus. Their activation buttons are always visible at the top of the screen. Multiple windows will be opened to display the results of the analysis. Inside most of them there exist pop-up menus that contain functions related to that particular window. Typically a window will only be updated and show the result of a calculation if it has been activated in some way, usually by moving the mouse.  Finally there are information windows that 
+report on the progress of a calculation or ask for input. Once it comes up
+and asks for an input you can type it on the keyboard. It will be read by the
+program upon the next $<CR>$ but will not echo back in the information window. The information window will disappear once the particular calculation is finished or the required input has been entered. 
+All windows can be moved, resized, lowered, and raised.\\
+UNDER NO CIRCUMSTANCES SHOULD YOU CLOSE OR QUIT A WINDOW, IT WILL CRASH THE WHOLE PROGRAM.
+
+\subsection{Parameter file}
+\label{sec:paramfile}
+The easiest way to specify parameters to {\sl kltool} is to create a parameter file and
+include this on the command line, {\sl e.g,}:
+\begin{verbatim}
+	kltool mydata.info
+\end{verbatim}
+where {\tt mydata.info} contains a set of keywords and associated parameters.
+\begin{verbatim}
+	input <filename>
+	data <ascii, short,integer,float,double, Integer,Float,Double>
+	ndim <1,2>
+	dim1 <x-resolution>
+	dim2 <y-resolution>
+	complex <real,imag,amplitude,phase>
+\end{verbatim}
+The {\tt filename} is the name of the file containing the data to be analyzed.
+It contains only $f(x)$ ($f(x,y)$) if {\tt ndim 1} ({\tt ndim 2}) and uniform data
+({\sl i.e,} uniform spacing in the domain) is assumed.
+The data can be either ascii or binary.  There is no format assumed for either type.
+For example, for ascii data, you can specify one number per line or multiple numbers,
+provided there is a space to separate them.  Binary data can be in either C or Fortran
+formats (C: short,integer,float,double;  Fortran: Integer,Float,Double).  For complex data
+(only allowed for 1-D data), you can specify which value to display (real,imag,amplitude,phase).
+For specific examples of parameter files, refer to those in the walkthrough examples.
+
+\subsection{Static menus}
+\label{sec:staticmenus}
+\begin{description}
+\item{Menu title: {\large kltool}}\\
+This is the startup menu. It will allow you to customize your input,
+select parts of the data set and exit {\sl kltool}. Selection of menu items
+is done with the RMOUSE\\
+The panel items are:
+\begin{itemize}
+\item {\bf Input:} 
+	 An input panel will come up (see Figure ~\ref{input})
+	 that requires the user
+	to enter specific information concerning the data file that is to be
+	read. Information can be entered by 
+	\begin{itemize}
+	\item typing in character strings or numeric values in appropriate
+	\item Clicking LMOUSE in the appropriate box to indicate the
+	existence of a certain property. This will move the asterisk into
+	that box
+	\item Clicking LMOUSE  in a box, deleting what is in there 
+	and entering new information. This process has to end with a 
+	$<CR>$. Note that numeric parameters do NOT ECHO
+	the input. However the display  will be updated after the $<CR>$.
+	\end{itemize}
+	The panel contains the following entries:
+	\begin{itemize}
+	\item Home directory
+	\item File name
+	\item Dimension (1 or 2 dimensional)
+	\item Resolution (in x and y)
+	\item Range in x to be used
+	\item Range in y to be used
+	\item Range in time (snapshots) to use
+	\item Data Format (ASCII or binary)
+	\item Choice for binary C: short, int, float or double; or
+	 binary Fortran:  INTEGER, REAL, DOUBLE.
+	\end{itemize}
+	Note:
+	\begin{enumerate}
+	\item As long as the dimension is set to 1 the entries for the
+	y-coordinates are meaningless. 
+	\item The data points in x,y and t need not be set. If they are left
+	on their defaults then the program is reading  the complete file
+	as long as the resolution, i.e. the length of a data vector is 
+	correctly specified.
+	\end{enumerate}
+\item {\bf Select:} 
+	Allows to select specific spatial parts of the data field via slider
+	bars. Requires the data display to be in {\sl Display Type: Landscape}
+	or {\sl Shaded} mode and a {\sl ViewAngle: Top}. 
+	\begin{itemize}
+	\item{1-d Data:} Move the triangular pointers along the horizontal
+	slider bar to the desired locations, using LMOUSE, with click and drag.
+	Do not touch the vertical slider bar.
+	\item{2-d Data:} Use the triangular pointers on both, 
+	the vertical and the horizontal	slider bar to select a rectangle.
+	\end{itemize}
+	Note: 
+	\begin{enumerate}
+	\item Correct selection can be verified by going back to the
+	{\sl Input} panel and inspecting the x and y ranges.
+	\item Selection of a time interval can be done by choosing 
+	snapshots in the {\sl Input} panel.
+	\end{enumerate}
+\item {\bf Exit:}  Closes {\sl kltool}.
+\end{itemize}
+
+\item{Menu title: {\large Compute}}\\
+This menu contains the primary functions of the program.
+The menu items are:
+\begin{itemize}
+
+\item {\bf Mean:}  
+	Computes the time average of all vectors and displays
+	it in
+	a window called {\sl Mean}.
+\item {\bf Decompose:} 
+	Calculates the covariance matrix and determine its
+	eigenvectors  and eigenvalues.   The eigenvalues will be displayed as a 
+	energy percentages in a bar graph in a window called {\sl Eigvals}. By
+	default eigenvalues and eigenfunctions are determined up to a cumulative
+	limit of 95\% of the total energy in the datafield. A window called {\sl
+	Eigfns} will be activated which  allows to view the eigenvectors by 
+	scanning through them. They are ordered according to their eigenvalues 
+	(= energy percentages) from largest to smallest. A small scan window
+	inside the {\sl Eigenfns} 
+	window displays  the energy percentage (cf. Equation \ref{energy_pc})
+	captured by the
+	displayed eigenfunction as well as
+	the cumulative percentage for all eigenfuctions
+	up to and including the displayed eigenfunction.
+\item{\bf Appx:} 
+	Calculates the approximation to the dataset with a given number $n$ of
+	empirical eigenfunctions (cf. Equation \ref{approx_eqn}). The user is
+	queried for $n$. The default (accepted with $<CR>$) is the number
+	calculated in {\sl Decompose}, however a {\em smaller} number can also
+	be entered. {\sl Appx} has two outcomes: It activates a window called
+	{\sl Approx}
+	and displays the approximated data. It also restricts the number of
+	eigenfunctions that can be displayed in {\sl Eigenfns} to $n$.
+\item{\bf Error:}  
+	Subtracts the approximation from the data and displays the result.
+\item{\bf Max Error:}  
+	Returns an information window with the value and the exact location of
+	the maximal error of the approximation. The display will report
+	the time (snapshot vector) and the position at that time for which the
+	maximal error occurs. 
+
+\item{\bf Galerkin:} 
+\end{itemize}
+
+\item{Menu title: {\large  Windows}}\\
+Controls the size and the position of all display windows.
+\begin{itemize}
+\item{\bf 1 fullsize:} 
+	All active windows are stacked on top of each other and 
+	fill the whole screen. 
+\item{\bf 2 horiz:} 
+	All active windows have the form of a horizontal rectangle and the size 
+	of half the screen.
+\item{\bf 2 vert:} 
+	All active windows have the form of a vertical rectangle and the size 
+	of half the screen.
+\item{\bf 4 windows:} 
+	All active windows have the size of  a quarter of the screen. 
+	The standard arrangement is to have the {\sl Data} window in the upper
+	left corner, the {\sl Approx} window in the upper right corner,
+	the {\sl Eigenvals} or the {\sl Error} window in the lower left corner
+	and the {\sl Eigenfns} window in the lower right corner.
+\end{itemize}
+
+\item{Menu title: {\large  Flags}}\\
+This menu allows to toggle various flags for the K-L analysis and the display.
+\begin{itemize}
+\item{\bf synchronize:} 
+	ON: Couples the displays of the {\sl Data} window and the {\sl Approx}
+	window such that they will display the vector with the same time-index,
+	i.e. the same snapshot. Scanning in time (see below) through the 
+	snapshots of one of those two windows will activate both windows to 
+	scan synchronously.
+	This lets the user visually compare the accuracy of the approximation.\\
+	OFF: Default, both windows are decoupled.
+\item{\bf decompose:} 
+	Has two options: {\sl K-L} will perform the Karhunen-Lo\`{e}ve analysis via 
+	calculations of the eigenvectors of the covariance matrix whereas
+	{\sl SVD} will do the same analysis using the Singular Value Decomposition
+	package from Linpack.  
+\item{\bf polar:} 
+	ON: Considers a 1-d datavector as a polar-representation of a curve 
+	given as $r(\phi)$. Displays the data as a polar plot.\\
+	OFF: Default, cartesian display.
+\item{\bf flip eigfn:} 
+	Acts on the eigenfunction currently displayed in the {\sl Eigenfns} window by
+	multipying it with -1.
+\end{itemize}
+
+\item{Menu title: {\large  Read}}\\
+Handles the input into the program. Activation of any of the following buttons
+will open an information window that asks for the name of the appropriate files
+that you want to read. Assuming they are in the correct binary format they will be 
+read into the program at the correct places and  an appropriate display window
+will be opened and the data will be displayed. 
+\begin{itemize}
+\item{\bf data:} 
+	Reads in a new datafile	
+\item{\bf mean:} 
+	Reads in the mean of a dataset
+\item{\bf eiginfo:} 
+	Reads in the eigenvalues and eigenvectors of a covariance matrix.
+\item{\bf appx:} 
+	Reads in an approximation.
+\end{itemize}
+\item{Menu title: {\large  Write}}\\
+Handles the output from the program. Activation of any of the following buttons
+will open a information window that asks for the name of the file that you want 
+to write into. The files are written in binary format and can only be used 
+for input into {\sl kltool} again without further processing. 
+\begin{itemize}
+\item{\bf data:} 
+	 Will write the current set of data into a file. This is useful
+if you used the {\sl Select} option in {\sl kltool} to select a particular
+subset of the original data for processing.
+\item{\bf mean:}  
+	Writes out the mean
+\item{\bf eiginfo:} 
+	Writes out the eigenvalues and eigenfunctions
+\item{\bf appx:} 
+	Writes out the current approximation.
+\end{itemize}
+
+\item{Menu title: {\large  Misc}}
+\begin{itemize}
+\item{\bf data color:} 
+	You can choose the color of your display.
+\item{\bf background:} 
+	You can choose whether to have a white or black background
+\item{\bf snapshot:} This will activate the UNIX snapshot command which
+does a screendump of a selected region of the screen. See {\em man snapshot}.
+\end{itemize}
+\end{description}
+
+\subsection{Window-dependent menus}
+\label{sec:windowdependentmenus}
+In most of the windows you can change some attributes of the window or
+activate further processing by pressing down the RMOUSE. The following 
+menus will pop up:
+\begin{description}
+\item{Menu title: {\large  1-D}}\\
+This allows the user to customize the visualization of the data.
+It will work in the windows {\sl Data, Appx} and {\sl Error}.
+It contains the options:
+\begin{itemize}
+\item{\bf ViewAngle:}  There are three different options for changing the 
+	angle of view on the data: {\sl Front, Top, Side}. 
+	If the data are displayed one snapshot at a time
+	in the {\sl DisplayType: Scan} mode then the only angle that makes sense
+	is {\sl Front}. If the {\sl DisplayType} is {\sl Landscape} or {\sl
+	Shaded} then a view from the top of along the side may be interesting.
+\item{\bf DisplayType:} 
+	Modes of display are
+	\begin{itemize}
+	\item{\bf Scan:}  Displays the data one snapshot at a time. Opens a
+	small scan
+	window that reports on the number of the current snapshot displayed.
+	Pressing LMOUSE 
+	in the scan window will scan backwards through the snapshots, pressing
+	RMOUSE will scan forwards.
+	\item{\bf Landscape:}  Displays 1-D data as a scalar function in space
+	and time. Creates the impression of a surface.
+	\item{\bf Shaded:}  Like the {\sl Landscape} mode, however the value of
+	the data at a given point in space and time is color coded. The color
+	scheme is adjusted to the data, coloring the smallest values
+	blue and the largest values red.
+	\end{itemize}
+\item{\bf MouseRotate:}  
+	Allows to use the mouse to change the viewing aspect.
+	Holding down the MMOUSE button and moving the mouse rotates the
+	viewing angle.
+	This is most useful for the display types {\sl Landscape}
+	and{\sl Shaded} and can be started from any {\sl ViewAngle}.
+	Once activated for a window the cursor need not be in that window
+	for MMOUSE to rotate the display. Note: MMOUSE will always 
+	rotate the last window that activated {\sl MouseRotate}.
+\item{\bf Plot:}  Will send a plot of the current window to the printer.
+\end{itemize}
+\item{Menu title: {\large  2-D}}\\
+Controls the display of data that are defined on a plane, i.e. $u(x,y,t)$.
+For a description of {\sl ViewAngle, MouseRotate} and {\sl Plot} see
+previous menu. New feature:\\
+{\bf DisplayType:}  
+\begin{itemize}
+	\item{\bf Wireframe:}  Every snapshot is displayed as a scalar function
+	$u_n(x,y)$ for the n-th data vector. The resulting surface is 
+	displayed using a wireframe.
+	\item{\bf Shaded:}  The surface in 3-d is displayed and color coded.
+	The color
+	scheme is adjusted to the data, coloring the most negative values
+	blue and the most positive values red. Note that this allows a depth
+	impression even when viewing from the top.
+\end{itemize}
+
+\item{Menu title: {\large  1-D Eigfns}}\\
+Controls display and further processing of the empirical eigenfunctions.
+\begin{itemize}
+\item{\bf Scan:}  Make the small scan window visible (if it has been hidden by
+	other windows).
+\item{\bf Plot:}  Will send a plot of the current window to the printer.
+\item{\bf Data coefs:} 
+	Calculates the projection of the data onto the currently displayed
+	eigenfunction (cf. Equation~\ref{data_coef}). The result for every data
+	snapshot is a scalar coefficient. This is automatically done for all
+	snapshots in the dataset and the resulting time series is displayed in a
+	new window called {\sl DCoefs}.
+\item{\bf Appx coefs:} 
+	Calculates the projection of the approximation onto the currently
+	displayed eigenfunction (cf. Equation~\ref{data_coef}). The result for
+	every data snapshot is a scalar coefficient. This is automatically done
+	for all snapshots in the approximation and the resulting time series is
+	displayed in a new window called {\sl ACoefs}
+\end{itemize}
+\item{Menu title: {\large  Eigvals}}
+\begin{itemize}
+\item{\bf max \#:}  Forces the system to calculate a user specified number of
+	eigenfunctions. This will override the default of 95\% energy.
+	It is used primarily to {\em increase} the number of eigenfunctions
+	that are calculated. 
+\item{\bf Plot:}  Will send a plot of the current window to the printer.
+\end{itemize}	
+Most other windows have a menu option plot. 
+\end{description}
+\section*{Acknowledgment}
+Support for this software program was provided by the National Science
+Foundation Computational Mathematics Program under grant no.\ DMS-9017174.
+D.~A. is supported in part by the National Science Foundaton
+Computational Mathematics Program under grant no.\ DMS-9101964.
+
+\begin{thebibliography}{99}
+
+\bibitem{arm} D. Armbruster, J. Guckenheimer and P. Holmes, 
+ Kuramoto-Sivashinsky Dynamics on the Center-Unstable Manifold,
+{\sl SIAM J. Appl.\ Math.}\ {\bf 49} (1989), 676.
+
+\bibitem{kol} D.Armbruster, R.Heiland, E.Kostelich, B.Nicolaenko,
+Phase space analysis of bursting behavior in Kolmogorov flow, 
+{\sl Physica D} {\bf 58} (1992), 392.
+ 
+\bibitem{ber} G.Berkooz, P.Holmes, J.L.Lumley, The proper orthogonal
+decomposition in turbulent flows, {\sl Ann.\ Rev.\ Fluid Mech.}, 1993.
+
+\bibitem{gu} J. Guckenheimer {\sl et al.} 
+{\sl DSTOOL}, Cornell University (1990).
+
+\bibitem{gor} M. Gorman, M. el-Hamdi, K.A. Robbins, Spatiotemporal chaotic
+dynamics of premixed flames, in: S. Vohra, M. Spano,  M. Shlesinger, L.
+Pecora, W. Ditto, eds., {\sl Proceedings of the First Experimental
+Chaos Conference}. (Singapore:  World Scientific, 1992), pp.\ 403--416.
+
+\bibitem{KA}  M. Kirby, D. Armbruster, Reconstructing phase space from PDE
+simulations, {\sl ZAMP} {\bf 43} (1992), 999.
+
+\bibitem{lum}  J.~L. Lumley, in {\sl Atmospheric Turbulence 
+and Radio Wave Propagation},
+ed.~by A.~M. Yaglom and V.~I. Tatarski (Nauka, Moscow),  (1967) 166.
+
+\bibitem{mees} A.~I. Mees, P.~E. Rapp, L.~S. Jennings,
+{\sl Phys.\ Rev.\ A} {\bf 36} (1987), 340.
+
+\bibitem{newell} A.~C. Newell, D.~A. Rand, D.~Russell,
+{\sl Physica D} {\bf 33} (1988), 281.
+
+\bibitem{nic8} B.~Nicolaenko, Z.~S. She:
+Symmetry-breaking homoclinic chaos in the Kolmogorov flows, in:
+{\sl Nonlinear World: International workshop on nonlinear and
+turbulent processes in physics}, Kiev 1989, ed.~by V.~G. Baryakhtar
+{\sl et al.} (1990), 602.
+
+\bibitem{pre} R. Preisendorfer, {\sl Principal Component Analysis
+in Meteorology and Oceanography}, Elsevier, Amsterdam (1988).
+
+\bibitem{sir} L. Sirovich,  Turbulence and the dynamics of
+coherent structures, Parts I-III,  {\sl Quarterly of Applied 
+Mathematics} Vol.~XLV {\bf 3} (1987), 561.
+
+\bibitem{strang} G.~Strang, {\sl Introduction to Applied Mathematics},
+Wellesley-Cambridge Press, Wellesley (1986).
+
+\bibitem{Swinney}  Unpublished data by Dan Lathrop and Harry Swinney, Center
+	for Nonlinear Dynamics, Dept.\ of Physics, University of Texas,
+	Austin, TX  78712.
+
+\end{thebibliography}
+
+\end{document}

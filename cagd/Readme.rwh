@@ -1,0 +1,7 @@
+
+cp ~/ASU/spline/*.gif .
+cp ~/ASU/nuspline/*.gif .
+cp ~/ASU/bezier/*.gif .
+cp ~/ASU/sphere/*.gif .
+cp ~/ASU/delaunay/*.gif .
+

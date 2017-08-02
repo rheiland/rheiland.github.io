@@ -1,0 +1,105 @@
+
+<html>
+<title>Heiland: building boost</title>
+<h3>Building Boost</h3>
+<pre>
+path-to-source/boost_1_40_0$ ./bootstrap.sh --prefix=/Users/heiland/dev/boost_1_40_0_build
+...
+-n Building Boost.Jam with toolset darwin... 
+tools/jam/src/bin.macosxx86/bjam
+-n Detecting Python version... 
+2.5
+-n Detecting Python root... 
+/System/Library/Frameworks/Python.framework/Versions/2.5
+-n Unicode/ICU support for Boost.Regex?... 
+not found.
+Generating Boost.Build configuration in project-config.jam...
+
+Bootstrapping is done. To build, run:
+
+    ./bjam
+    
+To adjust configuration, edit 'project-config.jam'.
+Further information:
+...
+</pre>
+<h3>Using MPI</h3>
+I then edit <pre>tools/build/v2/user-config.jam</pre> and insert <pre>using mpi ;</pre>
+and build via <pre>bjam install --prefix=/Users/heiland/dev/boost_1_40_0_build</pre>
+
+<h3>Resulting headers</h3>
+<pre>
+heiland@dhcp-cs-244-214:~/dev/boost_1_40_0$ ls $BOOST_ROOT
+include/ lib/
+heiland@dhcp-cs-244-214:~/dev/boost_1_40_0$ ls $BOOST_ROOT/include
+boost/
+</pre>
+
+Of particular interest:
+<pre>
+heiland@dhcp-cs-244-214:~/dev/boost_1_40_0$ ls $BOOST_ROOT/include/boost/graph/parallel
+algorithm.hpp         container_traits.hpp  distribution.hpp      properties.hpp
+basic_reduce.hpp      detail/               process_group.hpp     simple_trigger.hpp
+
+heiland@dhcp-cs-244-214:~/dev/boost_1_40_0$ ls $BOOST_ROOT/include/boost/graph/parallel/detail
+inplace_all_to_all.hpp  property_holders.hpp    untracked_pair.hpp
+
+heiland@dhcp-cs-244-214:~/dev/boost_1_40_0$ ls $BOOST_ROOT/include/boost/graph/distributed
+adjacency_list.hpp                        depth_first_search.hpp                    page_rank.hpp
+adjlist/                                  detail/                                   queue.hpp
+betweenness_centrality.hpp                dijkstra_shortest_paths.hpp               reverse_graph.hpp
+boman_et_al_graph_coloring.hpp            distributed_graph_utility.hpp
+rmat_graph_generator.hpp
+breadth_first_search.hpp                  eager_dijkstra_shortest_paths.hpp         selector.hpp
+compressed_sparse_row_graph.hpp           filtered_graph.hpp
+shuffled_distribution.hpp
+concepts.hpp                              fruchterman_reingold.hpp                  st_connected.hpp
+connected_components.hpp                  graphviz.hpp
+strong_components.hpp
+connected_components_parallel_search.hpp  hohberg_biconnected_components.hpp
+two_bit_color_map.hpp
+crauser_et_al_shortest_paths.hpp          local_subgraph.hpp
+unsafe_serialize.hpp
+dehne_gotz_min_spanning_tree.hpp          mpi_process_group.hpp
+vertex_list_adaptor.hpp
+delta_stepping_shortest_paths.hpp         named_graph.hpp
+</pre>
+
+
+<h3>Resulting libs</h3>
+<pre>
+heiland@dhcp-cs-244-214:~/dev/boost_1_40_0$ ls $BOOST_ROOT/lib
+libboost_date_time.a                libboost_math_c99f.dylib*           libboost_prg_exec_monitor.a
+libboost_system.dylib*
+libboost_date_time.dylib*           libboost_math_c99l.a
+libboost_prg_exec_monitor.dylib*    libboost_test_exec_monitor.a
+libboost_filesystem.a               libboost_math_c99l.dylib*           libboost_program_options.a
+libboost_thread.a
+libboost_filesystem.dylib*          libboost_math_tr1.a                 libboost_program_options.dylib*
+libboost_thread.dylib*
+libboost_graph.a                    libboost_math_tr1.dylib*            libboost_python.a
+libboost_unit_test_framework.a
+libboost_graph.dylib*               libboost_math_tr1f.a                libboost_python.dylib*
+libboost_unit_test_framework.dylib*
+libboost_graph_parallel.a           libboost_math_tr1f.dylib*           libboost_regex.a
+libboost_wave.a
+libboost_graph_parallel.dylib*      libboost_math_tr1l.a                libboost_regex.dylib*
+libboost_wave.dylib*
+libboost_iostreams.a                libboost_math_tr1l.dylib*           libboost_serialization.a
+libboost_wserialization.a
+libboost_iostreams.dylib*           libboost_mpi.a                      libboost_serialization.dylib*
+libboost_wserialization.dylib*
+libboost_math_c99.a                 libboost_mpi.dylib*                 libboost_signals.a
+mpi.so*
+libboost_math_c99.dylib*            libboost_mpi_python.a               libboost_signals.dylib*
+libboost_math_c99f.a                libboost_mpi_python.dylib*          libboost_system.a
+</pre>
+Note, in particular, there should be libboost_graph_parallel and libboost_mpi.
+
+<h3>Env vars</h3>
+<pre>
+DYLD_LIBRARY_PATH=.:/Users/heiland/dev/boost_1_40_0_build/lib:/Users/heiland/dev/Lumsdaine/Sandia/build-8-27-09/bin:(other stuff)
+
+BOOST_ROOT=/Users/heiland/dev/boost_1_40_0_build
+</pre>
+<html>

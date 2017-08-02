@@ -1,0 +1,39 @@
+<h1>Cell Diffusion Calculator</h1>
+<p>&nbsp;</p>
+<h2>Function:</h2>
+<p>This python steppable calculates diffusion coefficient of GGH cells by tracking their center of masses.
+The diffusion coefficient is&nbsp; cluster averaged. This steppable is compatible with periodic boundary
+conditions.</p>
+<p>&nbsp;</p>
+<p>summary of the code:</p>
+<ol>
+    <li>attach a list to cells (type 1)</li>
+    <li>store the location of CM of cells in the lists (length of the list is equal to dt_max)</li>
+    <li>if MCS&gt;dt_max(buffering CM locations)
+    <ol>
+        <li>while dt=2^n &lt;= dt_max
+        <ol>
+            <li>calculate and store displacement (d(0,<span style="color: rgb(255, 0, 0);">dt</span>)^2/4)
+during <span style="color: rgb(255, 0, 0);">dt</span><span style="color: rgb(0, 0, 0);"> interval</span></li>
+        </ol>
+        </li>
+    </ol>
+    </li>
+    <li>average d(0,<span style="color: rgb(255, 0, 0);">dt</span>)^2/4 over cells</li>
+    <li>calculate y(<span style="color: rgb(255, 0, 0);">dt</span>)=log2(d(0,<span style="color: rgb(255, 0,
+0);">dt</span>)^2/4)</li>
+    <li>calculate x(<span style="color: rgb(255, 0, 0);">dt</span>)=log2(2^n)=n</li>
+    <li>fit a line to y vs. x and calculate slope and intercept</li>
+    <li>Diffusion constant=2^(intercept)</li>
+    <li>slope&lt;1 --&gt; sub-diffusive&nbsp;</li>
+    <li>slope&gt;1 --&gt; super-diffusive</li>
+    <li>slope=1 --&gt; random walk</li>
+</ol>
+<p>&nbsp;</p>
+<h2>To do list:</h2>
+<ol>
+    <li>add comments to the code</li>
+    <li>Add parameter scan capability. e.g., motility vs {lambda volume,lambda surface, chemotaxis, ...}</li>
+    <li>Auto calibration of parameters (like diffusive field secretion, diffusion, uptake, ...) based on
+motility</li>
+</ol>

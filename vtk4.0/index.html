@@ -1,0 +1,278 @@
+<HTML>
+<HEAD>
+<TITLE>  Heiland: VTK 4.0
+</TITLE>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<CENTER>
+<h1>VTK 4.0</h1></CENTER>
+<p>
+<! ---------------------------------------------------------------->
+<h2>Linux clusters</h2>
+<p>
+These days I'm trying to stay focused on using VTK (and Python, of course)
+on Linux clusters.  This is motivated by the NSF TeraGrid project (and NCSA's
+involvement in that).  Well, actually, that's only partly true.  I'm also doing
+it because it's a fun little challenge.  
+<p>
+One of my first goals with VTK 4.0 is to develop a parallel Python-VTK
+solution.  (A parallel Tcl-VTK solution already exists with 4.0 as discussed
+below).  
+This will be to support the VisBench project.
+<p>
+Although the information on this page pertains to Linux, it
+should carry over to most other platforms as well.
+<p>
+<! ---------------------------------------------------------------->
+<h2>Getting Started</h2>
+<li>download VTK 4.0 source <a href="http://public.kitware.com/VTK/get-software.php#cvs">from CVS</a>
+<li>download <a href="http://public.kitware.com/CMake">CMake</a> from Kitware 
+(necessary to build 4.0)
+<p>
+Since I intended to build VTK with MPI parallelism, I also had to:
+<li>download/build <a href="http://www-unix.mcs.anl.gov/mpi/mpich/">MPI (mpich)</a>.
+<!---(The version I got was 1.2.2.2).  --->
+<p>
+For the parallel Python-VTK solution:
+<li>download/build <a href="http://sourceforge.net/projects/pympi/">pyMPI</a>.
+
+<p>
+<! ---------------------------------------------------------------->
+<h2>CMake</h2>
+The "cmake" process is new for 4.0 and quite nice in my opinion.
+There's good documentation available on the CMake URL, but I'll also offer
+my experiences here.
+After downloading the CMake source, I simply did a <b>configure</b> and 
+<b>make</b> to create the
+<b>cmake</b> executable (in  <i>pathto/CMake/Source</i>).
+<p>
+Switching to the VTK 4.0 directory (<i>pathto/VTK</i>)
+the process to build Makefiles using <b>cmake</b> was then an iterative one.  
+I began by running 
+<b>cmake</b> which generated the CMakeCache.txt file (from CMakeLists.txt).
+The CMakeCache.txt file contains "keys" with associated values.  These keys
+replace the pre-4.0 <b>configure</b> command line options.)
+I then edited CMakeCache.txt and, for example, turned on the following flags
+(keys):<br>
+BUILD_SHARED_LIBS<br>
+VTK_USE_HYBRID<br>
+VTK_USE_PARALLEL<br>
+VTK_USE_PATENTED<br>
+VTK_WRAP_PYTHON<br>
+VTK_WRAP_TCL<br>
+(I don't normally do Tcl wrapping, but since one of my goals was to find a
+parallel Python-VTK solution, I figured I might learn something from the
+existing parallel Tcl-VTK solution in 4.0)
+<p>
+I then reran <b>cmake</b>.  This inserts new keys into CMakeCache.txt, e.g.:<br>
+VTK_USE_MPI:BOOL=OFF<br>
+PYTHON_INCLUDE_PATH:PATH=NOTFOUND<br>
+PYTHON_LIBRARY:FILEPATH=NOTFOUND<br>
+<p>
+I then edited these new entries -- turning on VTK_USE_MPI and setting the
+PYTHON_INCLUDE_PATH and PYTHON_LIBRARY appropriately. 
+<p>
+I then ran <b>cmake</b> one more time.  This time the following keys were
+inserted into CMakeCache.txt:<br>
+MPI_INCLUDE_PATH:PATH=NOTFOUND<br>
+MPI_LIBRARY:FILEPATH=NOTFOUND<br>
+<p>
+After setting appropriate values for these keys and running <b>cmake</b>
+again, acceptable Makefiles were generated.
+<p>
+I then simply run <b>make</b> to build the (shared) libs, the examples, the
+<b>vtk</b> executable (the VTK-enabled Tcl/Tk interpreter), and the
+<b>pvtk</b> executable (the VTK-MPI-enabled Tcl/Tk interpreter).  These
+show up in <i>pathto/VTK/bin</i>.
+
+
+<! ---------------------------------------------------------------->
+<h2>Parallel Tcl</h2>
+After successfully building VTK as described above, one can then:<br>
+in <i>pathto/VTK/Examples/ParallelProcessing/MPI/Tcl</i>, 
+execute the following:
+<pre>
+% mpirun -machinefile mach -np 2 fullpathto/VTK/bin/pvtk PVTKDemo.tcl
+</pre>
+(where the file "mach" simply lists the names of the MPI machines to use)
+<p>
+<img src="blobMaster.gif">
+<img src="blob2.gif">
+<br>
+(Note that all processes
+will create render windows but only the render window of the root
+process will contain the composited image)
+
+<! ---------------------------------------------------------------->
+<h2>Parallel Python</h2>
+To provide analogous functionality to <b>pvtk</b>, the parallel(MPI)-enabled
+Tcl-interpreter that gets built in VTK 4.0, I wanted a parallel Python
+interpreter for VTK.  To accomplish this, I decided to see what, if
+anything, already existed in terms of parallel Python.  I was aware of
+earlier <a href="http://www.python.org/workshops/1997-10/proceedings/beazley.html">work by Dave Beazley</a> and doing a search at <b>python.org</b>
+turned up a few related sites.
+However, after making an inquiry on the Python newsgroup, I was told to have
+a look at <a href="http://sourceforge.net/projects/pympi/">pyMPI</a>, written
+by Pat Miller, Martin Casado, et al. at LLNL.
+<p>
+After downloading/building this package, an MPI-enabled Python executable,
+<b>pyMPI</b>, gets created.  One then discovers an 'mpi' module is available:
+<p>
+<pre>
+% pyMPI
+>>> import mpi
+>>> dir(mpi)
+['ANY_SOURCE', 'ANY_TAG', 'BAND', 'BOR', 'BXOR', 'COMM_NULL', 'COMM_WORLD', 
+'LAND', 'LOR', 'LXOR', 'MAX', 'MAXLOC', 'MIN', 'MINLOC', 'PROD', 'SUM', 
+'WORLD', '__doc__', '__name__', 'allgather', 'allreduce', 'alltoall', 'barrier',
+ 'bcast', 'cancel', 'cart_create', 'comm_create', 'comm_dup', 'comm_rank', 
+'comm_size', 'communicator', 'deltaT', 'errputQueueFile', 'finalize', 
+'finalized', 'free', 'gather', 'initialized', 'irecv', 'isend', 'map', 
+'mapserver', 'mapstats', 'name', 'nativeallreduce', 'nativebcast', 
+'nativeirecv', 'nativeisend', 'nativerecv', 'nativereduce', 'nativesend', 
+'nativesendrecv', 'outputQueueFile', 'procs', 'rank', 'recv', 'reduce', 
+'scatter', 'send', 'sendrecv', 'stdin', 'stdout', 'synchReadLine', 
+'synchronizeQueuedOutput', 'synchronizedWrite', 'test', 'test_cancelled', 
+'tick', 'treeallgather', 'treeallreduce', 'treegather', 'treereduce', 
+'treescatter', 'version', 'wait', 'waitall', 'waitany', 'wtick', 'wtime']
+</pre>
+<p>
+Given a Python script, e.g., <a href="calcPi.py">calcPi.py</a>, 
+we can then execute it in parallel:
+<pre>
+% mpirun -np 4 pyMPI calcPi.py
+My answer is 3.14159267442 Error is 2.08333341689e-08
+------ Error is acceptable
+</pre>
+This will then offer more general functionality than the existing <b>pvtk</b>
+Tcl interpreter.
+
+<!----------------------------------------------->
+<h3>Extending for VTK</h3>
+By having <b>pyMPI</b> call a function that does the same VTK-MPI setup 
+as done for <b>pvtk</b>
+(<i>pathto/VTK/Parallel/paraTkAppInit.cxx</i>), we can
+extend it for parallel VTK.  This function is simply  
+<a href="vtkSetup.cxx">vtkSetup.cxx</a>.  This function would be called
+from pyMPI's <i>initmpi.c</i> routine.  I modified it as follows:
+<pre>
+extern int vtkSetup(int *argc, char ***argv);
+ ...
+        /* call MPI_Init or alternate Startup function here! */
+
+        /* [rwh] Have VTK do MPI_Init and init global controller ... */
+        if ( !vtkSetup(argc, argv) )
+        {
+          if(initializeMPI(argc,argv) != MPI_SUCCESS)
+          {
+            fprintf(stderr,"MPI Failure, MPI_Init()\n");
+            exit(1);
+          }
+        }
+</pre>
+<p>
+<hr>
+Here's a preferred way of doing this (from Pat Miller):
+<pre>
+The "easiest" way to provide this startup without hacking initmpi.c 
+is to do this...
+
+1) Write a library override source, say pyvtkstartup.c
+which looks like:
+
+extern int vtkSetup(int,char**);
+
+void PyAlternateMPIStartup(int (**start)(int *, char ***),
+                           int (**finish)()) { 
+    /* Call vtk initializer INSTEAD of MPI_Init */
+    start = vtkSetup;
+}
+
+2) Link with that .o
+% cc -o pyMPIVTK driver.o pyvtkstartup.o ... -lpympi.a ...
+</pre>
+<!------------------------------------>
+<hr>
+Given <a href="PVTKDemo.py">PVTKDemo.py</a>, the Python equivalent of
+the PVTKDemo.tcl script in 4.0, one could then run:
+<pre>
+% mpirun -v -machinefile mach -np 5 fullpathto/pyMPI PVTKDemo.py
+</pre>
+resulting in:
+<p>
+<img src="win1.gif">
+<img src="win2.gif">
+<img src="win3.gif">
+<img src="win4.gif">
+<br>
+windows showing individual processors results
+<p>
+<img src="win5.gif">
+<img src="win5rot.gif">
+<br>
+composited window (right one after rotating to show the fifth processor's
+results, colored red).
+
+<p>
+<! ---------------------------------------------------------------->
+<hr size=5 noshade>
+<h2>after a "cvs update -d" on 1/24/02 </h2>
+<h2>Parallel Tcl</h2>
+<pre>
+  insert into my .cshrc:
+% setenv DISPLAY 141.142.66.26:0.0
+
+% setenv TCLLIBPATH " /home/heiland/vtk_Nov26.01/VTK/Wrapping/Tcl/vtk /home/heiland/vtk_Nov26.01/VTK/Wrapping/Tcl/vtkbase /home/heiland/vtk_Nov26.01/VTK/Wrapping/Tcl/vtkcommon /home/heiland/vtk_Nov26.01/VTK/Wrapping/Tcl/vtkfiltering /home/heiland/vtk_Nov26.01/VTK/Wrapping/Tcl/vtkgraphics /home/heiland/vtk_Nov26.01/VTK/Wrapping/Tcl/vtkimaging /home/heiland/vtk_Nov26.01/VTK/Wrapping/Tcl/vtkio /home/heiland/vtk_Nov26.01/VTK/Wrapping/Tcl/vtkinteraction"
+
+mason 266% ty mach
+mason
+brick40
+brick50
+brick60
+brick70
+
+mason 268% xhost
+access control enabled, only authorized clients can connect
+INET:brick70.ncsa.uiuc.edu
+INET:brick60.ncsa.uiuc.edu
+INET:brick50.ncsa.uiuc.edu
+INET:brick40.ncsa.uiuc.edu
+INET:wall.ncsa.uiuc.edu
+INET:rembrandt.ncsa.uiuc.edu
+INET:mason.ncsa.uiuc.edu
+INET:kelgia.ncsa.uiuc.edu
+INET:tetons.ncsa.uiuc.edu
+INET:localhost
+LOCAL:
+
+
+  from /VTK/Examples/ParallelProcessing/MPI/Tcl:
+% mpirun -machinefile mach -np 2 /home/heiland/vtk_Nov26.01/VTK/bin2/pvtk /home/heiland/vtk_Nov26.01/VTK/Examples/ParallelProcessing/MPI/Tcl/PVTKDemo.tcl
+
+mpirun -machinefile mach -np 3 /home/heiland/vtk_Nov26.01/VTK/bin2/pvtk /home/heiland/vtk_Nov26.01/VTK/Examples/ParallelProcessing/MPI/Tcl/PVTKDemo.tcl
+rwh:[paraTkAppInit] ----- doing main...
+rwh:[paraTkAppInit] ----- doing main...
+Segmentation fault
+Connection failed for reason: : Connection refused
+
+--- I then 'ssh brick50', verify that I can show an 'xclock' and then the
+mpirun works:
+
+</pre>
+<img src="win3New.gif">
+<! ---------------------------------------------------------------->
+<p>
+<hr size=5 noshade>
+<p>
+Here's an example of output from a parallel Python-VTK script that displays
+the Mandelbrot set.
+<p>
+<img src="pmandel.gif">
+<! ---------------------------------------------------------------->
+<hr>
+<a href="http://randyheiland.com">Home</a> | 
+<a href="http://randyheiland.com/vtk">My vtk page</a>
+</BODY>
+</HTML>

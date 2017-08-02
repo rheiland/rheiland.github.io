@@ -1,0 +1,268 @@
+<title>PyOpenCL on OSX 10.7 -- Aug 2011</title>
+<link rel="shortcut icon" type="image/png" href="../../lorenz-zoom.png" >
+
+<h3>Playing w/ PyOpenCL on OSX 10.7 -------  Aug 2011  ------</h3>
+NOTE: for OSX 10.7, I edited the setup.py script to use MacOSX10.7.sdk instead of 10.6.
+
+<pre>
+~/git/pyopencl$ sudo python setup.py install
+-->
+~/git/pyopencl/test$ ll /Library/Python/2.7/site-packages/|grep pyopen
+drwxr-xr-x    5 root     wheel     170 Aug 30 10:12 pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg
+</pre>
+<hr>
+<pre>
+<li><a href=props.html>output from 'python dump-properties.py'</a>
+
+<h3>pyopencl/test</h3>
+To generate outputs, I just do:
+<pre>
+~/git/pyopencl/test$ env|grep CTX >test_array_CTX0.out
+~/git/pyopencl/test$ python test_array.py  >> test_array_CTX0.out
+</pre>
+<li><a href=test_array_CTX0.out>test_array_CTX0.out</a>
+<li><a href=test_array_CTX1.out>test_array_CTX1.out</a>
+
+<hr>
+<h3>pyopencl/examples</h3>
+<pre>
+~/git/pyopencl/examples$ python transpose.py 
+Choose device(s):
+[0] <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' on 'Apple' at 0xffffffff>
+[1] <pyopencl.Device 'ATI Radeon HD 6750M' on 'Apple' at 0x1021b00>
+Choice, comma-separated [0]:
+Set the environment variable PYOPENCL_CTX='' to avoid being asked again.
+('benchmarking', 'Silly', 1024, 3.3540188599907905, 'GB/s')
+('benchmarking', 'Silly', 1088, 3.263815510428408, 'GB/s')
+('benchmarking', 'Silly', 1216, 3.233685389154902, 'GB/s')
+('benchmarking', 'Silly', 1312, 3.017037718854059, 'GB/s')
+('benchmarking', 'Silly', 1440, 3.2462262132681925, 'GB/s')
+('benchmarking', 'Silly', 1568, 3.159725819629687, 'GB/s')
+('benchmarking', 'Silly', 1696, 2.924560944806165, 'GB/s')
+('benchmarking', 'Silly', 1856, 3.0651533196948644, 'GB/s')
+('benchmarking', 'Silly', 2048, 0.9186547098201249, 'GB/s')
+('benchmarking', 'Silly', 2208, 2.965296787041123, 'GB/s')
+('benchmarking', 'Silly', 2432, 3.0005038941205027, 'GB/s')
+('benchmarking', 'Silly', 2624, 2.8000638638610225, 'GB/s')
+('benchmarking', 'Silly', 2880, 2.860100536041842, 'GB/s')
+('benchmarking', 'Silly', 3136, 2.797215665459374, 'GB/s')
+('benchmarking', 'Silly', 3424, 2.5278721294302158, 'GB/s')
+('benchmarking', 'Silly', 3744, 2.284387851468243, 'GB/s')
+('benchmarking', 'Silly', 4096, 0.786213216593931, 'GB/s')
+('benchmarking', 'Silly', 4448, 2.5410162631768376, 'GB/s')
+('benchmarking', 'Silly', 4864, 1.8296240032039401, 'GB/s')
+('benchmarking', 'Silly', 5280, 2.343683755332653, 'GB/s')
+('benchmarking', 'Silly', 5792, 2.289137039965725, 'GB/s')
+('benchmarking', 'Silly', 6304, 2.0959967724589537, 'GB/s')
+('benchmarking', 'Silly', 6880, 1.9030195754865227, 'GB/s')
+('benchmarking', 'Silly', 7488, 1.5179418298222485, 'GB/s')
+Traceback (most recent call last):
+  File "transpose.py", line 212, in <module>
+    benchmark_transpose()
+  File "transpose.py", line 173, in benchmark_transpose
+    method(queue, a_t_buf, a_buf, source.shape)
+  File "transpose.py", line 38, in __call__
+    tgt, src, numpy.uint32(w), numpy.uint32(h))
+  File
+"/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py",
+line 222, in kernel_call
+    global_offset, wait_for, g_times_l=g_times_l)
+pyopencl.LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+----------------------------------------------------
+~/git/pyopencl/examples$  python demo_array.py 
+Choose device(s):
+[0] <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' on 'Apple' at 0xffffffff>
+[1] <pyopencl.Device 'ATI Radeon HD 6750M' on 'Apple' at 0x1021b00>
+Choice, comma-separated [0]:
+Set the environment variable PYOPENCL_CTX='' to avoid being asked again.
+Traceback (most recent call last):
+  File "demo_array.py", line 28, in <module>
+    print(la.norm((dest_dev - (a_dev+b_dev)).get()))
+  File
+"/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py",
+line 456, in __add__
+    self._axpbyz(result, 1, self, 1, other)
+  File
+"/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py",
+line 162, in kernel_runner
+    return knl(queue, gs, ls, *actual_args)
+  File
+"/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py",
+line 222, in kernel_call
+    global_offset, wait_for, g_times_l=g_times_l)
+pyopencl.LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+
+~/git/pyopencl/examples$ python demo_array.py 
+Choose device(s):
+[0] <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' on 'Apple' at 0xffffffff>
+[1] <pyopencl.Device 'ATI Radeon HD 6750M' on 'Apple' at 0x1021b00>
+Choice, comma-separated [0]:1
+Set the environment variable PYOPENCL_CTX='1' to avoid being asked again.
+0.0
+
+----------------------------------------------------
+~/git/pyopencl/examples$ 
+python demo_mandelbrot.py   (edited to do 1024x1024)
+
+calc_fractal_numpy:
+('Main took', 2.6466639041900635)
+
+calc_fractal_opencl (PYOPENCL_CTX=0):
+('Main took', 0.05247807502746582)
+
+calc_fractal_opencl (PYOPENCL_CTX=1):
+('Main took', 0.049362897872924805)
+
+----------------------------------------------------
+~/git/pyopencl/examples$ python transpose.py 
+Choose device(s):
+[0] <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' on 'Apple' at 0xffffffff>
+[1] <pyopencl.Device 'ATI Radeon HD 6750M' on 'Apple' at 0x1021b00>
+Choice, comma-separated [0]:1
+Set the environment variable PYOPENCL_CTX='1' to avoid being asked again.
+('benchmarking', 'Silly', 1024, 0.4635681617406264, 'GB/s')
+('benchmarking', 'Silly', 1088, 2.393415269258055, 'GB/s')
+('benchmarking', 'Silly', 1216, 2.3926046623765593, 'GB/s')
+('benchmarking', 'Silly', 1312, 2.39386831166446, 'GB/s')
+('benchmarking', 'Silly', 1440, 2.3905377142709536, 'GB/s')
+('benchmarking', 'Silly', 1568, 2.3897359771380335, 'GB/s')
+('benchmarking', 'Silly', 1696, 2.389633411045591, 'GB/s')
+('benchmarking', 'Silly', 1856, 2.388492460385396, 'GB/s')
+('benchmarking', 'Silly', 2048, 0.28279343166982956, 'GB/s')
+('benchmarking', 'Silly', 2208, 2.3869918924090454, 'GB/s')
+('benchmarking', 'Silly', 2432, 1.3841544752577994, 'GB/s')
+('benchmarking', 'Silly', 2624, 2.385702970083476, 'GB/s')
+('benchmarking', 'Silly', 2880, 2.3857460346574633, 'GB/s')
+('benchmarking', 'Silly', 3136, 2.384944222585386, 'GB/s')
+('benchmarking', 'Silly', 3424, 2.385465221468107, 'GB/s')
+('benchmarking', 'Silly', 3744, 2.3844698816541348, 'GB/s')
+('benchmarking', 'Silly', 4096, 0.18107046240436567, 'GB/s')
+('benchmarking', 'Silly', 4448, 2.3829521552152815, 'GB/s')
+('benchmarking', 'Silly', 4864, 0.6995252561210401, 'GB/s')
+('benchmarking', 'Silly', 5280, 2.3823353072277214, 'GB/s')
+('benchmarking', 'Silly', 5792, 2.382336521918976, 'GB/s')
+('benchmarking', 'Silly', 6304, 15.280186186389114, 'GB/s')
+('benchmarking', 'Silly', 6880, 8.179614762650784, 'GB/s')
+('benchmarking', 'Silly', 7488, 5.9318998657381465, 'GB/s')
+('benchmarking', 'Naive', 1024, 4.763282230278747, 'GB/s')
+('benchmarking', 'Naive', 1088, 9.469348329044024, 'GB/s')
+('benchmarking', 'Naive', 1216, 9.484815112524078, 'GB/s')
+('benchmarking', 'Naive', 1312, 9.494996179282905, 'GB/s')
+('benchmarking', 'Naive', 1440, 9.502831077536595, 'GB/s')
+('benchmarking', 'Naive', 1568, 9.508590257498035, 'GB/s')
+('benchmarking', 'Naive', 1696, 9.511526169809384, 'GB/s')
+('benchmarking', 'Naive', 1856, 9.515148752922782, 'GB/s')
+('benchmarking', 'Naive', 2048, 4.76562888742909, 'GB/s')
+('benchmarking', 'Naive', 2208, 9.51995353537893, 'GB/s')
+('benchmarking', 'Naive', 2432, 9.520774873737837, 'GB/s')
+('benchmarking', 'Naive', 2624, 9.521975646733598, 'GB/s')
+('benchmarking', 'Naive', 2880, 9.522459187943545, 'GB/s')
+('benchmarking', 'Naive', 3136, 9.522887768837846, 'GB/s')
+('benchmarking', 'Naive', 3424, 9.522589549735011, 'GB/s')
+('benchmarking', 'Naive', 3744, 9.522820615877118, 'GB/s')
+('benchmarking', 'Naive', 4096, 2.754746119279098, 'GB/s')
+('benchmarking', 'Naive', 4448, 9.522638248253562, 'GB/s')
+('benchmarking', 'Naive', 4864, 4.762080320025699, 'GB/s')
+('benchmarking', 'Naive', 5280, 9.521978245595001, 'GB/s')
+('benchmarking', 'Naive', 5792, 9.52125374628387, 'GB/s')
+('benchmarking', 'Naive', 6304, 60.400872205150684, 'GB/s')
+('benchmarking', 'Naive', 6880, 32.47031551903623, 'GB/s')
+('benchmarking', 'Naive', 7488, 23.691758840000464, 'GB/s')
+('benchmarking', 'WithLocal', 1024, 11.127046459480018, 'GB/s')
+('benchmarking', 'WithLocal', 1088, 15.164843646787062, 'GB/s')
+('benchmarking', 'WithLocal', 1216, 15.211581082688491, 'GB/s')
+('benchmarking', 'WithLocal', 1312, 15.241200126394334, 'GB/s')
+('benchmarking', 'WithLocal', 1440, 15.259723833291785, 'GB/s')
+('benchmarking', 'WithLocal', 1568, 15.288001218750097, 'GB/s')
+('benchmarking', 'WithLocal', 1696, 15.29835336126346, 'GB/s')
+('benchmarking', 'WithLocal', 1856, 15.322504359478154, 'GB/s')
+('benchmarking', 'WithLocal', 2048, 7.680951826935187, 'GB/s')
+('benchmarking', 'WithLocal', 2208, 15.351114405955357, 'GB/s')
+('benchmarking', 'WithLocal', 2432, 15.419757902232128, 'GB/s')
+('benchmarking', 'WithLocal', 2624, 15.369280082857882, 'GB/s')
+('benchmarking', 'WithLocal', 2880, 15.371388882631036, 'GB/s')
+('benchmarking', 'WithLocal', 3136, 15.379306452148098, 'GB/s')
+('benchmarking', 'WithLocal', 3424, 15.370886214681835, 'GB/s')
+('benchmarking', 'WithLocal', 3744, 15.389572671817623, 'GB/s')
+('benchmarking', 'WithLocal', 4096, 4.474777271083967, 'GB/s')
+('benchmarking', 'WithLocal', 4448, 15.39267275738918, 'GB/s')
+('benchmarking', 'WithLocal', 4864, 9.876452379041512, 'GB/s')
+('benchmarking', 'WithLocal', 5280, 15.38660016786596, 'GB/s')
+('benchmarking', 'WithLocal', 5792, 15.401375241498224, 'GB/s')
+('benchmarking', 'WithLocal', 6304, 97.62371796707306, 'GB/s')
+('benchmarking', 'WithLocal', 6880, 52.53265749002861, 'GB/s')
+('benchmarking', 'WithLocal', 7488, 38.32286154746311, 'GB/s')
+</pre>
+
+<hr>
+<pre>
+PYOPENCL_CTX=0
+
+~/git/pyopencl/examples$ python demo_array.py
+> /Users/heiland/git/pyopencl/examples/demo_array.py(19)<module>()
+-> prg = cl.Program(ctx, """
+(Pdb) c
+------- __init__.py:kernel_call:   local_size= None
+--------- kernel_call:  local_size= None
+------- __init__.py:kernel_call:   local_size= None
+--------- kernel_call:  local_size= (128, 1, 1)
+Traceback (most recent call last):
+  File "demo_array.py", line 19, in <module>
+    prg = cl.Program(ctx, """
+  File "/Users/heiland/git/pyopencl/build/lib.macosx-10.7-intel-2.7/pyopencl/array.py", line 456, in
+__add__
+    self._axpbyz(result, 1, self, 1, other)
+  File "/Users/heiland/git/pyopencl/build/lib.macosx-10.7-intel-2.7/pyopencl/array.py", line 162, in
+kernel_runner
+    return knl(queue, gs, ls, *actual_args)
+  File "/Users/heiland/git/pyopencl/build/lib.macosx-10.7-intel-2.7/pyopencl/__init__.py", line 224, in
+kernel_call
+    global_offset, wait_for, g_times_l=g_times_l)
+pyopencl.LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+----------------------------
+I inserted a couple prints in __init__:
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        print '------- __init__.py:kernel_call:   local_size=',local_size
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+
+        self.set_args(*args)
+
+        print '--------- kernel_call:  local_size=',local_size
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+                global_offset, wait_for, g_times_l=g_times_l)
+</pre>

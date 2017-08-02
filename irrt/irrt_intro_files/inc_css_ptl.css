@@ -1,0 +1,185 @@
+/* ------------------ SITEWIDE --------------------------- */
+BODY 		{background-color:#FFFFFF;}
+
+a:link 		{text-decoration: none; 	color:#A4001E;font:Arial, Helvetica, sans-serif;}  /* #A0522D */
+a:visited 	{text-decoration: none; 	color:#A4001E;font:Arial, Helvetica, sans-serif;}
+a:hover 	{text-decoration: underline; color:#000000;font:Arial, Helvetica, sans-serif;}
+
+IMG { border:0px; }
+HR  { color:#F0F0F0; }
+
+main {
+		width:80%;
+		height:100%;
+		margin-top:20px;
+		padding:0px;
+        text-align: left;
+        vertical-align: top;
+}
+
+TD {
+	font-family:Arial, Helvetica, sans-serif;
+	color:#333333;
+	font-size:9pt;
+	text-indent:0px;
+	margin-left:0px;
+	text-align:left;
+	vertical-align:top;
+}
+
+basefont { 
+	font-family: Arial, Helvetica, Sans-serif;
+	font-size:10pt;
+}
+
+/* ------------------ CONTENT COLUMN --------------------------- */
+TD.bodyColumn {
+	height:100%;
+	text-align:left;
+	vertical-align:top;
+	padding-top:0px;
+	padding-bottom:20px;
+	padding-left:8px;
+	overflow:visible;
+}
+DIV.bodyColumn {
+	height:100%;
+	background-color:#F0F0F0;
+	padding: 5px 20px 10px 10px;
+	margin: 0px 10px 00px 0px;
+	width:600px;
+	overflow:visible;
+}
+
+A.anchor {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:8pt;
+	color:#A4001E;
+	font-weight:normal;
+}
+H1 {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:20pt;
+	font-weight:normal;
+	color:#333333;
+	margin-top:5px;
+	margin-bottom:15px;
+}
+H2 {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12pt;
+	color:#000000;
+	font-weight:normal;
+}
+H3 {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:10pt;
+	color:#000000;
+	font-weight:bold;
+	margin-bottom:2px;
+}
+
+TD.note_title {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:10pt;
+	color:#333333;
+	font-weight:bold;
+	margin-top:5px;
+}
+TD.note_date {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:10pt;
+	color:#333333;
+	white-space:nowrap;
+}
+
+a.back_to_top {
+	color: #B0B0B0;
+	font-weight: bold;
+	text-aligh: right;
+	vertical-aligh: top;
+	font-size: 8pt;
+	float: right;
+	text-decoration: none;
+}
+
+
+OL {
+	margin-left:15px;
+	padding-left:10px;
+	font-size: 9pt;
+	font-family:Arial, Helvetica, sans-serif;
+	line-height:15px;
+	color:#333333;
+}
+LI {
+	font:Arial, Helvetica, sans-serif;
+	margin-bottom:12px;
+}
+
+/* ------------------ NAVIGATION --------------------------- */
+TD.navColumn {
+	text-align:left;
+	vertical-align:top;
+	background-color:#999999;
+	width:93px;
+}
+DIV.navLinks {
+	margin:5px 5px 5px 5px;
+}
+
+A.nav {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:8pt;
+	font-weight:bold;
+	color:#FFFFFF;
+	text-decoration:none;
+}
+A:visited.nav {  /* to counter IE bug */
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:8pt;
+	font-weight:bold;
+	color:#FFFFFF;
+	text-decoration:none;
+}
+A.subnav {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:8pt;
+	font-weight:bold;
+	color:#999999;
+	text-decoration:none;
+}
+A:visited.subnav {  /* to counter IE bug */
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:8pt;
+	font-weight:bold;
+	color:#999999;
+	text-decoration:none;
+}
+TD.tab {
+	border-right:1px solid #999999;
+	border-top:1px solid #999999;
+	background-color:#FFFFFF;
+	padding-right:5px;
+	padding-left:5px;
+	padding-top:3px;
+	padding-bottom:3px;
+}
+
+/* ------------------ ODDS & ENDS --------------------------- */
+
+TD.person_profile {
+	padding-bottom: 20px;
+	background-color:#F0F0F0;
+}
+
+IMG.headshot {
+	float:left;
+	padding: 0px 0px 0x 0px;
+	margin: 5px 10px 40px 0px;
+}
+
+FONT.pub_title {
+	font-weight:bold;
+}
+

@@ -1,0 +1,68 @@
+
+chmod 0744 *
+
+home.html instead of index.html  (duh)
+
+----------------------
+
+./thesis/index.html \
+./microbubbles/index.html \
+./K-12/index.html \
+./cagd/index.html \
+./kltool/index.html \
+./viv/index.html \
+./sandia/index.html \
+./sandia/pbgl/index.html \
+./sandia/pbgl/ParallelBFS/index.html \
+./sandia/pbgl0/index.html \
+./tbb/index.html \
+./nvidia/index.html \
+./ptp/index.html \
+./paraview/index.html
+
+
+./DynSys/index.html \
+./macbook/index.html \
+./csort1_demo/index.html \
+./rats/index.html \
+./graphs/index.html \
+./cc3d/index.html \
+./vtk4.0/index.html \
+./robot/index.html \
+./vtk/doc/index.html \
+./vtk/HDF/index.html
+
+./vtk/index.html \
+./vtk/Jython/index.html \
+./vtk/Linux/index.html \
+./vtk/scatter/bubble/index.html \
+./vtk/scatter/bubble/instruct/index.html \
+./vtk/scatter/index.html \
+./vtk/scatter/sphere/index.html \
+./vtk/Stream/index.html \
+./brains/index.html \
+./IndianaArcMath/index.html \
+./neurons/index.html \
+./neurons/firing/index.html \
+./neurons/firing/1D/index.html \
+./neurons/te_toolbox_vis/index.html \
+./neurons/matlab_paraview/index.html \
+./neurons/calcTE/index.html \
+./SC06/index.html
+
+./pv-stuff/index.html \
+./vtkDynamic/index.html \
+./SC07/index.html \
+./IndianaArcProj/index.html \
+./Charlie-only/index.html \
+./papers/index.html \
+./python/index.html \
+./vt-play/index.html \
+./pv-volrend/index.html \
+./abbas/index.html \
+./pyopencl/index.html \
+./pyopencl/Aug2011/index.html \
+./SMB2012/index.html \
+./cc3d_fake_omp/index.html \
+./siam-cse-2011/index.html
+

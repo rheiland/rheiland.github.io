@@ -1,0 +1,4135 @@
+PYOPENCL_CTX=0
+============================= test session starts ==============================
+platform darwin -- Python 2.7.1 -- pytest-2.1.0
+collecting ... collected 60 items
+
+test_array.py F.F.F...F.F.F.F.F.F.F.F.FFF.F.F.F.F.F.FFFFFFFFF.F.F.F...F.FF
+
+=================================== FAILURES ===================================
+ test_pow_array[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109813b00>
+
+    @pytools.test.mark_test.opencl
+    def test_pow_array(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        a = np.array([1, 2, 3, 4, 5]).astype(np.float32)
+        a_gpu = cl_array.to_device(queue, a)
+    
+>       result = pow(a_gpu, a_gpu).get()
+
+test_array.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([ 1.,  2.,  3.,  4.,  5.], dtype=float32)
+other = array([ 1.,  2.,  3.,  4.,  5.], dtype=float32)
+
+    def __pow__(self, other):
+        """Exponentiation by a scalar or elementwise by another
+            :class:`Array`.
+            """
+    
+        if isinstance(other, Array):
+            assert self.shape == other.shape
+    
+            result = self._new_like_me(_get_common_dtype(self, other))
+>           self._pow_array(result, self, other)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:606: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x1097ec310>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa470>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_pow_number[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109813cb0>
+
+    @pytools.test.mark_test.opencl
+    def test_pow_number(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).astype(np.float32)
+        a_gpu = cl_array.to_device(queue, a)
+    
+>       result = pow(a_gpu, 2).get()
+
+test_array.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([  1.,   2.,   3.,   4.,   5.,   6.,   7.,   8.,   9.,  10.], dtype=float32)
+other = 2
+
+    def __pow__(self, other):
+        """Exponentiation by a scalar or elementwise by another
+            :class:`Array`.
+            """
+    
+        if isinstance(other, Array):
+            assert self.shape == other.shape
+    
+            result = self._new_like_me(_get_common_dtype(self, other))
+            self._pow_array(result, self, other)
+        else:
+            result = self._new_like_me()
+>           self._pow_scalar(result, self, other)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:609: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x1097ec208>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa3c0>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_abs[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817098>
+
+    @pytools.test.mark_test.opencl
+    def test_abs(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+>       a = -cl_array.arange(queue, 111, dtype=np.float32)
+
+test_array.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def arange(*args, **kwargs):
+        """Create an array filled with numbers spaced `step` apart,
+        starting from `start` and ending at `stop`.
+    
+        For floating point arguments, the length of the result is
+        `ceil((stop - start)/step)`.  This rule may result in the last
+        element of the result being greater than stop.
+        """
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return _arange(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:813: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa520>
+
+    def _arange(queue, *args, **kwargs):
+        # argument processing -----------------------------------------------------
+    
+        # Yuck. Thanks, numpy developers. ;)
+        from pytools import Record
+        class Info(Record):
+            pass
+    
+        explicit_dtype = False
+    
+        inf = Info()
+        inf.start = None
+        inf.stop = None
+        inf.step = None
+        inf.dtype = None
+        inf.allocator = None
+    
+        if isinstance(args[-1], np.dtype):
+            dtype = args[-1]
+            args = args[:-1]
+            explicit_dtype = True
+    
+        argc = len(args)
+        if argc == 0:
+            raise ValueError, "stop argument required"
+        elif argc == 1:
+            inf.stop = args[0]
+        elif argc == 2:
+            inf.start = args[0]
+            inf.stop = args[1]
+        elif argc == 3:
+            inf.start = args[0]
+            inf.stop = args[1]
+            inf.step = args[2]
+        else:
+            raise ValueError, "too many arguments"
+    
+        admissible_names = ["start", "stop", "step", "dtype", "allocator"]
+        for k, v in kwargs.iteritems():
+            if k in admissible_names:
+                if getattr(inf, k) is None:
+                    setattr(inf, k, v)
+                    if k == "dtype":
+                        explicit_dtype = True
+                else:
+                    raise ValueError, "may not specify '%s' by position and keyword" % k
+            else:
+                raise ValueError, "unexpected keyword argument '%s'" % k
+    
+        if inf.start is None:
+            inf.start = 0
+        if inf.step is None:
+            inf.step = 1
+        if inf.dtype is None:
+            inf.dtype = np.array([inf.start, inf.stop, inf.step]).dtype
+    
+        # actual functionality ----------------------------------------------------
+        dtype = np.dtype(inf.dtype)
+        start = dtype.type(inf.start)
+        step = dtype.type(inf.step)
+        stop = dtype.type(inf.stop)
+    
+        if not explicit_dtype:
+            raise TypeError("arange requires dtype argument")
+    
+        from math import ceil
+        size = int(ceil((stop-start)/step))
+    
+        result = Array(queue, (size,), dtype, allocator=inf.allocator)
+>       _arange_knl(result, start, step, queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:790: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b772e10>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa520>
+global_size = (128, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_multiply[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817cf8>
+
+    @pytools.test.mark_test.opencl
+    def test_multiply(ctx_factory):
+        """Test the muliplication of an array with a scalar. """
+    
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        for sz in [10, 50000]:
+            for dtype, scalars in [
+                (np.float32, [2]),
+                ]:
+                for scalar in scalars:
+                    a = np.arange(sz).astype(dtype)
+                    a_gpu = cl_array.to_device(queue, a)
+>                   a_doubled = (scalar * a_gpu).get()
+
+test_array.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9.], dtype=float32)
+scalar = 2
+
+    def __rmul__(self, scalar):
+        result = self._new_like_me()
+>       self._axpbz(result, scalar, self, 0)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:528: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b7844c8>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_multiply_array[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817518>
+
+    @pytools.test.mark_test.opencl
+    def test_multiply_array(ctx_factory):
+        """Test the multiplication of two arrays."""
+    
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).astype(np.float32)
+    
+        a_gpu = cl_array.to_device(queue, a)
+        b_gpu = cl_array.to_device(queue, a)
+    
+>       a_squared = (b_gpu * a_gpu).get()
+
+test_array.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([  1.,   2.,   3.,   4.,   5.,   6.,   7.,   8.,   9.,  10.], dtype=float32)
+other = array([  1.,   2.,   3.,   4.,   5.,   6.,   7.,   8.,   9.,  10.], dtype=float32)
+
+    def __mul__(self, other):
+        if isinstance(other, Array):
+            result = self._new_like_me(_get_common_dtype(self, other))
+>           self._elwise_multiply(result, self, other)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:519: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b7846d8>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa3c0>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_addition_array[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109813d40>
+
+    @pytools.test.mark_test.opencl
+    def test_addition_array(ctx_factory):
+        """Test the addition of two arrays."""
+    
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).astype(np.float32)
+        a_gpu = cl_array.to_device(queue, a)
+>       a_added = (a_gpu + a_gpu).get()
+
+test_array.py:126: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([  1.,   2.,   3.,   4.,   5.,   6.,   7.,   8.,   9.,  10.], dtype=float32)
+other = array([  1.,   2.,   3.,   4.,   5.,   6.,   7.,   8.,   9.,  10.], dtype=float32)
+
+    def __add__(self, other):
+        """Add an array with an array or an array with a scalar."""
+    
+        if isinstance(other, Array):
+            # add another vector
+            result = self._new_like_me(_get_common_dtype(self, other))
+>           self._axpbyz(result, 1, self, 1, other)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:456: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b784788>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa4c8>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_addition_scalar[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817488>
+
+    @pytools.test.mark_test.opencl
+    def test_addition_scalar(ctx_factory):
+        """Test the addition of an array and a scalar."""
+    
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).astype(np.float32)
+        a_gpu = cl_array.to_device(queue, a)
+>       a_added = (7 + a_gpu).get()
+
+test_array.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([  1.,   2.,   3.,   4.,   5.,   6.,   7.,   8.,   9.,  10.], dtype=float32)
+other = 7
+
+    def __add__(self, other):
+        """Add an array with an array or an array with a scalar."""
+    
+        if isinstance(other, Array):
+            # add another vector
+            result = self._new_like_me(_get_common_dtype(self, other))
+            self._axpbyz(result, 1, self, 1, other)
+            return result
+        else:
+            # add a scalar
+            if other == 0:
+                return self
+            else:
+                result = self._new_like_me()
+>               self._axpbz(result, 1, self, other)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:464: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b7991b0>
+queue = <pyopencl._cl.CommandQueue object at 0x10b776c00>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_substract_array[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x10981c128>
+
+    @pytools.test.mark_test.opencl
+    def test_substract_array(ctx_factory):
+        """Test the substraction of two arrays."""
+        #test data
+        a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).astype(np.float32)
+        b = np.array([10, 20, 30, 40, 50,
+                      60, 70, 80, 90, 100]).astype(np.float32)
+    
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        a_gpu = cl_array.to_device(queue, a)
+        b_gpu = cl_array.to_device(queue, b)
+    
+>       result = (a_gpu - b_gpu).get()
+
+test_array.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([  1.,   2.,   3.,   4.,   5.,   6.,   7.,   8.,   9.,  10.], dtype=float32)
+other = array([  10.,   20.,   30.,   40.,   50.,   60.,   70.,   80.,   90.,  100.], dtype=float32)
+
+    def __sub__(self, other):
+        """Substract an array from an array or a scalar from an array."""
+    
+        if isinstance(other, Array):
+            result = self._new_like_me(_get_common_dtype(self, other))
+>           self._axpbyz(result, 1, self, -1, other)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:474: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b799940>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_substract_scalar[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817d88>
+
+    @pytools.test.mark_test.opencl
+    def test_substract_scalar(ctx_factory):
+        """Test the substraction of an array and a scalar."""
+    
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        #test data
+        a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).astype(np.float32)
+    
+        #convert a to a gpu object
+        a_gpu = cl_array.to_device(queue, a)
+    
+>       result = (a_gpu - 7).get()
+
+test_array.py:179: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([  1.,   2.,   3.,   4.,   5.,   6.,   7.,   8.,   9.,  10.], dtype=float32)
+other = 7
+
+    def __sub__(self, other):
+        """Substract an array from an array or a scalar from an array."""
+    
+        if isinstance(other, Array):
+            result = self._new_like_me(_get_common_dtype(self, other))
+            self._axpbyz(result, 1, self, -1, other)
+            return result
+        else:
+            # subtract a scalar
+            if other == 0:
+                return self
+            else:
+                result = self._new_like_me()
+>               self._axpbz(result, 1, self, -other)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:482: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b799578>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa4c8>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_divide_scalar[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109806758>
+
+    @pytools.test.mark_test.opencl
+    def test_divide_scalar(ctx_factory):
+        """Test the division of an array and a scalar."""
+    
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).astype(np.float32)
+        a_gpu = cl_array.to_device(queue, a)
+    
+>       result = (a_gpu / 2).get()
+
+test_array.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([  1.,   2.,   3.,   4.,   5.,   6.,   7.,   8.,   9.,  10.], dtype=float32)
+other = 2
+
+    def __div__(self, other):
+        """Divides an array by an array or a scalar::
+    
+               x = self / n
+            """
+        if isinstance(other, Array):
+            result = self._new_like_me(_get_common_dtype(self, other))
+            self._div(result, self, other)
+        else:
+            if other == 1:
+                return self
+            else:
+                # create a new array for the result
+                result = self._new_like_me()
+>               self._axpbz(result, 1/other, self, 0)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:549: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b77c7e0>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa520>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_divide_array[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817908>
+
+    @pytools.test.mark_test.opencl
+    def test_divide_array(ctx_factory):
+        """Test the division of an array and a scalar. """
+    
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        #test data
+        a = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]).astype(np.float32)
+        b = np.array([10, 10, 10, 10, 10, 10, 10, 10, 10, 10]).astype(np.float32)
+    
+        a_gpu = cl_array.to_device(queue, a)
+        b_gpu = cl_array.to_device(queue, b)
+    
+>       a_divide = (a_gpu / b_gpu).get()
+
+test_array.py:217: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([  10.,   20.,   30.,   40.,   50.,   60.,   70.,   80.,   90.,  100.], dtype=float32)
+other = array([ 10.,  10.,  10.,  10.,  10.,  10.,  10.,  10.,  10.,  10.], dtype=float32)
+
+    def __div__(self, other):
+        """Divides an array by an array or a scalar::
+    
+               x = self / n
+            """
+        if isinstance(other, Array):
+            result = self._new_like_me(_get_common_dtype(self, other))
+>           self._div(result, self, other)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:542: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b77c310>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>
+global_size = (32, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_random[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109813f80>
+
+    @pytools.test.mark_test.opencl
+    def test_random(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+>       from pyopencl.clrandom import RanluxGenerator
+E       ImportError: cannot import name RanluxGenerator
+
+test_array.py:229: ImportError
+ test_random[ctx_factory=<context factory for <pyopencl.Device 'ATI Radeon HD 6750M' at 0x1021b00>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817050>
+
+    @pytools.test.mark_test.opencl
+    def test_random(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+>       from pyopencl.clrandom import RanluxGenerator
+E       ImportError: cannot import name RanluxGenerator
+
+test_array.py:229: ImportError
+ test_nan_arithmetic[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x1098178c0>
+
+    @pytools.test.mark_test.opencl
+    def test_nan_arithmetic(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        def make_nan_contaminated_vector(size):
+            shape = (size,)
+            a = np.random.randn(*shape).astype(np.float32)
+            from random import randrange
+            for i in range(size // 10):
+                a[randrange(0, size)] = float('nan')
+            return a
+    
+        size = 1 << 20
+    
+        a = make_nan_contaminated_vector(size)
+        a_gpu = cl_array.to_device(queue, a)
+        b = make_nan_contaminated_vector(size)
+        b_gpu = cl_array.to_device(queue, b)
+    
+        ab = a * b
+>       ab_gpu = (a_gpu * b_gpu).get()
+
+test_array.py:285: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([ 0.17013268,  1.56074381,  0.54136544, ...,  0.16036825,
+        1.41426504,  0.26284254], dtype=float32)
+other = array([-0.44915104,  0.50204748, -1.02976668, ...,  1.02827191,
+               nan,  0.0369689 ], dtype=float32)
+
+    def __mul__(self, other):
+        if isinstance(other, Array):
+            result = self._new_like_me(_get_common_dtype(self, other))
+>           self._elwise_multiply(result, self, other)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:519: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b780b50>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>
+global_size = (32768, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_elwise_kernel[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109810bd8>
+
+    @pytools.test.mark_test.opencl
+    def test_elwise_kernel(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+    
+>       a_gpu = clrand(queue, (50,), np.float32)
+
+test_array.py:297: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def rand(*args, **kwargs):
+        def inner_rand(queue, shape, dtype):
+            from pyopencl.array import Array
+    
+            result = Array(queue, shape, dtype)
+            _rand(result, np.random.randint(2**31-1))
+            return result
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return inner_rand(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>, shape = (50,)
+dtype = <type 'numpy.float32'>
+
+    def inner_rand(queue, shape, dtype):
+        from pyopencl.array import Array
+    
+        result = Array(queue, shape, dtype)
+>       _rand(result, np.random.randint(2**31-1))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b7804c8>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>
+global_size = (64, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_elwise_kernel_with_options[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x10981c0e0>
+
+    @pytools.test.mark_test.opencl
+    def test_elwise_kernel_with_options(ctx_factory):
+        from pyopencl.clrandom import rand as clrand
+        from pyopencl.elementwise import ElementwiseKernel
+    
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+>       in_gpu = clrand(queue, (50,), np.float32)
+
+test_array.py:320: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def rand(*args, **kwargs):
+        def inner_rand(queue, shape, dtype):
+            from pyopencl.array import Array
+    
+            result = Array(queue, shape, dtype)
+            _rand(result, np.random.randint(2**31-1))
+            return result
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return inner_rand(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>, shape = (50,)
+dtype = <type 'numpy.float32'>
+
+    def inner_rand(queue, shape, dtype):
+        from pyopencl.array import Array
+    
+        result = Array(queue, shape, dtype)
+>       _rand(result, np.random.randint(2**31-1))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b772aa0>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>
+global_size = (64, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_take[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109813710>
+
+    @pytools.test.mark_test.opencl
+    def test_take(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+>       idx = cl_array.arange(queue, 0, 200000, 2, dtype=np.uint32)
+
+test_array.py:349: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def arange(*args, **kwargs):
+        """Create an array filled with numbers spaced `step` apart,
+        starting from `start` and ending at `stop`.
+    
+        For floating point arguments, the length of the result is
+        `ceil((stop - start)/step)`.  This rule may result in the last
+        element of the result being greater than stop.
+        """
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return _arange(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:813: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>
+
+    def _arange(queue, *args, **kwargs):
+        # argument processing -----------------------------------------------------
+    
+        # Yuck. Thanks, numpy developers. ;)
+        from pytools import Record
+        class Info(Record):
+            pass
+    
+        explicit_dtype = False
+    
+        inf = Info()
+        inf.start = None
+        inf.stop = None
+        inf.step = None
+        inf.dtype = None
+        inf.allocator = None
+    
+        if isinstance(args[-1], np.dtype):
+            dtype = args[-1]
+            args = args[:-1]
+            explicit_dtype = True
+    
+        argc = len(args)
+        if argc == 0:
+            raise ValueError, "stop argument required"
+        elif argc == 1:
+            inf.stop = args[0]
+        elif argc == 2:
+            inf.start = args[0]
+            inf.stop = args[1]
+        elif argc == 3:
+            inf.start = args[0]
+            inf.stop = args[1]
+            inf.step = args[2]
+        else:
+            raise ValueError, "too many arguments"
+    
+        admissible_names = ["start", "stop", "step", "dtype", "allocator"]
+        for k, v in kwargs.iteritems():
+            if k in admissible_names:
+                if getattr(inf, k) is None:
+                    setattr(inf, k, v)
+                    if k == "dtype":
+                        explicit_dtype = True
+                else:
+                    raise ValueError, "may not specify '%s' by position and keyword" % k
+            else:
+                raise ValueError, "unexpected keyword argument '%s'" % k
+    
+        if inf.start is None:
+            inf.start = 0
+        if inf.step is None:
+            inf.step = 1
+        if inf.dtype is None:
+            inf.dtype = np.array([inf.start, inf.stop, inf.step]).dtype
+    
+        # actual functionality ----------------------------------------------------
+        dtype = np.dtype(inf.dtype)
+        start = dtype.type(inf.start)
+        step = dtype.type(inf.step)
+        stop = dtype.type(inf.stop)
+    
+        if not explicit_dtype:
+            raise TypeError("arange requires dtype argument")
+    
+        from math import ceil
+        size = int(ceil((stop-start)/step))
+    
+        result = Array(queue, (size,), dtype, allocator=inf.allocator)
+>       _arange_knl(result, start, step, queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:790: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b79a730>
+queue = <pyopencl._cl.CommandQueue object at 0x1097fa418>
+global_size = (32768, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_arange[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109813998>
+
+    @pytools.test.mark_test.opencl
+    def test_arange(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        n = 5000
+>       a = cl_array.arange(queue, n, dtype=np.float32)
+
+test_array.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def arange(*args, **kwargs):
+        """Create an array filled with numbers spaced `step` apart,
+        starting from `start` and ending at `stop`.
+    
+        For floating point arguments, the length of the result is
+        `ceil((stop - start)/step)`.  This rule may result in the last
+        element of the result being greater than stop.
+        """
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return _arange(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:813: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x10b784520>
+
+    def _arange(queue, *args, **kwargs):
+        # argument processing -----------------------------------------------------
+    
+        # Yuck. Thanks, numpy developers. ;)
+        from pytools import Record
+        class Info(Record):
+            pass
+    
+        explicit_dtype = False
+    
+        inf = Info()
+        inf.start = None
+        inf.stop = None
+        inf.step = None
+        inf.dtype = None
+        inf.allocator = None
+    
+        if isinstance(args[-1], np.dtype):
+            dtype = args[-1]
+            args = args[:-1]
+            explicit_dtype = True
+    
+        argc = len(args)
+        if argc == 0:
+            raise ValueError, "stop argument required"
+        elif argc == 1:
+            inf.stop = args[0]
+        elif argc == 2:
+            inf.start = args[0]
+            inf.stop = args[1]
+        elif argc == 3:
+            inf.start = args[0]
+            inf.stop = args[1]
+            inf.step = args[2]
+        else:
+            raise ValueError, "too many arguments"
+    
+        admissible_names = ["start", "stop", "step", "dtype", "allocator"]
+        for k, v in kwargs.iteritems():
+            if k in admissible_names:
+                if getattr(inf, k) is None:
+                    setattr(inf, k, v)
+                    if k == "dtype":
+                        explicit_dtype = True
+                else:
+                    raise ValueError, "may not specify '%s' by position and keyword" % k
+            else:
+                raise ValueError, "unexpected keyword argument '%s'" % k
+    
+        if inf.start is None:
+            inf.start = 0
+        if inf.step is None:
+            inf.step = 1
+        if inf.dtype is None:
+            inf.dtype = np.array([inf.start, inf.stop, inf.step]).dtype
+    
+        # actual functionality ----------------------------------------------------
+        dtype = np.dtype(inf.dtype)
+        start = dtype.type(inf.start)
+        step = dtype.type(inf.step)
+        stop = dtype.type(inf.stop)
+    
+        if not explicit_dtype:
+            raise TypeError("arange requires dtype argument")
+    
+        from math import ceil
+        size = int(ceil((stop-start)/step))
+    
+        result = Array(queue, (size,), dtype, allocator=inf.allocator)
+>       _arange_knl(result, start, step, queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:790: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b7b3e68>
+queue = <pyopencl._cl.CommandQueue object at 0x10b784520>
+global_size = (5024, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_reverse[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x1098175a8>
+
+    @pytools.test.mark_test.opencl
+    def test_reverse(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        n = 5000
+        a = np.arange(n).astype(np.float32)
+        a_gpu = cl_array.to_device(queue, a)
+    
+>       a_gpu = a_gpu.reverse()
+
+test_array.py:374: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([  0.00000000e+00,   1.00000000e+00,   2.00000000e+00, ...,
+         4.99700000e+03,   4.99800000e+03,   4.99900000e+03], dtype=float32)
+queue = None
+
+    def reverse(self, queue=None):
+        """Return this array in reversed order. The array is treated
+            as one-dimensional.
+            """
+    
+        result = self._new_like_me()
+>       self._reverse(result, self)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:619: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b79a578>
+queue = <pyopencl._cl.CommandQueue object at 0x10b7b3d60>
+global_size = (5024, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_sum[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817440>
+
+    @pytools.test.mark_test.opencl
+    def test_sum(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+    
+>       a_gpu = clrand(queue, (200000,), np.float32)
+
+test_array.py:386: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def rand(*args, **kwargs):
+        def inner_rand(queue, shape, dtype):
+            from pyopencl.array import Array
+    
+            result = Array(queue, shape, dtype)
+            _rand(result, np.random.randint(2**31-1))
+            return result
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return inner_rand(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x10b7b3d60>, shape = (200000,)
+dtype = <type 'numpy.float32'>
+
+    def inner_rand(queue, shape, dtype):
+        from pyopencl.array import Array
+    
+        result = Array(queue, shape, dtype)
+>       _rand(result, np.random.randint(2**31-1))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b7c3050>
+queue = <pyopencl._cl.CommandQueue object at 0x10b7b3d60>
+global_size = (32768, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_sum[ctx_factory=<context factory for <pyopencl.Device 'ATI Radeon HD 6750M' at 0x1021b00>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x1098174d0>
+
+    @pytools.test.mark_test.opencl
+    def test_sum(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+    
+        a_gpu = clrand(queue, (200000,), np.float32)
+        a = a_gpu.get()
+    
+        sum_a = np.sum(a)
+>       sum_a_gpu = cl_array.sum(a_gpu).get()
+
+test_array.py:390: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+a = array([ 0.86933637,  0.84787536,  0.0705322 , ...,  0.85767293,
+        0.25191137,  0.20993672], dtype=float32)
+dtype = None, queue = None
+
+    def sum(a, dtype=None, queue=None):
+        from pyopencl.reduction import get_sum_kernel
+        krnl = get_sum_kernel(a.context, dtype, a.dtype)
+>       return krnl(a, queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:1061: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl.reduction.ReductionKernel instance at 0x10c7f79e0>
+
+    def __call__(self, *args, **kwargs):
+        MAX_GROUP_COUNT = 1024
+        SMALL_SEQ_COUNT = 4
+    
+        from pyopencl.array import empty
+    
+        stage_inf = self.stage_1_inf
+    
+        queue = kwargs.pop("queue", None)
+    
+        if kwargs:
+            raise TypeError("invalid keyword argument to reduction kernel")
+    
+        while True:
+            invocation_args = []
+            vectors = []
+    
+            from pyopencl.tools import VectorArg
+            for arg, arg_tp in zip(args, stage_inf.arg_types):
+                if isinstance(arg_tp, VectorArg):
+                    if not arg.flags.forc:
+                        raise RuntimeError("ReductionKernel cannot "
+                                "deal with non-contiguous arrays")
+    
+                    vectors.append(arg)
+                    invocation_args.append(arg.data)
+                else:
+                    invocation_args.append(arg)
+    
+            repr_vec = vectors[0]
+            sz = repr_vec.size
+    
+            if queue is not None:
+                use_queue = queue
+            else:
+                use_queue = repr_vec.queue
+    
+            if sz <= stage_inf.group_size*SMALL_SEQ_COUNT*MAX_GROUP_COUNT:
+                total_group_size = SMALL_SEQ_COUNT*stage_inf.group_size
+                group_count = (sz + total_group_size - 1) // total_group_size
+                seq_count = SMALL_SEQ_COUNT
+            else:
+                group_count = MAX_GROUP_COUNT
+                macrogroup_size = group_count*stage_inf.group_size
+                seq_count = (sz + macrogroup_size - 1) // macrogroup_size
+    
+            if group_count == 1:
+                result = empty(use_queue,
+                        (), self.dtype_out,
+                        allocator=repr_vec.allocator)
+            else:
+                result = empty(use_queue,
+                        (group_count,), self.dtype_out,
+                        allocator=repr_vec.allocator)
+    
+            stage_inf.kernel(
+                    use_queue,
+                    (group_count*stage_inf.group_size,),
+                    (stage_inf.group_size,),
+>                   *([result.data]+invocation_args+[seq_count, sz]))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/reduction.py:341: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c814368>
+queue = <pyopencl._cl.CommandQueue object at 0x10b784520>
+global_size = (50176,)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_minmax[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x1098133f8>
+
+    @pytools.test.mark_test.opencl
+    def test_minmax(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+    
+        if has_double_support(context.devices[0]):
+            dtypes = [np.float64, np.float32, np.int32]
+        else:
+            dtypes = [np.float32, np.int32]
+    
+        for what in ["min", "max"]:
+            for dtype in dtypes:
+>               a_gpu = clrand(queue, (200000,), dtype)
+
+test_array.py:409: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def rand(*args, **kwargs):
+        def inner_rand(queue, shape, dtype):
+            from pyopencl.array import Array
+    
+            result = Array(queue, shape, dtype)
+            _rand(result, np.random.randint(2**31-1))
+            return result
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return inner_rand(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x10b7c9578>, shape = (200000,)
+dtype = <type 'numpy.float64'>
+
+    def inner_rand(queue, shape, dtype):
+        from pyopencl.array import Array
+    
+        result = Array(queue, shape, dtype)
+>       _rand(result, np.random.randint(2**31-1))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b784520>
+queue = <pyopencl._cl.CommandQueue object at 0x10b7c9578>
+global_size = (32768, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_minmax[ctx_factory=<context factory for <pyopencl.Device 'ATI Radeon HD 6750M' at 0x1021b00>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109813488>
+
+    @pytools.test.mark_test.opencl
+    def test_minmax(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+    
+        if has_double_support(context.devices[0]):
+            dtypes = [np.float64, np.float32, np.int32]
+        else:
+            dtypes = [np.float32, np.int32]
+    
+        for what in ["min", "max"]:
+            for dtype in dtypes:
+                a_gpu = clrand(queue, (200000,), dtype)
+                a = a_gpu.get()
+    
+                op_a = getattr(np, what)(a)
+>               op_a_gpu = getattr(cl_array, what)(a_gpu).get()
+
+test_array.py:413: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+a = array([ 0.34791803,  0.2434577 ,  0.82101941, ...,  0.99868518,
+        0.18799461,  0.7408396 ], dtype=float32)
+queue = None
+
+    def f(a, queue=None):
+        from pyopencl.reduction import get_minmax_kernel
+        krnl = get_minmax_kernel(a.context, what, a.dtype)
+>       return krnl(a,  queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:1077: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl.reduction.ReductionKernel instance at 0x10c829560>
+
+    def __call__(self, *args, **kwargs):
+        MAX_GROUP_COUNT = 1024
+        SMALL_SEQ_COUNT = 4
+    
+        from pyopencl.array import empty
+    
+        stage_inf = self.stage_1_inf
+    
+        queue = kwargs.pop("queue", None)
+    
+        if kwargs:
+            raise TypeError("invalid keyword argument to reduction kernel")
+    
+        while True:
+            invocation_args = []
+            vectors = []
+    
+            from pyopencl.tools import VectorArg
+            for arg, arg_tp in zip(args, stage_inf.arg_types):
+                if isinstance(arg_tp, VectorArg):
+                    if not arg.flags.forc:
+                        raise RuntimeError("ReductionKernel cannot "
+                                "deal with non-contiguous arrays")
+    
+                    vectors.append(arg)
+                    invocation_args.append(arg.data)
+                else:
+                    invocation_args.append(arg)
+    
+            repr_vec = vectors[0]
+            sz = repr_vec.size
+    
+            if queue is not None:
+                use_queue = queue
+            else:
+                use_queue = repr_vec.queue
+    
+            if sz <= stage_inf.group_size*SMALL_SEQ_COUNT*MAX_GROUP_COUNT:
+                total_group_size = SMALL_SEQ_COUNT*stage_inf.group_size
+                group_count = (sz + total_group_size - 1) // total_group_size
+                seq_count = SMALL_SEQ_COUNT
+            else:
+                group_count = MAX_GROUP_COUNT
+                macrogroup_size = group_count*stage_inf.group_size
+                seq_count = (sz + macrogroup_size - 1) // macrogroup_size
+    
+            if group_count == 1:
+                result = empty(use_queue,
+                        (), self.dtype_out,
+                        allocator=repr_vec.allocator)
+            else:
+                result = empty(use_queue,
+                        (group_count,), self.dtype_out,
+                        allocator=repr_vec.allocator)
+    
+            stage_inf.kernel(
+                    use_queue,
+                    (group_count*stage_inf.group_size,),
+                    (stage_inf.group_size,),
+>                   *([result.data]+invocation_args+[seq_count, sz]))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/reduction.py:341: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c84de10>
+queue = <pyopencl._cl.CommandQueue object at 0x10b7c93c0>
+global_size = (50176,)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_subset_minmax[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x1098131b8>
+
+    @pytools.test.mark_test.opencl
+    def test_subset_minmax(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+    
+        l_a = 200000
+        gran = 5
+        l_m = l_a - l_a // gran + 1
+    
+        if has_double_support(context.devices[0]):
+            dtypes = [np.float64, np.float32, np.int32]
+        else:
+            dtypes = [np.float32, np.int32]
+    
+        for dtype in dtypes:
+>           a_gpu = clrand(queue, (l_a,), dtype)
+
+test_array.py:435: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def rand(*args, **kwargs):
+        def inner_rand(queue, shape, dtype):
+            from pyopencl.array import Array
+    
+            result = Array(queue, shape, dtype)
+            _rand(result, np.random.randint(2**31-1))
+            return result
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return inner_rand(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x10b7c9578>, shape = (200000,)
+dtype = <type 'numpy.float64'>
+
+    def inner_rand(queue, shape, dtype):
+        from pyopencl.array import Array
+    
+        result = Array(queue, shape, dtype)
+>       _rand(result, np.random.randint(2**31-1))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c84df18>
+queue = <pyopencl._cl.CommandQueue object at 0x10b7c9578>
+global_size = (32768, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_subset_minmax[ctx_factory=<context factory for <pyopencl.Device 'ATI Radeon HD 6750M' at 0x1021b00>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109813c68>
+
+    @pytools.test.mark_test.opencl
+    def test_subset_minmax(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+    
+        l_a = 200000
+        gran = 5
+        l_m = l_a - l_a // gran + 1
+    
+        if has_double_support(context.devices[0]):
+            dtypes = [np.float64, np.float32, np.int32]
+        else:
+            dtypes = [np.float32, np.int32]
+    
+        for dtype in dtypes:
+            a_gpu = clrand(queue, (l_a,), dtype)
+            a = a_gpu.get()
+    
+            meaningful_indices_gpu = cl_array.zeros(
+                    queue, l_m, dtype=np.int32)
+            meaningful_indices = meaningful_indices_gpu.get()
+            j = 0
+            for i in range(len(meaningful_indices)):
+                meaningful_indices[i] = j
+                j = j + 1
+                if j % gran == 0:
+                    j = j + 1
+    
+            meaningful_indices_gpu = cl_array.to_device(
+                    queue, meaningful_indices)
+            b = a[meaningful_indices]
+    
+            min_a = np.min(b)
+>           min_a_gpu = cl_array.subset_min(meaningful_indices_gpu, a_gpu).get()
+
+test_array.py:453: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+subset = array([     0,      1,      2, ..., 199997, 199998, 199999], dtype=int32)
+a = array([ 0.84709865,  0.17279102,  0.9232325 , ...,  0.89096212,
+        0.32956359,  0.94265348], dtype=float32)
+queue = None
+
+    def f(subset, a, queue=None):
+        from pyopencl.reduction import get_subset_minmax_kernel
+        import pyopencl.reduction
+        krnl = get_subset_minmax_kernel(a.context, what, a.dtype)
+>       return krnl(subset, a,  queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:1089: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl.reduction.ReductionKernel instance at 0x10b7a5200>
+
+    def __call__(self, *args, **kwargs):
+        MAX_GROUP_COUNT = 1024
+        SMALL_SEQ_COUNT = 4
+    
+        from pyopencl.array import empty
+    
+        stage_inf = self.stage_1_inf
+    
+        queue = kwargs.pop("queue", None)
+    
+        if kwargs:
+            raise TypeError("invalid keyword argument to reduction kernel")
+    
+        while True:
+            invocation_args = []
+            vectors = []
+    
+            from pyopencl.tools import VectorArg
+            for arg, arg_tp in zip(args, stage_inf.arg_types):
+                if isinstance(arg_tp, VectorArg):
+                    if not arg.flags.forc:
+                        raise RuntimeError("ReductionKernel cannot "
+                                "deal with non-contiguous arrays")
+    
+                    vectors.append(arg)
+                    invocation_args.append(arg.data)
+                else:
+                    invocation_args.append(arg)
+    
+            repr_vec = vectors[0]
+            sz = repr_vec.size
+    
+            if queue is not None:
+                use_queue = queue
+            else:
+                use_queue = repr_vec.queue
+    
+            if sz <= stage_inf.group_size*SMALL_SEQ_COUNT*MAX_GROUP_COUNT:
+                total_group_size = SMALL_SEQ_COUNT*stage_inf.group_size
+                group_count = (sz + total_group_size - 1) // total_group_size
+                seq_count = SMALL_SEQ_COUNT
+            else:
+                group_count = MAX_GROUP_COUNT
+                macrogroup_size = group_count*stage_inf.group_size
+                seq_count = (sz + macrogroup_size - 1) // macrogroup_size
+    
+            if group_count == 1:
+                result = empty(use_queue,
+                        (), self.dtype_out,
+                        allocator=repr_vec.allocator)
+            else:
+                result = empty(use_queue,
+                        (group_count,), self.dtype_out,
+                        allocator=repr_vec.allocator)
+    
+            stage_inf.kernel(
+                    use_queue,
+                    (group_count*stage_inf.group_size,),
+                    (stage_inf.group_size,),
+>                   *([result.data]+invocation_args+[seq_count, sz]))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/reduction.py:341: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c833d08>
+queue = <pyopencl._cl.CommandQueue object at 0x1096e12b8>
+global_size = (40960,)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_dot[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x10981c368>
+
+    @pytools.test.mark_test.opencl
+    def test_dot(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+>       a_gpu = clrand(queue, (200000,), np.float32)
+
+test_array.py:464: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def rand(*args, **kwargs):
+        def inner_rand(queue, shape, dtype):
+            from pyopencl.array import Array
+    
+            result = Array(queue, shape, dtype)
+            _rand(result, np.random.randint(2**31-1))
+            return result
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return inner_rand(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x1096e12b8>, shape = (200000,)
+dtype = <type 'numpy.float32'>
+
+    def inner_rand(queue, shape, dtype):
+        from pyopencl.array import Array
+    
+        result = Array(queue, shape, dtype)
+>       _rand(result, np.random.randint(2**31-1))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c833d60>
+queue = <pyopencl._cl.CommandQueue object at 0x1096e12b8>
+global_size = (32768, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_dot[ctx_factory=<context factory for <pyopencl.Device 'ATI Radeon HD 6750M' at 0x1021b00>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x10981c4d0>
+
+    @pytools.test.mark_test.opencl
+    def test_dot(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+        a_gpu = clrand(queue, (200000,), np.float32)
+        a = a_gpu.get()
+        b_gpu = clrand(queue, (200000,), np.float32)
+        b = b_gpu.get()
+    
+        dot_ab = np.dot(a, b)
+    
+>       dot_ab_gpu = cl_array.dot(a_gpu, b_gpu).get()
+
+test_array.py:471: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+a = array([ 0.87430227,  0.56062967,  0.87464178, ...,  0.73855954,
+        0.40521494,  0.39039776], dtype=float32)
+b = array([ 0.21650504,  0.58766228,  0.33287126, ...,  0.09463181,
+        0.77380651,  0.96970224], dtype=float32)
+dtype = None, queue = None
+
+    def dot(a, b, dtype=None, queue=None):
+        from pyopencl.reduction import get_dot_kernel
+        krnl = get_dot_kernel(a.context, dtype, a.dtype, b.dtype)
+>       return krnl(a, b, queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:1066: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl.reduction.ReductionKernel instance at 0x10c829488>
+
+    def __call__(self, *args, **kwargs):
+        MAX_GROUP_COUNT = 1024
+        SMALL_SEQ_COUNT = 4
+    
+        from pyopencl.array import empty
+    
+        stage_inf = self.stage_1_inf
+    
+        queue = kwargs.pop("queue", None)
+    
+        if kwargs:
+            raise TypeError("invalid keyword argument to reduction kernel")
+    
+        while True:
+            invocation_args = []
+            vectors = []
+    
+            from pyopencl.tools import VectorArg
+            for arg, arg_tp in zip(args, stage_inf.arg_types):
+                if isinstance(arg_tp, VectorArg):
+                    if not arg.flags.forc:
+                        raise RuntimeError("ReductionKernel cannot "
+                                "deal with non-contiguous arrays")
+    
+                    vectors.append(arg)
+                    invocation_args.append(arg.data)
+                else:
+                    invocation_args.append(arg)
+    
+            repr_vec = vectors[0]
+            sz = repr_vec.size
+    
+            if queue is not None:
+                use_queue = queue
+            else:
+                use_queue = repr_vec.queue
+    
+            if sz <= stage_inf.group_size*SMALL_SEQ_COUNT*MAX_GROUP_COUNT:
+                total_group_size = SMALL_SEQ_COUNT*stage_inf.group_size
+                group_count = (sz + total_group_size - 1) // total_group_size
+                seq_count = SMALL_SEQ_COUNT
+            else:
+                group_count = MAX_GROUP_COUNT
+                macrogroup_size = group_count*stage_inf.group_size
+                seq_count = (sz + macrogroup_size - 1) // macrogroup_size
+    
+            if group_count == 1:
+                result = empty(use_queue,
+                        (), self.dtype_out,
+                        allocator=repr_vec.allocator)
+            else:
+                result = empty(use_queue,
+                        (group_count,), self.dtype_out,
+                        allocator=repr_vec.allocator)
+    
+            stage_inf.kernel(
+                    use_queue,
+                    (group_count*stage_inf.group_size,),
+                    (stage_inf.group_size,),
+>                   *([result.data]+invocation_args+[seq_count, sz]))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/reduction.py:341: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c84eaf8>
+queue = <pyopencl._cl.CommandQueue object at 0x1096e12b8>
+global_size = (50176,)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_if_positive[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817c20>
+
+    @pytools.test.mark_test.opencl
+    def test_if_positive(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+    
+        l = 20000
+>       a_gpu = clrand(queue, (l,), np.float32)
+
+test_array.py:504: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def rand(*args, **kwargs):
+        def inner_rand(queue, shape, dtype):
+            from pyopencl.array import Array
+    
+            result = Array(queue, shape, dtype)
+            _rand(result, np.random.randint(2**31-1))
+            return result
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return inner_rand(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x10b7c93c0>, shape = (20000,)
+dtype = <type 'numpy.float32'>
+
+    def inner_rand(queue, shape, dtype):
+        from pyopencl.array import Array
+    
+        result = Array(queue, shape, dtype)
+>       _rand(result, np.random.randint(2**31-1))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c84d5d0>
+queue = <pyopencl._cl.CommandQueue object at 0x10b7c93c0>
+global_size = (24576, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_take_put[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x10981c248>
+
+    @pytools.test.mark_test.opencl
+    def test_take_put(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        for n in [5, 17, 333]:
+            one_field_size = 8
+            buf_gpu = cl_array.zeros(queue,
+>                   n * one_field_size, dtype=np.float32)
+
+test_array.py:527: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def zeros(*args, **kwargs):
+        """Returns an array of the given shape and dtype filled with 0's."""
+    
+        def _zeros(queue, shape, dtype, order="C", allocator=None):
+            result = Array(queue, shape, dtype,
+                    order=order, allocator=allocator)
+            zero = np.zeros((), dtype)
+            result.fill(zero)
+            return result
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return _zeros(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:696: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x10c84dcb0>, shape = 40
+dtype = <type 'numpy.float32'>, order = 'C', allocator = None
+
+    def _zeros(queue, shape, dtype, order="C", allocator=None):
+        result = Array(queue, shape, dtype,
+                order=order, allocator=allocator)
+        zero = np.zeros((), dtype)
+>       result.fill(zero)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:685: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,
+      ...0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.], dtype=float32)
+value = array(0.0, dtype=float32), queue = None
+
+    def fill(self, value, queue=None):
+        """fills the array with the specified value"""
+>       self._fill(self, value, queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:578: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c833b50>
+queue = <pyopencl._cl.CommandQueue object at 0x10c84dcb0>
+global_size = (64, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_astype[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x109817c68>
+
+    @pytools.test.mark_test.opencl
+    def test_astype(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import rand as clrand
+    
+        if not has_double_support(context.devices[0]):
+            return
+    
+>       a_gpu = clrand(queue, (2000,), dtype=np.float32)
+
+test_array.py:551: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def rand(*args, **kwargs):
+        def inner_rand(queue, shape, dtype):
+            from pyopencl.array import Array
+    
+            result = Array(queue, shape, dtype)
+            _rand(result, np.random.randint(2**31-1))
+            return result
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return inner_rand(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x10c84edb8>, shape = (2000,)
+dtype = <type 'numpy.float32'>
+
+    def inner_rand(queue, shape, dtype):
+        from pyopencl.array import Array
+    
+        result = Array(queue, shape, dtype)
+>       _rand(result, np.random.randint(2**31-1))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/clrandom.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10b7c93c0>
+queue = <pyopencl._cl.CommandQueue object at 0x10c84edb8>
+global_size = (2016, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_scan[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x1098173b0>
+
+    @pytools.test.mark_test.opencl
+    def test_scan(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.scan import InclusiveScanKernel, ExclusiveScanKernel
+    
+        dtype = np.int32
+        for cls in [InclusiveScanKernel, ExclusiveScanKernel]:
+            knl = cls(context, dtype, "a+b", "0")
+    
+            for n in [
+                10, 2 ** 10 - 5, 2 ** 10,
+                2 ** 20 - 2 ** 18,
+                2 ** 20 - 2 ** 18 + 5,
+                2 ** 10 + 5,
+                2 ** 20 + 5,
+                2 ** 20, 2 ** 24]:
+                host_data = np.random.randint(0, 10, n).astype(dtype)
+                dev_data = cl_array.to_device(queue, host_data)
+    
+>               knl(dev_data)
+
+test_array.py:589: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl.compyte.scan.InclusiveScanKernel object at 0x10c853650>
+input_ary = array([1, 6, 7, 2, 2, 0, 3, 4, 9, 6], dtype=int32)
+output_ary = array([1, 6, 7, 2, 2, 0, 3, 4, 9, 6], dtype=int32)
+allocator = <pyopencl._cl.CLAllocator object at 0x1096e1260>
+queue = <pyopencl._cl.CommandQueue object at 0x10c84e998>
+
+    def __call__(self, input_ary, output_ary=None, allocator=None,
+            queue=None):
+        allocator = allocator or input_ary.allocator
+        queue = queue or input_ary.queue or output_ary.queue
+    
+        if output_ary is None:
+            output_ary = input_ary
+    
+        if isinstance(output_ary, (str, unicode)) and output_ary == "new":
+            output_ary = cl_array.empty_like(input_ary, allocator=allocator)
+    
+        if input_ary.shape != output_ary.shape:
+            raise ValueError("input and output must have the same shape")
+    
+        if not input_ary.flags.forc:
+            raise RuntimeError("ScanKernel cannot "
+                    "deal with non-contiguous arrays")
+    
+        n, = input_ary.shape
+    
+        if not n:
+            return output_ary
+    
+        unit_size  = self.scan_wg_size * self.scan_wg_seq_batches
+        max_groups = 3*max(dev.max_compute_units for dev in self.devices)
+    
+        from pytools import uniform_interval_splitting
+        interval_size, num_groups = uniform_interval_splitting(
+                n, unit_size, max_groups);
+    
+        block_results = allocator(self.dtype.itemsize*num_groups)
+        dummy_results = allocator(self.dtype.itemsize)
+    
+        # first level scan of interval (one interval per block)
+        self.scan_intervals_knl(
+                queue, (num_groups*self.scan_wg_size,), (self.scan_wg_size,),
+                input_ary.data,
+                n, interval_size,
+                output_ary.data,
+>               block_results)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/compyte/scan.py:466: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c83b1b0>
+queue = <pyopencl._cl.CommandQueue object at 0x10c84e998>, global_size = (128,)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+------------------------------- Captured stderr --------------------------------
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/cache.py:353: UserWarning: Build succeeded, but resulted in non-empty logs:
+Build on <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff> succeeded, but said:
+
+<program source>:34:10: warning: no previous prototype for function 'scan_group'
+    void scan_group(LOCAL_MEM_ARG scan_type *array
+         ^
+<program source>:141:10: warning: no previous prototype for function 'scan_group_n'
+    void scan_group_n(LOCAL_MEM_ARG scan_type *array
+         ^
+
+  warn("Build succeeded, but resulted in non-empty logs:\n"+message)
+ test_vector_fill[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x1098172d8>
+
+    @pytools.test.mark_test.opencl
+    def test_vector_fill(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        a_gpu = cl_array.Array(queue, 100, dtype=cl_array.vec.float4)
+>       a_gpu.fill(cl_array.vec.make_float4(0.0, 0.0, 1.0, 0.0))
+
+test_array.py:619: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = array([(0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0),
+     ...0'), '<f4'), (('y', 's1'), '<f4'), (('z', 's2'), '<f4'), (('w', 's3'), '<f4')])
+value = array((0.0, 0.0, 1.0, 0.0), 
+      dtype=[(('x', 's0'), '<f4'), (('y', 's1'), '<f4'), (('z', 's2'), '<f4'), (('w', 's3'), '<f4')])
+queue = None
+
+    def fill(self, value, queue=None):
+        """fills the array with the specified value"""
+>       self._fill(self, value, queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:578: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c83b1b0>
+queue = <pyopencl._cl.CommandQueue object at 0x10c854100>
+global_size = (128, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_mem_pool_with_arrays[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x10981c488>
+
+    @pytools.test.mark_test.opencl
+    def test_mem_pool_with_arrays(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+        mem_pool = cl_tools.MemoryPool(cl_tools.CLAllocator(context))
+    
+>       a_dev = cl_array.arange(queue, 2000, dtype=np.float64, allocator=mem_pool)
+
+test_array.py:631: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def arange(*args, **kwargs):
+        """Create an array filled with numbers spaced `step` apart,
+        starting from `start` and ending at `stop`.
+    
+        For floating point arguments, the length of the result is
+        `ceil((stop - start)/step)`.  This rule may result in the last
+        element of the result being greater than stop.
+        """
+    
+        if isinstance(args[0], cl.Context):
+            from warnings import warn
+            warn("Passing a context as first argument is deprecated. "
+                "This will be continue to be accepted througout "
+                "versions 2011.x of PyOpenCL.",
+                DeprecationWarning, 2)
+            args = args[1:]
+    
+>       return _arange(*args, **kwargs)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:813: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+queue = <pyopencl._cl.CommandQueue object at 0x1096e1260>
+
+    def _arange(queue, *args, **kwargs):
+        # argument processing -----------------------------------------------------
+    
+        # Yuck. Thanks, numpy developers. ;)
+        from pytools import Record
+        class Info(Record):
+            pass
+    
+        explicit_dtype = False
+    
+        inf = Info()
+        inf.start = None
+        inf.stop = None
+        inf.step = None
+        inf.dtype = None
+        inf.allocator = None
+    
+        if isinstance(args[-1], np.dtype):
+            dtype = args[-1]
+            args = args[:-1]
+            explicit_dtype = True
+    
+        argc = len(args)
+        if argc == 0:
+            raise ValueError, "stop argument required"
+        elif argc == 1:
+            inf.stop = args[0]
+        elif argc == 2:
+            inf.start = args[0]
+            inf.stop = args[1]
+        elif argc == 3:
+            inf.start = args[0]
+            inf.stop = args[1]
+            inf.step = args[2]
+        else:
+            raise ValueError, "too many arguments"
+    
+        admissible_names = ["start", "stop", "step", "dtype", "allocator"]
+        for k, v in kwargs.iteritems():
+            if k in admissible_names:
+                if getattr(inf, k) is None:
+                    setattr(inf, k, v)
+                    if k == "dtype":
+                        explicit_dtype = True
+                else:
+                    raise ValueError, "may not specify '%s' by position and keyword" % k
+            else:
+                raise ValueError, "unexpected keyword argument '%s'" % k
+    
+        if inf.start is None:
+            inf.start = 0
+        if inf.step is None:
+            inf.step = 1
+        if inf.dtype is None:
+            inf.dtype = np.array([inf.start, inf.stop, inf.step]).dtype
+    
+        # actual functionality ----------------------------------------------------
+        dtype = np.dtype(inf.dtype)
+        start = dtype.type(inf.start)
+        step = dtype.type(inf.step)
+        stop = dtype.type(inf.stop)
+    
+        if not explicit_dtype:
+            raise TypeError("arange requires dtype argument")
+    
+        from math import ceil
+        size = int(ceil((stop-start)/step))
+    
+        result = Array(queue, (size,), dtype, allocator=inf.allocator)
+>       _arange_knl(result, start, step, queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:790: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def kernel_runner(*args, **kwargs):
+        repr_ary = args[0]
+        queue = kwargs.pop("queue", None) or repr_ary.queue
+    
+        gs, ls = repr_ary.get_sizes(queue)
+        knl = kernel_getter(*args)
+    
+        assert isinstance(repr_ary, Array)
+    
+        actual_args = []
+        for arg in args:
+            if isinstance(arg, Array):
+                if not arg.flags.forc:
+                    raise RuntimeError("only contiguous arrays may "
+                            "be used as arguments to this operation")
+                actual_args.append(arg.data)
+            else:
+                actual_args.append(arg)
+        actual_args.append(repr_ary.mem_size)
+    
+>       return knl(queue, gs, ls, *actual_args)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c83b260>
+queue = <pyopencl._cl.CommandQueue object at 0x1096e1260>
+global_size = (2016, 1, 1)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+ test_mem_pool_with_arrays[ctx_factory=<context factory for <pyopencl.Device 'ATI Radeon HD 6750M' at 0x1021b00>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x10981c5f0>
+
+    @pytools.test.mark_test.opencl
+    def test_mem_pool_with_arrays(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+        mem_pool = cl_tools.MemoryPool(cl_tools.CLAllocator(context))
+    
+        a_dev = cl_array.arange(queue, 2000, dtype=np.float64, allocator=mem_pool)
+        b_dev = cl_array.to_device(queue, np.arange(2000), allocator=mem_pool) + 4000
+    
+>       result = cl_array.dot(a_dev, b_dev)
+
+test_array.py:634: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+a = array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+b = array([4000, 4001, 4002, ..., 5997, 5998, 5999]), dtype = None, queue = None
+
+    def dot(a, b, dtype=None, queue=None):
+        from pyopencl.reduction import get_dot_kernel
+        krnl = get_dot_kernel(a.context, dtype, a.dtype, b.dtype)
+>       return krnl(a, b, queue=queue)
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/array.py:1066: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl.reduction.ReductionKernel instance at 0x10c80d248>
+
+    def __call__(self, *args, **kwargs):
+        MAX_GROUP_COUNT = 1024
+        SMALL_SEQ_COUNT = 4
+    
+        from pyopencl.array import empty
+    
+        stage_inf = self.stage_1_inf
+    
+        queue = kwargs.pop("queue", None)
+    
+        if kwargs:
+            raise TypeError("invalid keyword argument to reduction kernel")
+    
+        while True:
+            invocation_args = []
+            vectors = []
+    
+            from pyopencl.tools import VectorArg
+            for arg, arg_tp in zip(args, stage_inf.arg_types):
+                if isinstance(arg_tp, VectorArg):
+                    if not arg.flags.forc:
+                        raise RuntimeError("ReductionKernel cannot "
+                                "deal with non-contiguous arrays")
+    
+                    vectors.append(arg)
+                    invocation_args.append(arg.data)
+                else:
+                    invocation_args.append(arg)
+    
+            repr_vec = vectors[0]
+            sz = repr_vec.size
+    
+            if queue is not None:
+                use_queue = queue
+            else:
+                use_queue = repr_vec.queue
+    
+            if sz <= stage_inf.group_size*SMALL_SEQ_COUNT*MAX_GROUP_COUNT:
+                total_group_size = SMALL_SEQ_COUNT*stage_inf.group_size
+                group_count = (sz + total_group_size - 1) // total_group_size
+                seq_count = SMALL_SEQ_COUNT
+            else:
+                group_count = MAX_GROUP_COUNT
+                macrogroup_size = group_count*stage_inf.group_size
+                seq_count = (sz + macrogroup_size - 1) // macrogroup_size
+    
+            if group_count == 1:
+                result = empty(use_queue,
+                        (), self.dtype_out,
+                        allocator=repr_vec.allocator)
+            else:
+                result = empty(use_queue,
+                        (group_count,), self.dtype_out,
+                        allocator=repr_vec.allocator)
+    
+            stage_inf.kernel(
+                    use_queue,
+                    (group_count*stage_inf.group_size,),
+                    (stage_inf.group_size,),
+>                   *([result.data]+invocation_args+[seq_count, sz]))
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/reduction.py:341: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pyopencl._cl.Kernel object at 0x10c855788>
+queue = <pyopencl._cl.CommandQueue object at 0x10c854788>, global_size = (1024,)
+
+    def kernel_call(self, queue, global_size, *args, **kwargs):
+        global_offset = kwargs.pop("global_offset", None)
+        had_local_size = "local_size" in kwargs
+        local_size = kwargs.pop("local_size", None)
+        g_times_l = kwargs.pop("g_times_l", False)
+        wait_for = kwargs.pop("wait_for", None)
+    
+        if kwargs:
+            raise TypeError(
+                    "Kernel.__call__ recived unexpected keyword arguments: %s"
+                    % ", ".join(kwargs.keys()))
+    
+        if had_local_size:
+            from warnings import warn
+            warn("The local_size keyword argument is deprecated and will be "
+                    "removed in pyopencl 2012.x. Pass the local "
+                    "size as the third positional argument instead.",
+                    DeprecationWarning, stacklevel=2)
+    
+        if isinstance(args[0], (type(None), tuple)) and not had_local_size:
+            local_size = args[0]
+            args = args[1:]
+        elif not had_local_size:
+            from warnings import warn
+            warn("PyOpenCL Warning: There was an API change "
+                    "in Kernel.__call__() in pyopencl 0.92. "
+                    "local_size was moved from keyword argument to third "
+                    "positional argument in pyopencl 0.92. "
+                    "You didn't pass local_size, but you still need to insert "
+                    "'None' as a third argument. "
+                    "Your present usage is deprecated and will stop "
+                    "working in pyopencl 2012.x.",
+                    DeprecationWarning, stacklevel=2)
+    
+        self.set_args(*args)
+    
+        return enqueue_nd_range_kernel(queue, self, global_size, local_size,
+>               global_offset, wait_for, g_times_l=g_times_l)
+E   LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:221: LogicError
+===================== 34 failed, 26 passed in 6.05 seconds =====================

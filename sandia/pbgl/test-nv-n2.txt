@@ -1,0 +1,42 @@
+heiland@dhcp-cs-244-214:~/dev/Lumsdaine/Sandia/build-8-27-09$ ^3^2
+mpirun -np 2 PBGLNamedVertexGraph
+[0]	AddEdgeInternal<uPed,vPed>(u=Bloomington, v=Indianapolis, prop=0, edge=0xbfffdd6c)
+[1]	AddEdgeInternal<uPed,vPed>(u=Indianapolis, v=Cincinnati, prop=0, edge=0xbfffddcc)
+[0]	AddEdgeInternal<uPed, vDist>(u=Bloomington, v={0:0}, prop=0, edge=0xbfffdd6c)
+[0]	send_oob_with_reply(Bloomington{0:0}) to process 1 ADD_*_EDGE_NI_WITH_REPLY
+[1]	AddEdgeInternal<uPed, vDist>(u=Indianapolis, v={1:0}, prop=0, edge=0xbfffddcc)
+[1]	send_oob_with_reply(Indianapolis{1:0}) to process 0 ADD_*_EDGE_NI_WITH_REPLY
+[1]	HandleAddEdgeNI( u=Bloomington, v={0:0})
+[1]	AddEdgeInternal<uPed, vDist>(u=Bloomington, v={0:0}, prop=0, edge=0xbfffd814)
+[1]	AddEdgeInternal<uDist,vDist>(u={1:1}, v={0:0}, prop=0, edge=0xbfffd814)
+[1]	send({1:1}, {0:0}) to process 0 ADD_*_BACK_EDGE_TAG
+[0]	HandleAddEdgeNI( u=Indianapolis, v={1:0})
+[0]	AddEdgeInternal<uPed, vDist>(u=Indianapolis, v={1:0}, prop=0, edge=0xbfffd814)
+[0]	AddEdgeInternal<uDist,vDist>(u={0:0}, v={1:0}, prop=0, edge=0xbfffd814)
+[0]	send({0:0}, {1:0}) to process 1 ADD_*_BACK_EDGE_TAG
+[0]	HandleAddBackEdge(4611686018427387905, 0, 4611686018427387904)
+[0]	AddEdgeInternal<uPed,vPed>(u=Indianapolis, v=Chicago, prop=0, edge=0xbfffdd9c)
+[0]	AddEdgeInternal<uDist,vPed>(u={0:0}, v=Chicago, prop=0, edge=0xbfffdd9c)
+[1]	AddEdgeInternal<uPed,vPed>(u=Indianapolis, v=Louisville, prop=0, edge=0xbfffddfc)
+[1]	AddEdgeInternal<uPed, vDist>(u=Indianapolis, v={1:2}, prop=0, edge=0xbfffddfc)
+[1]	send_oob_with_reply(Indianapolis{1:2}) to process 0 ADD_*_EDGE_NI_WITH_REPLY
+[0]	HandleAddEdgeNI( u=Indianapolis, v={1:2})
+[0]	AddEdgeInternal<uPed, vDist>(u=Indianapolis, v={1:2}, prop=0, edge=0xbfffd874)
+[0]	AddEdgeInternal<uDist,vDist>(u={0:0}, v={1:2}, prop=0, edge=0xbfffd874)
+[0]	send({0:0}, {1:2}) to process 1 ADD_*_BACK_EDGE_TAG
+[1]	HandleAddBackEdge(0, 4611686018427387904, 0)
+[0]	AddEdgeInternal<uDist,vDist>(u={0:0}, v={1:3}, prop=0, edge=0xbfffdd9c)
+[0]	send({0:0}, {1:3}) to process 1 ADD_*_BACK_EDGE_TAG
+[1]	HandleAddBackEdge(0, 4611686018427387906, 1)
+[1]	HandleAddBackEdge(0, 4611686018427387907, 2)
+Rank #0: vertex Indianapolis (0)
+Rank #0: edge (0, 4000000000000000)
+Rank #0: edge (0, 4000000000000002)
+Rank #0: edge (0, 4000000000000003)
+Rank #1: vertex Cincinnati (4000000000000000)
+Rank #1: vertex Bloomington (4000000000000001)
+Rank #1: vertex Louisville (4000000000000002)
+Rank #1: vertex Chicago (4000000000000003)
+Rank #1: edge (4000000000000001, 0)
+heiland@dhcp-cs-244-214:~/dev/Lumsdaine/Sandia/build-8-27-09$
+

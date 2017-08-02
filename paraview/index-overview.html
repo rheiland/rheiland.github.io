@@ -1,0 +1,24 @@
+<html>
+<head>
+<title>Heiland: Paraview/OverView</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+</head>
+
+<h1>ParaView/OverView</h1>
+<li><a href=http://paraview.org>http://paraview.org</a>
+<li><a href=http://paraview.org/Wiki/ParaView>http://paraview.org/Wiki/ParaView</a>
+<li><a href=http://paraview.org/Wiki/ParaView/Python_Scripting>Python scripting</a>
+<li>Note that the upcoming 3.6 is to have a much improved Python API !!
+<p>
+The instructions for "verifying that parallel rendering is working" from the wiki is not quite
+correct (for v. 3.5.0 Dev).  Instead, do: Paraview->Prefs:  RenderView->Server,
+then check the Remote Render Threshold box and move slider to the left (0 Mbytes):
+<p>
+<img src=server-render-setting.png><p>
+When we then interact with the rendering, it appears pixelated while moving, but renders smooth when we
+stop.
+<hr>
+<p>
+<img src=overview-graph.png><p>
+It seems that the same effect (pixelation) does not apply to Overview.
+</html>

@@ -1,0 +1,419 @@
+<title>PyOpenCL on OSX 10.7</title>
+<link rel="shortcut icon" type="image/png" href="../lorenz-zoom.png" >
+
+<h3>Playing w/ PyOpenCL on OSX 10.7</h3>
+
+<li><a href=Aug2011>previous results (Aug 2011)</a>
+
+<hr>
+NOTE: for OSX 10.7, I edited the setup.py (and/or siteconf.py) script to use MacOSX10.7.sdk instead of 10.6.
+
+<hr>
+<h3>Some test/examples results</h3>
+<pre>
+Mon Oct 31 09:55:25 EDT 2011
+
+recall:
+PYOPENCL_CTX=0  --> CPU
+PYOPENCL_CTX=1  --> GPU
+
+but not relevant for the tests, just the examples.
+
+~/git/pyopencl/examples$ alias|grep ctx
+alias ctx0='export PYOPENCL_CTX='\''0'\'''
+alias ctx1='export PYOPENCL_CTX='\''1'\'''
+
+<hr> <!--------------------------------->
+~/git/pyopencl/test$ python test_wrapper.py 
+=========================================== test session starts
+============================================
+platform darwin -- Python 2.7.1 -- pytest-2.1.0
+collected 21 items 
+
+test_wrapper.py ........s............
+
+=================================== 20 passed, 1 skipped in 0.31 seconds
+===================================
+<hr>
+<!--------------------------------->
+~/git/pyopencl/test$ python test_array.py 
+=========================================== test session starts
+============================================
+platform darwin -- Python 2.7.1 -- pytest-2.1.0
+collected 60 items 
+
+test_array.py ........................F...................................
+
+================================================= FAILURES
+=================================================
+ test_random[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz'
+on 'Apple' at 0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x10de9e7a0>
+
+    @pytools.test.mark_test.opencl
+    def test_random(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import RanluxGenerator
+    
+        if has_double_support(context.devices[0]):
+            dtypes = [np.float32, np.float64]
+        else:
+            dtypes = [np.float32]
+    
+        gen = RanluxGenerator(queue, 5120)
+    
+        for ary_size in [300, 301, 302, 303, 10007]:
+            for dtype in dtypes:
+                ran = cl_array.zeros(queue, ary_size, dtype)
+                gen.fill_uniform(ran)
+                assert (0 < ran.get()).all()
+                assert (ran.get() < 1).all()
+    
+                gen.synchronize(queue)
+    
+                ran = cl_array.zeros(queue, ary_size, dtype)
+                gen.fill_uniform(ran, a=4, b=7)
+>               assert (4 < ran.get()).all()
+E               assert <built-in method all of numpy.ndarray object at 0x7fe7bc1056f0>()
+E                +  where <built-in method all of numpy.ndarray object at 0x7fe7bc1056f0> = 4 < array([
+6.19607544,  4.17939472,  4.86412287,  6.28594398,  4.        ,\n      ...4.        ,  4.        ,  4.
+,  4.        ,  4.        ], dtype=float32).all
+E                +    where array([ 6.19607544,  4.17939472,  4.86412287,  6.28594398,  4.        ,\n
+...4.        ,  4.        ,  4.        ,  4.        ,  4.        ], dtype=float32) = <bound method
+Array.get of array([ 6.19607544,  4.17939472,  4.86412287,  6.28....        ,  4.        ,  4.        ,  4.
+,  4.        ], dtype=float32)>()
+E                +      where <bound method Array.get of array([ 6.19607544,  4.17939472,  4.86412287,
+6.28....        ,  4.        ,  4.        ,  4.        ,  4.        ], dtype=float32)> = array([
+6.19607544,  4.17939472,  4.86412287,  6.28594398,  4.        ,\n      ...4.        ,  4.        ,  4.
+,  4.        ,  4.        ], dtype=float32).get
+
+test_array.py:249: AssertionError
+--------------------------------------------- Captured stderr
+----------------------------------------------
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:36:
+CompilerWarning: Non-empty compiler output encountered. Set the environment variable
+PYOPENCL_COMPILER_OUTPUT=1 to see more.
+  "to see more.", CompilerWarning)
+=================================== 1 failed, 59 passed in 23.51 seconds
+===================================
+
+another run:  1 failed, 59 passed in 7.93 seconds
+
+<hr> <!--------------------------------->
+
+~/git/pyopencl/test$ python test_clmath.py 
+=========================================== test session starts
+============================================
+platform darwin -- Python 2.7.1 -- pytest-2.1.0
+collected 40 items 
+
+test_clmath.py ........................................
+
+======================================== 40 passed in 2.36 seconds
+=========================================
+~/git/pyopencl/test$ python test_clmath.py 
+=========================================== test session starts
+============================================
+platform darwin -- Python 2.7.1 -- pytest-2.1.0
+collected 40 items 
+
+test_clmath.py ........................................
+
+======================================== 40 passed in 1.81 seconds
+=========================================
+<hr>
+<!--------------------------------->
+
+~/git/pyopencl/examples$ python benchmark-all.py 
+('Execution time of test without OpenCL: ', 13.498385906219482, 's')
+===============================================================
+('Platform name:', 'Apple')
+('Platform profile:', 'FULL_PROFILE')
+('Platform vendor:', 'Apple')
+('Platform version:', 'OpenCL 1.1 (Jul 25 2011 15:56:07)')
+---------------------------------------------------------------
+('Device name:', 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz')
+('Device type:', 'CPU')
+('Device memory: ', 8192L, 'MB')
+('Device max clock speed:', 2200, 'MHz')
+('Device compute units:', 8)
+Execution time of test: 0.00106449 s
+Results OK
+===============================================================
+('Platform name:', 'Apple')
+('Platform profile:', 'FULL_PROFILE')
+('Platform vendor:', 'Apple')
+('Platform version:', 'OpenCL 1.1 (Jul 25 2011 15:56:07)')
+---------------------------------------------------------------
+('Device name:', 'ATI Radeon HD 6750M')
+('Device type:', 'GPU')
+('Device memory: ', 512L, 'MB')
+('Device max clock speed:', 600, 'MHz')
+('Device compute units:', 6)
+Execution time of test: 0.00576268 s
+Results OK
+<hr> <!--------------------------------->
+<hr>
+
+~/git/pyopencl/examples$ ctx0
+~/git/pyopencl/examples$ python demo.py 
+ctx= &ltpyopencl.Context at 0x7fc6116dfd48 on &ltpyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' on
+'Apple' at 0xffffffff>>
+(0.0, 241.10759)
+~/git/pyopencl/examples$ ctx1
+~/git/pyopencl/examples$ !py
+python demo.py 
+ctx= &ltpyopencl.Context at 0x7fb670edd0d8 on &ltpyopencl.Device 'ATI Radeon HD 6750M' on 'Apple' at
+0x1021b00>>
+(0.0, 241.6317)
+<hr> <!--------------------------------->
+PYOPENCL_CTX=0 and PYOPENCL_CTX=1
+~/git/pyopencl/examples$ !py
+python demo_array.py 
+0.0
+<hr> <!--------------------------------->
+
+PYOPENCL_CTX=0
+~/git/pyopencl/examples$ python demo_mandelbrot.py 
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/cache.py:270:
+UserWarning: PyOpenCL encountered an invalid info file for cache key 08baf7d50061494ccf625797e7ae9107
+  % cache_key)
+('Main took', 0.08313703536987305)
+~/git/pyopencl/examples$ python demo_mandelbrot.py 
+('Main took', 0.03559589385986328)
+~/git/pyopencl/examples$ python demo_mandelbrot.py 
+('Main took', 0.030820131301879883)
+
+~/git/pyopencl/examples$ ctx1
+PYOPENCL_CTX=1
+~/git/pyopencl/examples$ !py
+python demo_mandelbrot.py 
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/cache.py:270:
+UserWarning: PyOpenCL encountered an invalid info file for cache key f0bc77f6faf1aba7dd126a839eda1351
+  % cache_key)
+('Main took', 0.12734007835388184)
+~/git/pyopencl/examples$ python demo_mandelbrot.py 
+('Main took', 0.033576011657714844)
+<p>
+<img src=mset.png>
+<hr> <!--------------------------------->
+
+~/git/pyopencl/examples$ ctx0
+~/git/pyopencl/examples$ python transpose.py 
+('benchmarking', 'Silly', 1024, 3.3749883198583532, 'GB/s')
+('benchmarking', 'Silly', 1088, 3.2421916607748766, 'GB/s')
+('benchmarking', 'Silly', 1216, 3.2220378519544277, 'GB/s')
+('benchmarking', 'Silly', 1312, 3.0503129058070733, 'GB/s')
+('benchmarking', 'Silly', 1440, 3.1789565321622826, 'GB/s')
+('benchmarking', 'Silly', 1568, 3.1698714307102627, 'GB/s')
+('benchmarking', 'Silly', 1696, 2.9359871798797603, 'GB/s')
+('benchmarking', 'Silly', 1856, 3.06774389292026, 'GB/s')
+('benchmarking', 'Silly', 2048, 0.9191170516223641, 'GB/s')
+('benchmarking', 'Silly', 2208, 2.948814545921106, 'GB/s')
+('benchmarking', 'Silly', 2432, 3.04470882871602, 'GB/s')
+('benchmarking', 'Silly', 2624, 2.7214479506109863, 'GB/s')
+('benchmarking', 'Silly', 2880, 2.8514935116900513, 'GB/s')
+('benchmarking', 'Silly', 3136, 2.787147936157402, 'GB/s')
+('benchmarking', 'Silly', 3424, 2.5212346557383776, 'GB/s')
+('benchmarking', 'Silly', 3744, 2.268104098611576, 'GB/s')
+('benchmarking', 'Silly', 4096, 0.7802275864211712, 'GB/s')
+('benchmarking', 'Silly', 4448, 2.553952854835805, 'GB/s')
+('benchmarking', 'Silly', 4864, 1.7742496388215576, 'GB/s')
+('benchmarking', 'Silly', 5280, 2.3529222134815924, 'GB/s')
+('benchmarking', 'Silly', 5792, 2.286561063900947, 'GB/s')
+('benchmarking', 'Silly', 6304, 2.1012795696626423, 'GB/s')
+('benchmarking', 'Silly', 6880, 1.899027913779887, 'GB/s')
+('benchmarking', 'Silly', 7488, 1.4529872812249587, 'GB/s')
+Traceback (most recent call last):
+  File "transpose.py", line 212, in <module>
+    benchmark_transpose()
+  File "transpose.py", line 173, in benchmark_transpose
+    method(queue, a_t_buf, a_buf, source.shape)
+  File "transpose.py", line 38, in __call__
+    tgt, src, numpy.uint32(w), numpy.uint32(h))
+  File
+"/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py",
+line 247, in kernel_call
+    global_offset, wait_for, g_times_l=g_times_l)
+pyopencl.LogicError: clEnqueueNDRangeKernel failed: invalid work group size
+
+
+~/git/pyopencl/examples$ ctx1
+~/git/pyopencl/examples$ python transpose.py 
+('benchmarking', 'Silly', 1024, 0.4630502677277632, 'GB/s')
+('benchmarking', 'Silly', 1088, 2.3931299385800213, 'GB/s')
+('benchmarking', 'Silly', 1216, 2.3925106621896433, 'GB/s')
+('benchmarking', 'Silly', 1312, 2.3940030456244767, 'GB/s')
+('benchmarking', 'Silly', 1440, 2.3904516810673337, 'GB/s')
+('benchmarking', 'Silly', 1568, 2.3898998168145718, 'GB/s')
+('benchmarking', 'Silly', 1696, 2.389789509964346, 'GB/s')
+('benchmarking', 'Silly', 1856, 2.388450333575555, 'GB/s')
+('benchmarking', 'Silly', 2048, 0.2766682926443244, 'GB/s')
+('benchmarking', 'Silly', 2208, 2.387022972979858, 'GB/s')
+('benchmarking', 'Silly', 2432, 1.3839653603505497, 'GB/s')
+('benchmarking', 'Silly', 2624, 2.3856790758839583, 'GB/s')
+('benchmarking', 'Silly', 2880, 2.385648445282214, 'GB/s')
+('benchmarking', 'Silly', 3136, 2.3849522474700278, 'GB/s')
+('benchmarking', 'Silly', 3424, 2.385520221950812, 'GB/s')
+('benchmarking', 'Silly', 3744, 2.384527568841694, 'GB/s')
+('benchmarking', 'Silly', 4096, 0.18293962484011594, 'GB/s')
+('benchmarking', 'Silly', 4448, 2.3828827988253387, 'GB/s')
+('benchmarking', 'Silly', 4864, 0.6995003853465442, 'GB/s')
+('benchmarking', 'Silly', 5280, 2.3823371903564348, 'GB/s')
+('benchmarking', 'Silly', 5792, 2.3823187211401575, 'GB/s')
+('benchmarking', 'Silly', 6304, 15.279133307540773, 'GB/s')
+('benchmarking', 'Silly', 6880, 8.178954545382876, 'GB/s')
+('benchmarking', 'Silly', 7488, 5.931497175412061, 'GB/s')
+('benchmarking', 'Naive', 1024, 4.761131594910306, 'GB/s')
+('benchmarking', 'Naive', 1088, 9.474080330504016, 'GB/s')
+('benchmarking', 'Naive', 1216, 9.484674421662675, 'GB/s')
+('benchmarking', 'Naive', 1312, 9.494996179282905, 'GB/s')
+('benchmarking', 'Naive', 1440, 9.497748057873466, 'GB/s')
+('benchmarking', 'Naive', 1568, 9.508930428601833, 'GB/s')
+('benchmarking', 'Naive', 1696, 9.511853478787538, 'GB/s')
+('benchmarking', 'Naive', 1856, 9.515270313430644, 'GB/s')
+('benchmarking', 'Naive', 2048, 4.7662613157120965, 'GB/s')
+('benchmarking', 'Naive', 2208, 9.519910546977115, 'GB/s')
+('benchmarking', 'Naive', 2432, 9.520721713363992, 'GB/s')
+('benchmarking', 'Naive', 2624, 9.521975646733598, 'GB/s')
+('benchmarking', 'Naive', 2880, 9.521827203787655, 'GB/s')
+('benchmarking', 'Naive', 3136, 9.522738503764701, 'GB/s')
+('benchmarking', 'Naive', 3424, 9.522983068084304, 'GB/s')
+('benchmarking', 'Naive', 3744, 9.522843056429895, 'GB/s')
+('benchmarking', 'Naive', 4096, 2.7400623148121643, 'GB/s')
+('benchmarking', 'Naive', 4448, 9.522791936893894, 'GB/s')
+('benchmarking', 'Naive', 4864, 4.7620792117241395, 'GB/s')
+('benchmarking', 'Naive', 5280, 9.521970724727751, 'GB/s')
+('benchmarking', 'Naive', 5792, 9.521403725471428, 'GB/s')
+('benchmarking', 'Naive', 6304, 60.40193368899589, 'GB/s')
+('benchmarking', 'Naive', 6880, 32.47003222542349, 'GB/s')
+('benchmarking', 'Naive', 7488, 23.689675553520157, 'GB/s')
+('benchmarking', 'WithLocal', 1024, 11.248639195005525, 'GB/s')
+('benchmarking', 'WithLocal', 1088, 15.162597668758805, 'GB/s')
+('benchmarking', 'WithLocal', 1216, 15.206878110987699, 'GB/s')
+('benchmarking', 'WithLocal', 1312, 15.241512203058539, 'GB/s')
+('benchmarking', 'WithLocal', 1440, 15.262970610675696, 'GB/s')
+('benchmarking', 'WithLocal', 1568, 15.285583448447369, 'GB/s')
+('benchmarking', 'WithLocal', 1696, 15.297882984264564, 'GB/s')
+('benchmarking', 'WithLocal', 1856, 15.323844166358748, 'GB/s')
+('benchmarking', 'WithLocal', 2048, 7.649351703334631, 'GB/s')
+('benchmarking', 'WithLocal', 2208, 15.347650013433384, 'GB/s')
+('benchmarking', 'WithLocal', 2432, 15.414832441814836, 'GB/s')
+('benchmarking', 'WithLocal', 2624, 15.369994124953626, 'GB/s')
+('benchmarking', 'WithLocal', 2880, 15.36947873465713, 'GB/s')
+('benchmarking', 'WithLocal', 3136, 15.380224178060045, 'GB/s')
+('benchmarking', 'WithLocal', 3424, 15.369814424937882, 'GB/s')
+('benchmarking', 'WithLocal', 3744, 15.39086214855074, 'GB/s')
+('benchmarking', 'WithLocal', 4096, 4.4452921031859445, 'GB/s')
+('benchmarking', 'WithLocal', 4448, 15.39271429798185, 'GB/s')
+('benchmarking', 'WithLocal', 4864, 9.874631630991066, 'GB/s')
+('benchmarking', 'WithLocal', 5280, 15.38775890239738, 'GB/s')
+('benchmarking', 'WithLocal', 5792, 15.40160415854272, 'GB/s')
+('benchmarking', 'WithLocal', 6304, 97.62676822299153, 'GB/s')
+('benchmarking', 'WithLocal', 6880, 52.52827611180544, 'GB/s')
+('benchmarking', 'WithLocal', 7488, 38.32377013648643, 'GB/s')
+~/git/pyopencl/examples$
+
+<img src=transpose_timings.png>
+
+<hr> <!--------------------------------->
+<h2>Try to debug the failure</h2>
+<pre>
+.../pyopencl-play/random$ python test_random.py 
+========================================================= test session starts
+=========================================================
+platform darwin -- Python 2.7.1 -- pytest-2.1.0
+collected 2 items 
+
+test_random.py F.
+
+============================================================== FAILURES
+===============================================================
+ test_random[ctx_factory=<context factory for <pyopencl.Device 'Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz' on 'Apple' at
+0xffffffff>>] 
+
+ctx_factory = <pyopencl.tools.ContextFactory instance at 0x101709710>
+
+    @pytools.test.mark_test.opencl
+    def test_random(ctx_factory):
+        context = ctx_factory()
+        queue = cl.CommandQueue(context)
+    
+        from pyopencl.clrandom import RanluxGenerator
+    
+        if has_double_support(context.devices[0]):
+            dtypes = [np.float32, np.float64]
+        else:
+            dtypes = [np.float32]
+        print 'dtypes = ',dtypes    # dtypes =  [<type 'numpy.float32'>, <type 'numpy.float64'>]
+    
+        gen = RanluxGenerator(queue, 5120)
+        print 'dir(gen)=',dir(gen)
+    
+    #    for ary_size in [300, 301, 302, 303, 10007]:
+        for ary_size in [50]:
+            for dtype in dtypes:
+                ran = cl_array.zeros(queue, ary_size, dtype)
+                gen.fill_uniform(ran)
+                print '----- dtype=',dtype,' ---  ran: ',ran
+                assert (0 < ran.get()).all()
+                assert (ran.get() < 1).all()
+    
+                gen.synchronize(queue)
+    
+                ran = cl_array.zeros(queue, ary_size, dtype)
+                gen.fill_uniform(ran, a=4, b=7)
+                print '----- dtype=',dtype,' ---  ran: ',ran
+>               assert (4 < ran.get()).all()
+E               assert <built-in method all of numpy.ndarray object at 0x7f9272b196c0>()
+E                +  where <built-in method all of numpy.ndarray object at 0x7f9272b196c0> = 4 < array([ 6.19607544,
+4.17939472,  4.86412287,  6.28594398,  4.        ,\n      ...4.        ,  4.        ,  4.        ,  4.        ,  4.        ],
+dtype=float32).all
+E                +    where array([ 6.19607544,  4.17939472,  4.86412287,  6.28594398,  4.        ,\n      ...4.        ,  4.
+,  4.        ,  4.        ,  4.        ], dtype=float32) = <bound method Array.get of array([ 6.19607544,  4.17939472,
+4.86412287,  6.28....        ,  4.        ,  4.        ,  4.        ,  4.        ], dtype=float32)>()
+E                +      where <bound method Array.get of array([ 6.19607544,  4.17939472,  4.86412287,  6.28....        ,  4.
+,  4.        ,  4.        ,  4.        ], dtype=float32)> = array([ 6.19607544,  4.17939472,  4.86412287,  6.28594398,  4.
+,\n      ...4.        ,  4.        ,  4.        ,  4.        ,  4.        ], dtype=float32).get
+
+test_random.py:54: AssertionError
+----------------------------------------------------------- Captured stdout
+-----------------------------------------------------------
+dtypes =  [<type 'numpy.float32'>, <type 'numpy.float64'>]
+dir(gen)= ['__class__', '__delattr__', '__dict__', '__doc__', '__format__', '__getattribute__', '__hash__', '__init__',
+'__module__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__',
+'__subclasshook__', '__weakref__', 'context', 'fill_normal', 'fill_uniform', 'generate_settings_defines', 'get_gen_kernel',
+'get_sync_kernel', 'luxury', 'max_work_items', 'no_warmup', 'normal', 'num_work_items', 'state', 'support_double',
+'synchronize', 'uniform', 'use_legacy_init']
+----- dtype= <type 'numpy.float32'>  ---  ran:  [  6.53306961e-01   2.73914039e-01   1.20107472e-01   2.32534528e-01
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15   3.55271368e-15   3.55271368e-15
+   3.55271368e-15   3.55271368e-15]
+----- dtype= <type 'numpy.float32'>  ---  ran:  [ 6.19607544  4.17939472  4.86412287  6.28594398  4.          4.          4.
+  4.          4.          4.          4.          4.          4.          4.
+  4.          4.          4.          4.          4.          4.          4.
+  4.          4.          4.          4.          4.          4.          4.
+  4.          4.          4.          4.          4.          4.          4.
+  4.          4.          4.          4.          4.          4.          4.
+  4.          4.          4.          4.          4.          4.          4.
+  4.        ]
+----------------------------------------------------------- Captured stderr
+-----------------------------------------------------------
+/Library/Python/2.7/site-packages/pyopencl-2011.1.2-py2.7-macosx-10.7-intel.egg/pyopencl/__init__.py:36: CompilerWarning:
+Non-empty compiler output encountered. Set the environment variable PYOPENCL_COMPILER_OUTPUT=1 to see more.
+  "to see more.", CompilerWarning)
+================================================= 1 failed, 1 passed in 10.26 seconds
+
+</pre>
