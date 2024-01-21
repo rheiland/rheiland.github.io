@@ -7,26 +7,34 @@
 
 <CENTER>
 <h1>PhysiCell gallery</h1></CENTER>
+
 PhysiCell comes bundled with several sample models. The typical workflow when working with
 the core PhysiCell framework is to use different Makefile "targets", i.e., `make [sample]`.
 
-<a href="template1.png"><img src="template1.png" width=300 height=300></a>
+<a href="template1.png"><img src="template1.png" width=250></a>
+
 * a very simple model that has 1 cell type ("default") and 1 (unused) substrate ("substrate").
 The number of initial cells (=5) are specified as a `User Parameter`. The simulation time is 5 days and results are output every hour. This cell type has a 
 phenotype that includes:
+
+<li>
 * cell cycle resulting in proliferation
 * cell death
 * default adhesion and repulsion (mechanics)
 * no motility
 * no secretion
+</li>
 
-<a href="biorobots0.png"><img src="biorobots0.png" width=300 height=300></a>
+<a href="biorobots0.png"><img src="biorobots0.png" width=250></a>
 <a href="biorobots_12hr.png"><img src="biorobots_12hr.png" width=300 height=300></a>
 <a href="biorobots_2days.png"><img src="biorobots_2days.png" width=300 height=300></a>
 <a href="biorobots_12hr_director_signal.png"><img src="biorobots_12hr_director_signal.png" width=300 height=300></a>
 <a href="biorobots_12hr_cargo_signal.png"><img src="biorobots_12hr_cargo_signal.png" width=300 height=300></a>
+
+<li>
 * 3 cell/agent types: director, cargo, and worker
 * workers pickup and deliver cargo to directors, using chemotaxis of two signals
+</li>
 
 </BODY>
 </HTML>
