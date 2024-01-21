@@ -16,11 +16,17 @@ For detailed information about the sample models, you can create a free account 
 <ul>
 <li><a href=https://nanohub.org/tools/pc4biorobots>https://nanohub.org/tools/pc4biorobots</a></li>
 <li><a href=https://nanohub.org/tools/pc4cancerbots>https://nanohub.org/tools/pc4cancerbots</a></li>
-<li><a href=https://nanohub.org/tools/pc4heterogen>https://nanohub.org/tools/pc4heterogen></li>
+<li><a href=https://nanohub.org/tools/pc4heterogen>https://nanohub.org/tools/pc4heterogen</li>
 </ul>
+
+For this gallery, we used PhysiCell Studio to run and visualize the sample models. Be aware, however, that the XML configuration files for each sample project in the PhysiCell GitHub repository may not match the respective configuration files found in the Studio (/config). There are various reasons for this, one being the legacy ("hierarchical") XML format versus the "flattened" format required by the Studio (explained a bit more in the <a href=https://github.com/PhysiCell-Tools/Studio-Guide/blob/main/README.md>Studio Guide</a>).
+
+We also caution that some of the executable models have not been updated to use the more modern "interactions" and "rules" that appeared in more recent versions of PhysiCell. Therefore, if you do use the Studio to run and visualize results, some of the parameters may not reflect the behaviors a model exhibits. That's because the behaviors have been provided in C++, rather than in the XML. 
 
 <!---------->
 <hr>
+Click on any thumbnail image below to enlarge it.
+<br>
 <h2>template</h2>
 <p>
 <a href="template1.png"><img src="template1.png" width=200></a>
@@ -87,15 +93,42 @@ Therapy (cargo and worker cells) appears at 7 days, after the tumor has grown in
 
 <!---------->
 <hr>
-<h2>celltypes3</h2>
-
-<!---------->
-<hr>
 <h2>predator-prey-farmer</h2>
+<p>
+The classic predator-prey, and uh, farmer :-)
+</p>
+<a href="predprey0.png"><img src="predprey0.png" width=300></a>
+<a href="predprey_1day.png"><img src="predprey_1day.png" width=200></a>
+<a href="predprey_2day.png"><img src="predprey_2day.png" width=200></a>
+<a href="predprey_4day.png"><img src="predprey_4day.png" width=200></a>
+<a href="predprey_5day.png"><img src="predprey_5day.png" width=300></a>
+
+<ul>
+<li>3 cell types: farmer, prey, and predator</li> 
+<li>3 substrates: food, prey signal, predator signal</li> 
+</ul>
 
 <!---------->
 <hr>
 <h2>virus-macrophage</h2>
+
+<p>
+Epithelial cells uptake virus. Epithelial cells are not motile; macrophages are.
+Macrophages chemotax to virus.
+</p>
+<a href="virus_mac0.png"><img src="virus_mac0.png" width=300></a>
+<a href="virus_mac1_virus.png"><img src="virus_mac1_virus.png" width=200></a>
+<a href="virus_mac1_interferon.png"><img src="virus_mac1_interferon.png" width=200></a>
+<a href="virus_mac2_virus.png"><img src="virus_mac2_virus.png" width=200></a>
+<a href="virus_mac2_interferon.png"><img src="virus_mac2_interferon.png" width=200></a>
+<a href="virus_mac3_virus.png"><img src="virus_mac3_virus.png" width=200></a>
+<a href="virus_mac3_interferon.png"><img src="virus_mac3_interferon.png" width=200></a>
+<a href="virus_mac4.png"><img src="virus_mac4.png" width=200></a>
+
+<ul>
+<li>2 cell types: epithelial, macrophage</li> 
+<li>2 substrates: virus, interferon</li> 
+</ul>
 
 <!---------->
 <hr>
