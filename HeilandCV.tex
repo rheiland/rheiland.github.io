@@ -1,445 +1,262 @@
-% (c) 2002 Matthew Boedicker <mboedick@mboedick.org> (original author) http://mboedick.org
-% (c) 2003-2007 David J. Grant <davidgrant-at-gmail.com> http://www.davidgrant.ca
-% (c) 2008-2015 Nathaniel Johnston <nathaniel@njohnston.ca> http://www.njohnston.ca
-%
-% Depending on your TeX distribution, you may need to download the revnum and longtable packages for this template to work!
-%
-%This work is licensed under the Creative Commons Attribution-Noncommercial-Share Alike 2.5 License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/2.5/ or send a letter to Creative Commons, 543 Howard Street, 5th Floor, San Francisco, California, 94105, USA.
+\documentclass[11pt]{article}
 
-\documentclass[letterpaper,11pt]{article}
-\newlength{\outerbordwidth}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{parskip}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{12pt}{6pt}
+
+\newcommand{\entry}[4]{%
+    \noindent\textbf{#1} \hfill #2\\
+    \textit{#3} \hfill \textit{#4}\\[2pt]
+}
+
 \pagestyle{empty}
-\raggedbottom
-\raggedright
-\usepackage{array}
-\usepackage[svgnames]{xcolor}
-\usepackage{enumerate}
-\usepackage{framed}
-\usepackage{longtable}
-% \usepackage{revnum}
-\usepackage{etaremune}
-\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
-\usepackage{tocloft}
-\usepackage{etoolbox}
-\robustify\cftdotfill
-
-%-----------------------------------------------------------
-%Edit these values as you see fit
-
-\setlength{\outerbordwidth}{3pt}  % Width of border outside of title bars
-\definecolor{shadecolor}{gray}{0.75}  % Outer background color of title bars (0 = black, 1 = white)
-\definecolor{shadecolorB}{gray}{0.93}  % Inner background color of title bars
-
-
-%-----------------------------------------------------------
-%Margin setup
-
-\setlength{\evensidemargin}{-0.25in}
-\setlength{\headheight}{0in}
-\setlength{\headsep}{0in}
-\setlength{\oddsidemargin}{-0.25in}
-\setlength{\paperheight}{11in}
-\setlength{\paperwidth}{8.5in}
-\setlength{\tabcolsep}{0in}
-\setlength{\textheight}{9.5in}
-\setlength{\textwidth}{7in}
-\setlength{\topmargin}{-0.3in}
-\setlength{\topskip}{0in}
-\setlength{\voffset}{0.1in}
-\setlength\LTleft{0.2in} % needed to make longtable full-width
-\setlength\LTright{0.2in}
-
-%-----------------------------------------------------------
-%Custom commands
-\newcommand{\resitem}[1]{\item #1 \vspace{-2pt}}
-\newcommand{\resheading}[1]{\vspace{8pt}
-  \parbox{\textwidth}{\setlength{\FrameSep}{\fboxsep}
-    \begin{shaded}
-\setlength{\fboxsep}{0pt}\framebox[\textwidth][l]{\setlength{\fboxsep}{4pt}\fcolorbox{shadecolorB}{shadecolorB}{\textbf{\sffamily{\mbox{~}\makebox[6.762in][l]{\large #1} \vphantom{p\^{E}}}}}}
-    \end{shaded}
-  }\vspace{-5pt}
-}
-
-% the next four commands allow for the \ressubheading environment to be 1, 2, 3, or 4 subrows, depending on which command you use. This is admittedly hack-ish, and should probably be replaced by a single more flexible command (with optional arguments) in the future
-\newcommand{\ressubheading}[4]{
-\begin{tabular*}{6.5in}[t]{l@{\cftdotfill{\cftsecdotsep}\extracolsep{\fill}}r}
-		\textbf{#1} & #2 \\
-		\textit{#3} & \textit{#4} \\
-\end{tabular*}\vspace{-6pt}}
-\newcommand{\ressubheadingb}[6]{
-\begin{tabular*}{6.5in}[t]{l@{\cftdotfill{\cftsecdotsep}\extracolsep{\fill}}r}
-		\textbf{#1} & #2 \\
-		\textit{#3} & \textit{#4} \\
-		\textit{#5} & \textit{#6} \\
-\end{tabular*}\vspace{-6pt}}
-\newcommand{\ressubheadingc}[8]{
-\begin{tabular*}{6.5in}[t]{l@{\cftdotfill{\cftsecdotsep}\extracolsep{\fill}}r}
-		\textbf{#1} & #2 \\
-		\textit{#3} & \textit{#4} \\
-		\textit{#5} & \textit{#6} \\
-		\textit{#7} & \textit{#8} \\
-\end{tabular*}\vspace{-6pt}}
-\newcommand\foo[9]{%
-    \def\tempb{#2}%
-    \def\tempc{#3}%
-    \def\tempd{#4}%
-    \def\tempe{#5}%
-    \def\tempf{#6}%
-    \def\tempg{#7}%
-    \def\temph{#8}%
-    \def\tempi{#9}%
-    \foocontinued
-}
-\newcommand\foocontinued[7]{%
-    % Do whatever you want with your 9+7 arguments here.
-}
-
-\newcommand{\ressubheadingd}[1]{
-	\def\argten{#1}%
-	\ressubheadingdb
-}
-\newcommand{\ressubheadingdb}[9]{
-\begin{tabular*}{6.5in}[t]{l@{\cftdotfill{\cftsecdotsep}\extracolsep{\fill}}r}
-		\textbf{\argten} & #1 \\
-		\textit{#2} & \textit{#3} \\
-		\textit{#4} & \textit{#5} \\
-		\textit{#6} & \textit{#7} \\
-		\textit{#8} & \textit{#9} \\
-\end{tabular*}\vspace{-6pt}}
-%-----------------------------------------------------------
-
 
 \begin{document}
 
-{\large \begin{tabular*}{7in}{l@{\extracolsep{\fill}}r}
-\textbf{\LARGE Randy Heiland}\smallskip & \smallskip & \\
-Indiana University & randy.heiland@gmail.com \\
-Bloomington, IN 47408 & \hyperref{http://rheiland.github.io/}{}{}{rheiland.github.io} \\
-\end{tabular*}}
-\\
+\begin{center}
+    {\LARGE \textbf{Randy Heiland}}\\[4pt]
+    Indiana University \quad\textbullet\quad randy.heiland@gmail.com\\
+    Bloomington, IN 47408 \quad\textbullet\quad \href{https://rheiland.github.io}{rheiland.github.io} \quad\textbullet\quad cell \# 812-552-6127
+\end{center}
 
+\section*{Education}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\resheading{Education}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{itemize}
-\item
-\ressubheading{Arizona State University}{Tempe, AZ}{M.A. Mathematics}{1992}
-	\begin{itemize}
-	\item[] {Dynamical Systems. Advisor: Prof. Dieter Armbruster}
-	\item[] {Thesis: KLTool: A Mathematical Tool to Analyze Spatiotemporal Data}
+\entry{Arizona State University}{Tempe, AZ}{M.A. Mathematics}{1992}
+Dynamical Systems. Advisor: Prof. Dieter Armbruster\\
+Thesis: \textit{KLTool: A Mathematical Tool to Analyze Spatiotemporal Data}
+
+\vspace{6pt}
+\entry{University of Utah}{Salt Lake City, UT}{M.S. Computer Science}{1987}
+Computer Graphics, Computer-Aided Geometric Design. Advisor: Prof. Richard Riesenfeld\\
+Thesis: \textit{A Front-End User Interface to a Geometric Modeling System}
+
+\vspace{6pt}
+\entry{Eastern Illinois University}{Charleston, IL}{B.S. Computational Mathematics}{1979}
+
+\section*{Work Experience}
+
+\noindent\textbf{Indiana University} \hfill \textit{(2003--present)}
+\begin{itemize}[leftmargin=*, itemsep=2pt, topsep=4pt]
+    \item Intelligent Systems Engineering, 2017--present \hfill \textit{Research Associate}
+    \item Center for Applied Cybersecurity Research, 2013--2017 \hfill \textit{Senior Systems Analyst/Programmer}
+    \item Open Systems Lab (then part of pti.iu.edu; later became CREST), 2007--2012 \hfill \textit{Research Associate ($\sim$50\% effort in Biocomplexity Institute)}
+    \item UITS High Performance Applications Group, 2007 \hfill \textit{Acting Manager}
+    \item Scientific Data Analysis Lab, Pervasive Technology Labs, 2003--2007 \hfill \textit{Associate Director}
 \end{itemize}
 
-\item
-\ressubheading{University of Utah}{Salt Lake City, UT}{M.S. Computer Science}{1987}
-	\begin{itemize}
-	\item[] {Computer Graphics, Computer-Aided Geometric Design. Advisor: Prof. Richard Riesenfeld}
-	\item[] {Thesis: A Front-End User Interface to a Geometric Modeling System}
-    \end{itemize}
-\item
-	\ressubheading{Eastern Illinois University}{Charleston, IL}{B.S. Computational Mathematics}{1979}
+\entry{Acquired Science, LLC}{}{President. Scientific software development and consulting.}{2005--2010}
 
+\entry{NCSA, University of Illinois}{Urbana, IL}{Senior Research Scientist. Scientific visualization and data analysis.}{1997--2003}
+
+\entry{Pacific Northwest National Lab}{Richland, WA}{Computer Scientist. Computational chemistry, image analysis, visualization.}{1993--97}
+
+\entry{Los Alamos National Lab}{Los Alamos, NM}{Graduate Research Associate. Visualization and analysis software for the CM5 supercomputer.}{1992}
+
+\entry{Center for Industrial Research (now SINTEF)}{Oslo, Norway}{Computer Scientist. Computer-aided geometric design software.}{1985--87}
+
+\entry{Caterpillar Tractor Co.}{Peoria, IL}{Computer Scientist. Data analysis and computer-aided design.}{1979--82}
+
+\section*{Teaching Experience}
+
+\entry{Undergraduate research projects}{Bloomington}{Mentor}{2017--present}
+\entry{Science Gateways Bootcamp}{Indianapolis}{Instructor}{April 24--28, 2017}
+\entry{Brief Survey of Calculus (MATH 119)}{Indiana University}{Instructor}{Fall 2013}
+\entry{Tutorial: Multi-cell, Multi-scale Modeling}{NIMBioS, UT-Knoxville}{Instructor}{May 18--21, 2011}
+\entry{Outreach: Squeak and Scratch Modeling}{Girl Scouts of Central Indiana}{Instructor}{2007}
+\entry{Computer Graphics I (CSC 231)}{Parkland College}{Instructor}{Fall 2001}
+
+\section*{Notable Projects}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt, topsep=4pt]
+    \item \textbf{PhysiCell} (\href{https://physicell.org}{physicell.org}): Physics-based multicellular modeling software (center-based, off lattice).
+    \item \textbf{CTSC} (\href{https://trustedci.org}{trustedci.org}): The NSF Cybersecurity Center of Excellence.
+    \item \textbf{CompuCell3D} (\href{https://compucell3d.org}{compucell3d.org}): Multicellular modeling software (Cellular Potts).
+    \item \textbf{EMSL} (\href{https://emsl.pnnl.gov}{emsl.pnnl.gov}): Extensible Computational Chemistry Environment.
+    \item \textbf{\href{https://rheiland.github.io}{rheiland.github.io}}: Variety of past projects.
 \end{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\resheading{Work Experience}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{itemize}
-	\item {Indiana University (2003-present)} %{Bloomington, IN} %{M.A. Mathematics}{1992}
-		\begin{itemize}
-		\item {\hyperref{https://www.engineering.indiana.edu/}{}{}{	Intelligent Systems Engineering}, 2017-present}
-		\item[] {Research Associate}
-	\end{itemize}
+\section*{Publications}
 
-	\begin{itemize}
-		\item {\hyperref{https://cacr.iu.edu/}{}{}{Center for Applied Cybersecurity Research}, 2013-2017}
-		\item[] {Senior Systems Analyst/Programmer}
-	\end{itemize}
+Google Scholar: \url{https://scholar.google.com/citations?user=0SeiPdoAAAAJ}
 
-	\begin{itemize}
-	\item {Open Systems Lab (then part of \hyperref{https://pti.iu.edu}{}{}{pti.iu.edu}; later,  became \hyperref{http://crest.iu.edu/}{}{}{CREST}) , 2007-2012}
-	\item[] {Research Associate ({\raise.17ex\hbox{$\scriptstyle\sim$}}50\% effort in \hyperref{http://biocomplexity.indiana.edu/}{}{}{Biocomplexity Institute})}
-    \end{itemize}
+\textit{Journal Articles} (newest first)
 
-	\begin{itemize}
-	\item {UITS High Performance Applications Group, 2007}
-	\item[] {Acting Manager}
-    \end{itemize}
+\begin{enumerate}[leftmargin=*, itemsep=3pt, topsep=4pt]
+    \item Y. Wang, J. Metzcar, E. Bucher, H.L. Rocha, V. Jadhao, R. Heiland, H.B. Frieboes, P. Macklin. Drug-loaded nanoparticles for cancer therapy: A high-throughput multicellular agent-based modeling study. \textit{Journal of Theoretical Biology}, 616:112266, 2025. \url{https://doi.org/10.1016/j.jtbi.2025.112266}
 
-	\begin{itemize}
-	\item {\hyperref{http://sda.iu.edu/index.shtml}{}{}{Scientific Data Analysis Lab}, Pervasive Technology Labs, 2003-2007}
-	\item[] {Associate Director}
-    \end{itemize}
+    \item J.A.I. Johnson, D.R. Bergman, H.L. Rocha, D.L. Zhou, E. Cramer, I.C. Mclean, Y.W. Dance, M. Booth, Z. Nicholas, T. Lopez-Vidal, A. Deshpande, R. Heiland, E. Bucher, F. Shojaeian, M. Dunworth, A. Forjaz, M. Getz, I. Godet, F. Kurtoglu, et al., P. Macklin. Human interpretable grammar encodes multicellular systems biology models to democratize virtual cell laboratories. \textit{Cell}, 188(17):4711--4733.e37, 2025. \url{https://doi.org/10.1016/j.cell.2025.06.048}
 
-	\item {Acquired Science, LLC  (2005-2010)} 
-	\begin{itemize}
-	\item[] {President. Scientific software development and consulting.}
-	\end{itemize}
+    \item D.R. Bergman, J.A.I. Johnson, M. Naji, M. Booth, H.L. Rocha, A. Deshpande, D.N. Sidiropoulos, T. Lopez-Vidal, R. Heiland, L.T. Kagohara, R.A. Anders, L. Zheng, E.M. Jaffee, G.L. Stein-O'Brien, P. Macklin, E.J. Fertig. BIWT: a bioinformatics walkthrough for embedding spatial multiomics in agent-based models for virtual cells. \textit{Bioinformatics}, 41(11), 2025. \url{https://doi.org/10.1093/bioinformatics/btaf571}
 
-	\item {\hyperref{http://www.ncsa.illinois.edu/}{}{}{NCSA}, University of Illinois (1997-2003)} %{Bloomington, IN} %{M.A. Mathematics}{1992}
-    \begin{itemize}
-	    \item[] {Senior Research Scientist. Scientific visualization and data analysis.}
-    \end{itemize}
+    \item J. Metzcar, B.S. Duggan, B. Fischer, M. Murphy, R. Heiland, P. Macklin. A simple framework for agent-based modeling with extracellular matrix. \textit{Bulletin of Mathematical Biology}, 87(3):43, 2025. \url{https://doi.org/10.1007/s11538-024-01408-8}
 
-	\item {\hyperref{http://www.pnnl.gov/}{}{}{Pacific Northwest National Lab} (1993-97). Richland, WA} %{Bloomington, IN} %{M.A. Mathematics}{1992}
-	\begin{itemize}
-	\item[] {Computer Scientist. Computational chemistry, image analysis, visualization.}
-	\end{itemize}
+    \item R. Heiland, D. Bergman, B. Lyons, G. Waldow, J. Cass, H. Lima da Rocha, M. Ruscone, V. No\"el, P. Macklin. PhysiCell Studio: a graphical tool to make agent-based modeling more accessible. \textit{Gigabyte}, 2024, pp.\ 1--19. \url{https://doi.org/10.46471/gigabyte.128}
 
-	\item {Los Alamos National Lab (1992). Los Alamos, NM} 
-	\begin{itemize}
-	\item[] {Graduate Research Associate. Visualization and analysis software for the CM5 supercomputer.}
-	\end{itemize}
+    \item M. Ruscone, A. Checcoli, R. Heiland, E. Barillot, P. Macklin, L. Calzone, V. No\"el. Building multiscale models with PhysiBoSS, an agent-based modeling tool. \textit{Briefings in Bioinformatics}, 25(6), 2024. \url{https://doi.org/10.1093/bib/bbae509}
 
-	\item {Center for Industrial Research (now SINTEF) (1985-87). Oslo, Norway} 
-	\begin{itemize}
-	\item[] {Computer Scientist. Computer-aided geometric design software.}
-	\end{itemize}
+    \item G. Letort, A. Montagud, G. Stoll, R. Heiland, E. Barillot, P. Macklin, A. Zinovyev, L. Calzone. PhysiBoSS: a multi-scale agent-based modelling framework integrating physical dimension and cell signalling. \textit{Bioinformatics}, 35(7):1188--1196, 2019. \url{https://doi.org/10.1093/bioinformatics/bty766}
 
-	\item {Caterpillar Tractor Co. (1979-82). Peoria, IL} 
-	\begin{itemize}
-	\item[] {Computer Scientist. Data analysis and computer-aided design.}
-	\end{itemize}
-\end{itemize}
+    \item R. Heiland, D. Mishler, T. Zhang, E. Bower, P. Macklin. xml2jupyter: Mapping parameters between XML and Jupyter widgets. \textit{Journal of Open Source Software}, 4(39):1408, 2019. \url{https://doi.org/10.21105/joss.01408}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\resheading{Teaching Experience}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{itemize}
-\item 
-\ressubheading{Undergraduate research projects}{Bloomington}{Mentor}{2017-present}
-\item 
-\ressubheading{Science Gateways Bootcamp}{Indianapolis}{Instructor}{April 24-28, 2017}
-\item 
-\ressubheading{Brief Survey of Calculus (MATH 119)}{Indiana University}{Instructor}{Fall 2013}
-\item 
-\ressubheading{Tutorial: Multi-cell, Multi-scale Modeling}{NIMBioS, UT-Knoxville}{Instructor}{May 18-21, 2011}
-\item
-\ressubheading{Outreach: Squeak and Scratch Modeling}{Girl Scouts of Central Indiana}{Instructor}{2007}
-\item 
-	\ressubheading{Computer Graphics I (CSC 231)}{Parkland College}{Instructor}{Fall 2001}
-\end{itemize}
+    \item M.P. Snyder, et al. (HuBMAP Consortium, incl. R. Heiland). The human body at cellular resolution: the NIH Human Biomolecular Atlas Program. \textit{Nature}, 574(7777):187--192, 2019. \url{https://doi.org/10.1038/s41586-019-1629-x}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\resheading{Notable Projects}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{itemize}
-	\item
-	PhysiCell \hyperref{https://physicell.org}{}{}{(physicell.org)}:
-	An open source physics-based cell simulator.
-	\item
-	CTSC \hyperref{https://trustedci.org/}{}{}{(trustedci.org)}:
-	The NSF Cybersecurity Center of Excellence.
-	\item
-	CompuCell3D \hyperref{http://compucell3d.org/}{}{}{(compucell3d.org)}:
-	Modeling environment for multi-cell behavior
-	\item
-	\hyperref{https://rheiland.github.io/}{}{}{rheiland.github.io}:
-	Variety of past projects
-	\item
-	EMSL \hyperref{https://www.emsl.pnnl.gov/}{}{}{(emsl.pnnl.gov)}:
-	Environmental Molecular Sciences Laboratory 
-\end{itemize}
+    \item J. Ozik, N. Collier, R. Heiland, G. An, P. Macklin. Learning-accelerated discovery of immune-tumour interactions. \textit{Molecular Systems Design \& Engineering}, 4(4):747--760, 2019. \url{https://doi.org/10.1039/c9me00036d}
 
-%\clearpage
+    \item J. Metzcar, Y. Wang, R. Heiland, P. Macklin. A review of cell-based computational modeling in cancer biology. \textit{JCO Clinical Cancer Informatics}, 3:1--13, 2019. \url{https://doi.org/10.1200/CCI.18.00069}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\resheading{Publications}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \item J. Ozik, N. Collier, J.M. Wozniak, C.M. Macal, C. Cockrell, S.H. Friedman, A. Ghaffarizadeh, R. Heiland, G. An, P. Macklin. High-throughput cancer hypothesis testing with an integrated PhysiCell-EMEWS workflow. \textit{BMC Bioinformatics}, 19(Suppl 18):81--97, 2018. \url{https://doi.org/10.1186/s12859-018-2510-x}
 
-\begin{itemize}
-\item
-Google Scholar \hyperref{https://scholar.google.com/citations?hl=en&user=0SeiPdoAAAAJ&view_op=list_works&sortby=pubdate}{}{}{(link)}:
-\end{itemize}
-	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\resheading{Reports and Presentations}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{enumerate}
-	\item
-	R. Heiland.
-	Cybersecurity for Science Gateways.
-	\textit{SGCI Bootcamp}. Indianapolis, IN. April 24-28, 2017.
-	\hyperref{http://hdl.handle.net/2022/21367}{}{}{http://hdl.handle.net/2022/21367}
-	
-	\item
-	R. Heiland and V. Welch.
-	Center for Trustworthy Scientific Cyberinfrastructure: The NSF Cybersecurity Center of Excellence.
-	\textit{NSF SI2 PI Meeting: Poster session}. Arlington, VA. Feb 21-22, 2017.
-	\hyperref{http://hdl.handle.net/2022/21258}{}{}{http://hdl.handle.net/2022/21258}
-	
-	\item
-	V. Welch, {\em et al}.
-	Center for Trustworthy Scientific Cyberinfrastructure - The NSF Cybersecurity Center of Excellence: Year One Report.
-	Technical Report, Indiana University, December 2016.
-	\hyperref{http://hdl.handle.net/2022/21163}{}{}{http://hdl.handle.net/2022/21163}
-	
-	\item
-	R. Heiland, W.C. Garrison III, Y. Qiao, A.J. Lee, V. Welch.
-	The Web's PKI: An Expository Review and Certificate Validation Cost Simulation.
-	Technical Report, Indiana University, September 2016.
-	\hyperref{http://hdl.handle.net/2022/21038}{}{}{http://hdl.handle.net/2022/21038}
-	
-	\item
-	R. Heiland, S. Sons.
-	Secure Software Engineering Best Practices.
-	Presentation at the NSF Cybersecurity Summit. August 16, 2016.
-	\hyperref{http://hdl.handle.net/2022/21322}{}{}{http://hdl.handle.net/2022/21322}
-	
-	\item
-	R. Heiland, S. Koranda, V. Welch.
-	SciGaP-CTSC Engagement Summary.
-	Technical Report, Indiana University, May 2016.
-	\hyperref{http://hdl.handle.net/2022/20926}{}{}{http://hdl.handle.net/2022/20926}
-	
-	\item
-	R. Heiland, S. Koranda, V. Welch.
-	SciGaP-CTSC Engagement: Final Technical Recommendations.
-	Technical Report, Indiana University, April 2016.
-	\hyperref{http://hdl.handle.net/2022/20927}{}{}{http://hdl.handle.net/2022/20927}
-	
-	\item
-	R. Heiland, A. Adams, E. Heymann.
-	perfSONAR-CTSC Code Review Engagement Final Report.
-	Technical Report, Indiana University, January 2016.
-	\hyperref{http://hdl.handle.net/2022/20596}{}{}{http://hdl.handle.net/2022/20596}
-	
-	\item
-	V. Welch, {\em et al}.
-	Year Three Report: Center for Trustworthy Scientific Cyberinfrastructure.
-	Technical Report, Indiana University,  Oct 2015.
-	\hyperref{http://hdl.handle.net/2022/20401}{}{}{http://hdl.handle.net/2022/20401}
-	
-	\item
-	R. Heiland and V. Welch.
-	Analysis of authentication events and graphs using Python.
-	\textit{SIAM Workshop on Network Science: Poster session}. Snowbird, UT. May 2015.
-	\hyperref{https://github.com/rheiland/authpy}{}{}{github.com/rheiland/authpy}
-	
-		\item
-	V. Welch, {\em et al}.
-	Year Two Report: Center for Trustworthy Scientific Cyberinfrastructure.
-	Technical Report, Indiana University,  Sept 2014.
-	\hyperref{http://hdl.handle.net/2022/20030}{}{}{http://hdl.handle.net/2022/20030}
-	
-	\item
-	J. Marsteller and R. Heiland.
-	IceCube Cybersecurity Improvement Plan.
-	Technical Report, Indiana University, 2014.
-	\hyperref{http://hdl.handle.net/2022/17364}{}{}{http://hdl.handle.net/2022/17364}
-	
-	\item
-	R. Heiland, S. Koranda, V. Welch.
-	Globus Data Sharing: Security Assessment.
-	Technical Report, Indiana University, 2014.
-	\hyperref{http://hdl.handle.net/2022/19165}{}{}{http://hdl.handle.net/2022/19165}
-	
-	\item
-	R. Heiland and O. Sporns.
-	Comparing Functional Networks of the Brain: An Introductory Tutorial using Python.
-	\textit{BioVis 2014 Data Contest}, Boston, MA, July 2014. 
-	\hyperref{https://github.com/rheiland/biovis2014}{}{}{github.com/rheiland/biovis2014}
-	
-	\item
-	R. Heiland, S. Marru, M. Pierce, V. Welch.
-	CTSC Recommended Security Practices for Thrift Clients: Case Study - Evernote.
-	Technical Report, Indiana University, May 2014. 
-	\hyperref{http://hdl.handle.net/2022/20620}{}{}{http://hdl.handle.net/2022/20620}
-	
-	\item
-	V. Welch, {\em et al}.
-	Year 1 Report: Center for Trustworthy Scientific Cyberinfrastructure.
-	Technical Report, Indiana University,  2013.
-	\hyperref{http://hdl.handle.net/2022/17205}{}{}{http://hdl.handle.net/2022/17205}
-	
-	\item
-	R. Heiland, B. Thomas, V. Welch, C. Jackson.
-	Toward a Research Software Security Maturity Model.
-	\textit{Workshop on Sustainable Software for Science}, Nov 2013.
-	\hyperref{https://arxiv.org/abs/1309.1677}{}{}{arxiv.org/abs/1309.1677}
+    \item A. Ghaffarizadeh, R. Heiland, S.H. Friedman, S.M. Mumenthaler, P. Macklin. PhysiCell: An open source physics-based cell simulator for 3-D multicellular systems. \textit{PLoS Computational Biology}, 14(2):e1005991, 2018. \url{https://doi.org/10.1371/journal.pcbi.1005991} \newline (Winner, 2019 PLOS Computational Biology Research Prize for Public Impact)
 
-\item
-R. Heiland, S. Koranda, V. Welch.
-Pegasus-CTSC Engagement Final Report.
-Technical Report, Indiana University, 2013.
-\hyperref{http://hdl.handle.net/2022/15562}{}{}{http://hdl.handle.net/2022/15562}
-	
-	\item
-	R. Heiland, J. Champlin, S. Ito, A. Litke, A. Lumsdaine, and J. Beggs.
-	Introduction to Modeling and Computational Neuroscience using Python.
-	\textit{Presentation at Society for Mathematical Biology (SMB) Annual Meeting and Conference}, July 2012.
-	
-	\item
-	R. Heiland, C. Perry, B. Ream, A. Lumsdaine.
-	Sculpture, Geometry, and Computer Science.
-	\textit{Presentation at SIAM Conference on Computational Science and Engineering}, Feb 2011.
-	\hyperref{http://fperez.org/events/2011_siam_cse/siam-cse11-IndianaArc.pdf}{}{}{fperez.org/events/2011\_siam\_cse/siam-cse11-IndianaArc.pdf}
-	\hyperref{https://obamawhitehouse.archives.gov/blog/2010/12/10/celebrating-computer-science}{}{}{obamawhitehouse.archives.gov/blog/2010/12/10/celebrating-computer-science}
-	
-	\item
-	R. Heiland.
-	Squeak: A Free Computer Application to Enhance Math and Science Learning.
-	\textit{Presentation, HASTI Conference}, Indianapolis, Feb 10, 2006. 
-	
-	\item
-	R. Heiland.
-	XML for Bioinformatics.
-	\textit{Book Review, Briefings in Bioinformatics}, Feb 2006.
-	\hyperref{https://doi.org/10.1093/bib/bbk013}{}{}{https://doi.org/10.1093/bib/bbk013}
-	
-	
-	\item
-	R. Heiland, M. P. Baker, and B. D. Semeraro.
-	A Survey of Visualization Tools for High Performance Computing.
-	\textit{Poster presentation at SIAM Parallel Processing for Scientific Computing}, 1999.
-	\hyperref{http://citeseer.ist.psu.edu/viewdoc/download;jsessionid=5B15C5388941C7E8BFC659C5173B926B?doi=10.1.1.42.751&rep=rep1&type=pdf}{}{}{(Abstract)}
-	
-	\item
-	P. Baker, D. Bock, R. Heiland, and M. Stephens. 
-	Visualization of Damaged Structures.
-	\textit{CEWES MSRC PET Annual Technical Report: Year 2}. March 1998.
-	
-\bibitem{Heiland1994-ws}
-R.W. Heiland.
-\newblock Object-oriented parallel polygon rendering.
-\newblock Technical Report PNL-SA--25031; CONF-9409278--3, Pacific Northwest
-Lab., Richland, WA (United States), 1~September 1994.
+    \item J.P. Sluka, A. Shirinifard, M. Swat, A. Cosmanescu, R. Heiland, J.A. Glazier. The cell behavior ontology: describing the intrinsic biological behaviors of real and model cells seen as active agents. \textit{Bioinformatics}, 30(16):2367--2374, 2014. \url{https://doi.org/10.1093/bioinformatics/btu210}
+
+    \item S. Ito, M.E. Hansen, R. Heiland, A. Lumsdaine, A.M. Litke, J.M. Beggs. Extending transfer entropy improves identification of effective connectivity in a spiking cortical network model. \textit{PLoS ONE}, 6(11):e27431, 2011. \url{https://doi.org/10.1371/journal.pone.0027431}
+
+    \item A. Singh, A. Olowoyeye, P.H. Baenziger, J. Dantzer, M.G. Kann, P. Radivojac, R. Heiland, S.D. Mooney. MutDB: update on development of tools for the biochemical analysis of genetic variation. \textit{Nucleic Acids Research}, 36(Database issue):815--819, 2008. \url{https://doi.org/10.1093/nar/gkm659}
+
+    \item A.J. Moad, C.W. Moad, J.M. Perry, R.D. Wampler, G.S. Goeken, N.J. Begue, T. Shen, R. Heiland, G.J. Simpson. NLOPredict: Visualization and data analysis software for nonlinear optics. \textit{Journal of Computational Chemistry}, 28(12):1996--2002, 2007. \url{https://doi.org/10.1002/jcc.20706}
+
+    \item X. Dong, K.E. Gilbert, R. Guha, R.W. Heiland, J. Kim, M.E. Pierce, G.C. Fox, D.J. Wild. Web Service Infrastructure for Chemoinformatics. \textit{Journal of Chemical Information and Modeling}, 47(4):1303--1307, 2007. \url{https://doi.org/10.1021/ci6004349}
+
+    \item J. Dantzer, C.W. Moad, R. Heiland, S.D. Mooney. MutDB services: interactive structural analysis of mutation data. \textit{Nucleic Acids Research}, 33(Web Server issue):W311--W314, 2005. \url{https://doi.org/10.1093/nar/gki404}
+
+    \item D. Armbruster, R. Heiland, E.J. Kostelich. kltool: A tool to analyze spatiotemporal complexity. \textit{Chaos}, 4(2):421--424, 1994. \url{https://doi.org/10.1063/1.166020}
+
+    \item D. Armbruster, R. Heiland, E.J. Kostelich, B. Nicolaenko. Phase-space analysis of bursting behavior in Kolmogorov flow. \textit{Physica D: Nonlinear Phenomena}, 58(1--4):392--401, 1992. \url{https://doi.org/10.1016/0167-2789(92)90125-7}
 \end{enumerate}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\resheading{Software Skills}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{itemize}
-\item
-	Good level: C/C\texttt{++}, Python(+numerous
-pkgs), OpenGL, Jupyter/IPython Notebooks, VTK, CMake,
-ParaView, MATLAB, git, \LaTeX, ImageMagick,
-gdb, Linux, OSX
+\textit{Book Chapters}
 
-\item
-Intermediate: Fortran, Java, R, Qt, OpenMP, ITK, HTML, Bash, Valgrind, OpenCV, VisTrails
+\begin{enumerate}[leftmargin=*, itemsep=3pt, topsep=4pt]
+    \item R.J. Littlefield, R.W. Heiland, C.R. Macedonia. Virtual Reality Volumetric Display Techniques for Three-Dimensional Medical Ultrasound. In \textit{Medicine Meets Virtual Reality 4: Health Care in the Information Age}, Studies in Health Technology and Informatics, vol.\ 29, pp.\ 498--506. IOS Press, San Diego, CA, January 1996. \url{https://doi.org/10.3233/978-1-60750-873-1-498}
 
-\item
-Basic level: Javascript, MySQL, MPI, Boost, Pegasus, CUDA, OpenCL, Django,
-Mathematica, Maple, Blender, Windows
-\end{itemize}
+    \item D. Armbruster, E. Stone, R. Heiland. Towards analyzing the dynamics of flames. In \textit{Pattern Formation: Symmetry Methods and Applications}, Fields Institute Communications, vol.\ 5, pp.\ 1--17. American Mathematical Society, 1996. \url{https://doi.org/10.1090/fic/005}
+\end{enumerate}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\resheading{Professional Society Memberships}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{itemize}
-	\item[] {Society for Industrial and Applied Mathematics (SIAM)}
-	\item[] {Mathematical Association of America (MAA)}
-	\item[] {Society for Mathematical Biology (SMB)}
-\end{itemize}
+\textit{Conference and Workshop Papers} (newest first)
 
+\begin{enumerate}[leftmargin=*, itemsep=3pt, topsep=4pt]
+    \item A. Madamanchi, R. Heiland, P. Macklin, A.J. Magana. Students' Use of Metacognitive Skills in Undergraduate Research Experiences in Computational Modeling. \textit{IEEE Frontiers in Education (FIE)}, 2019, pp.\ 1--5. \url{https://doi.org/10.1109/FIE43999.2019.9028386}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\resheading{References}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{itemize}
-	\item[] {Available upon request.}
-\end{itemize}
+    \item M. Rynge, K. Vahi, E. Deelman, A. Mandal, I. Baldin, O. Bhide, R. Heiland, V. Welch, R. Hill, W.L. Poehlman, F.A. Feltus. Integrity Protection for Scientific Workflow Data: Motivation and Initial Experiences. \textit{PEARC}, 2019, pp.\ 17:1--17:8. \url{https://doi.org/10.1145/3332186.3332222}
 
+    \item S. Gesing, M.G. Zentner, J. Casavan, B. Hillery, M. Vorvoreanu, R. Heiland, S. Marru, M.E. Pierce, N. Mullinix, N. Maron. Science Gateways Incubator: Software Sustainability Meets Community Needs. \textit{eScience}, 2017, pp.\ 477--485. \url{https://doi.org/10.1109/eScience.2017.77}
+
+    \item R.W. Heiland, S. Koranda, S. Marru, M.E. Pierce, V. Welch. Authentication and Authorization Considerations for a Multi-tenant Service. \textit{SCREAM@HPDC}, 2015, pp.\ 29--35. \url{https://doi.org/10.1145/2753524.2753534}
+
+    \item R. Heiland, A. Shirinifard, M. Swat, G.L. Thomas, J.P. Sluka, A. Lumsdaine, B. Zaitlen, J.A. Glazier. Visualizing cells and their connectivity graphs for CompuCell3D. \textit{IEEE Symposium on Biological Data Visualization (BioVis)}, 2012, pp.\ 85--90. \url{https://doi.org/10.1109/BioVis.2012.6378597}
+
+    \item R. Heiland, M. Swat, B. Zaitlen, J.A. Glazier, et al. Workflows for parameter studies of multi-cell modeling. \textit{Proceedings of the 2010 Spring Simulation Multiconference (SpringSim)}, 2010.
+
+    \item R.W. Heiland, M.P. Baker. A Survey of Visualization Tools for High Performance Computing. \textit{Proceedings of the Ninth SIAM Conference on Parallel Processing for Scientific Computing (PPSC)}, San Antonio, TX, March 1999.
+
+    \item R.W. Heiland, M.P. Baker, D.K. Tafti. VisBench: A Framework for Remote Data Visualization and Analysis. \textit{International Conference on Computational Science (ICCS)}, Part II, 2001, pp.\ 718--727. \url{https://doi.org/10.1007/3-540-45718-6_78}
+
+    \item G.M. Nielson, R.W. Heiland. Animated rotations using quaternions and splines on a 4D sphere. \textit{Programming and Computer Software}, 18(4):145--154, 1992.
+\end{enumerate}
+
+\textit{Preprints (bioRxiv)}
+
+\begin{enumerate}[leftmargin=*, itemsep=3pt, topsep=4pt]
+    \item E.M. Cramer, R. Heiland, H. Lima da Rocha, D.R. Bergman, J.W. Gray, G.B. Mills, E.J. Fertig, P. Macklin, L.M. Heiser, Y.H. Chang. Tumor-immune trajectory context connects static tissue architecture to clinical outcomes. \textit{bioRxiv}, 2026.03.26.714521. \url{https://doi.org/10.64898/2026.03.26.714521}
+
+    \item A. Bertin, E. Bucher, O. Griere, M. Hurtado, H. Rocha, R. Heiland, A. Sundus, P. Macklin, V. Fran\c{c}ois-Lavet, E. Rachelson, V. Pancaldi. PhysiGym: bridging the gap between the Gymnasium reinforcement learning application interface and the PhysiCell agent-based model software. \textit{bioRxiv}, 2025.09.18.677030. \url{https://doi.org/10.1101/2025.09.18.677030}
+
+    \item T. Ntiniakou, J. Osborne, J. Zhao, J. Dichamp, N. Cogno, R. Heiland, et al., P. Macklin, et al. Open Benchmarking for Cell-Based Multiscale Models: Lessons from a Community Initiative. \textit{bioRxiv}, 2025.07.16.664358. \url{https://doi.org/10.1101/2025.07.16.664358}
+
+    \item M. Getz, Y. Wang, G. An, M. Asthana, A. Becker, C. Cockrell, N. Collier, M. Craig, C.L. Davis, J.R. Faeder, A.N. Ford Versypt, T. Mapder, J.F. Gianlupi, J.A. Glazier, S. Hamis, R. Heiland, T. Hillen, D. Hou, M.A. Islam, A.L. Jenner, F. Kurtoglu, C.I. Larkin, B. Liu, F. Macfarlane, P. Maygrundter, P.A. Morel, A. Narayanan, J. Ozik, E. Pienaar, P. Rangamani, A.S. Saglam, J.E. Shoemaker, A.M. Smith, J.J.A. Weaver, P. Macklin. Iterative community-driven development of a SARS-CoV-2 tissue simulator. \textit{bioRxiv}, 2020.04.02.019075 (v5, 2021). \url{https://doi.org/10.1101/2020.04.02.019075}
+
+    \item A. Sundus, F. Kurtoglu, K. Konstantinopoulos, M. Chen, D. Willis, R. Heiland, P. Macklin. PhysiCell training apps: A case study for creating interactive training materials for scientific software packages. \textit{bioRxiv}, 2022.06.24.497566. \url{https://doi.org/10.1101/2022.06.24.497566}
+\end{enumerate}
+
+\textit{Preprints (arXiv)}
+
+\begin{enumerate}[leftmargin=*, itemsep=3pt, topsep=4pt]
+    \item V. No\"el, M. Ruscone, R. Heiland, A. Montagud, A. Valencia, E. Barillot, P. Macklin, L. Calzone. PhysiBoSS-Models: A database for multiscale models. \textit{arXiv}, 2508.05550, 2025. \url{https://arxiv.org/abs/2508.05550}
+\end{enumerate}
+
+\textit{Reports and Presentations}
+
+\begin{enumerate}[leftmargin=*, itemsep=3pt, topsep=4pt]
+    \item R. Heiland. Cybersecurity for Science Gateways. SGCI Bootcamp. Indianapolis, IN. April 24--28, 2017. \url{http://hdl.handle.net/2022/21367}
+
+    \item R. Heiland and V. Welch. Center for Trustworthy Scientific Cyberinfrastructure: The NSF Cybersecurity Center of Excellence. NSF SI2 PI Meeting: Poster session. Arlington, VA. Feb 21--22, 2017. \url{http://hdl.handle.net/2022/21258}
+
+    \item V. Welch, et al. Center for Trustworthy Scientific Cyberinfrastructure -- The NSF Cybersecurity Center of Excellence: Year One Report. Technical Report, Indiana University, December 2016. \url{http://hdl.handle.net/2022/21163}
+
+    \item R. Heiland, W.C. Garrison III, Y. Qiao, A.J. Lee, V. Welch. The Web's PKI: An Expository Review and Certificate Validation Cost Simulation. Technical Report, Indiana University, September 2016. \url{http://hdl.handle.net/2022/21038}
+
+    \item R. Heiland, S. Sons. Secure Software Engineering Best Practices. Presentation at the NSF Cybersecurity Summit. August 16, 2016. \url{http://hdl.handle.net/2022/21322}
+
+    \item R. Heiland, S. Koranda, V. Welch. SciGaP-CTSC Engagement Summary. Technical Report, Indiana University, May 2016. \url{http://hdl.handle.net/2022/20926}
+
+    \item R. Heiland, S. Koranda, V. Welch. SciGaP-CTSC Engagement: Final Technical Recommendations. Technical Report, Indiana University, April 2016. \url{http://hdl.handle.net/2022/20927}
+
+    \item R. Heiland, A. Adams, E. Heymann. perfSONAR-CTSC Code Review Engagement Final Report. Technical Report, Indiana University, January 2016. \url{http://hdl.handle.net/2022/20596}
+
+    \item V. Welch, et al. Year Three Report: Center for Trustworthy Scientific Cyberinfrastructure. Technical Report, Indiana University, Oct 2015. \url{http://hdl.handle.net/2022/20401}
+
+    \item R. Heiland and V. Welch. Analysis of authentication events and graphs using Python. SIAM Workshop on Network Science: Poster session. Snowbird, UT. May 2015. \url{https://github.com/rheiland/authpy}
+
+    \item V. Welch, et al. Year Two Report: Center for Trustworthy Scientific Cyberinfrastructure. Technical Report, Indiana University, Sept 2014. \url{http://hdl.handle.net/2022/20030}
+
+    \item J. Marsteller and R. Heiland. IceCube Cybersecurity Improvement Plan. Technical Report, Indiana University, 2014. \url{http://hdl.handle.net/2022/17364}
+
+    \item R. Heiland, S. Koranda, V. Welch. Globus Data Sharing: Security Assessment. Technical Report, Indiana University, 2014. \url{http://hdl.handle.net/2022/19165}
+
+    \item R. Heiland and O. Sporns. Comparing Functional Networks of the Brain: An Introductory Tutorial using Python. BioVis 2014 Data Contest, Boston, MA, July 2014. \url{https://github.com/rheiland/biovis2014}
+
+    \item R. Heiland, S. Marru, M. Pierce, V. Welch. CTSC Recommended Security Practices for Thrift Clients: Case Study -- Evernote. Technical Report, Indiana University, May 2014. \url{http://hdl.handle.net/2022/20620}
+
+    \item V. Welch, et al. Year 1 Report: Center for Trustworthy Scientific Cyberinfrastructure. Technical Report, Indiana University, 2013. \url{http://hdl.handle.net/2022/17205}
+
+    \item R. Heiland, B. Thomas, V. Welch, C. Jackson. Toward a Research Software Security Maturity Model. Workshop on Sustainable Software for Science, Nov 2013. \url{https://arxiv.org/pdf/1309.1677}
+
+    \item R. Heiland, S. Koranda, V. Welch. Pegasus-CTSC Engagement Final Report. Technical Report, Indiana University, 2013. \url{http://hdl.handle.net/2022/15562}
+
+    \item R. Heiland, J. Champlin, S. Ito, A. Litke, A. Lumsdaine, and J. Beggs. Introduction to Modeling and Computational Neuroscience using Python. Presentation at Society for Mathematical Biology (SMB) Annual Meeting and Conference, July 2012.
+
+    \item R. Heiland, C. Perry, B. Ream, A. Lumsdaine. Sculpture, Geometry, and Computer Science. Presentation at SIAM Conference on Computational Science and Engineering, Feb 2011. \url{https://obamawhitehouse.archives.gov/blog/2010/12/10/celebrating-computer-science}
+
+    \item R. Heiland. Squeak: A Free Computer Application to Enhance Math and Science Learning. Presentation, HASTI Conference, Indianapolis, Feb 10, 2006.
+
+    \item R. Heiland. XML for Bioinformatics. Book Review, Briefings in Bioinformatics, Feb 2006. \url{https://doi.org/10.1093/bib/bbk013}
+
+    \item R. Heiland, M. P. Baker, and B. D. Semeraro. A Survey of Visualization Tools for High Performance Computing. Poster presentation at SIAM Parallel Processing for Scientific Computing, 1999. (Abstract)
+
+    \item P. Baker, D. Bock, R. Heiland, and M. Stephens. Visualization of Damaged Structures. CEWES MSRC PET Annual Technical Report: Year 2. March 1998.
+
+    \item R.W. Heiland. Object-oriented parallel polygon rendering. Technical Report PNL-SA--25031; CONF-9409278--3, Pacific Northwest Lab., Richland, WA (United States), 1 September 1994.
+\end{enumerate}
+
+\section*{Software Skills}
+
+\textbf{Good level:} C/C++, Python (+numerous pkgs), OpenGL, Jupyter/IPython Notebooks, VTK, CMake, ParaView, MATLAB, git, \LaTeX, ImageMagick, gdb, Linux, OSX
+
+\textbf{Intermediate:} Docker, Galaxy, Fortran, Java, R, Qt, OpenMP, ITK, HTML, Bash, Valgrind, OpenCV
+
+\textbf{Basic level:} JavaScript, MySQL, MPI, Boost, Pegasus, CUDA, OpenCL, Django, Mathematica, Maple, Blender, Windows
+
+\section*{Professional Society Memberships}
+
+Society for Mathematical Biology (SMB)\\
+Society for Industrial and Applied Mathematics (SIAM)\\
+Mathematical Association of America (MAA)
+
+\section*{References}
+
+Available upon request.
 
 \end{document}
