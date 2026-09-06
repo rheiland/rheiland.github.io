@@ -81,11 +81,34 @@ Thesis: \textit{A Front-End User Interface to a Geometric Modeling System}
 
 \begin{itemize}[leftmargin=*, itemsep=2pt, topsep=4pt]
     \item \textbf{PhysiCell} (\href{https://physicell.org}{physicell.org}): Physics-based multicellular modeling software (center-based, off lattice).
+    
+    I joined Dr. Paul Macklin's lab in 2017 and have been supporting the PhysiCell project ever since - the core software, the larger software ecosystem, and the user community. During this time we have seen, and continue to see, a steady increase in the number of models built using PhysiCell (see citation count for the original 2018 PhysiCell method paper). Moreover, we continue to have collaborators contribute important functionality to PhysiCell - the sign of a healthy open source project.
+    
     \item \textbf{PhysiCell Studio} (\href{https://github.com/PhysiCell-Tools/PhysiCell-Studio}{link}): Graphical user interface to create a PhysiCell model.
+
+    During a 5-year NSF-funded \textit{nanoBIO} project, I led development (together with some talented undergraduate students) of the \textit{xml2jupyter} project (see citation). This made it easy to generate a (model-specific) GUI from a PhysiCell model's configuration file (XML) which could then be run in the cloud, in a browser (using nanohub.org). We then evolved this to become a more general-purpose desktop application, PhysiCell Studio, for building, simulating, and visualizing a PhysiCell model (see citation). Now we have ported the Studio to run in the cloud on the Galaxy platform (\href{https://usegalaxy.org}{usegalaxy.org}).
+
+    \item \textbf{physicellpy}: Python API to the PhysiCell C\texttt{++}. 
+    
+    This is a very recent project that will allow PhysiCell to be part of the vast Python ecosystem, including agentic workflows. A public repo will be made available when we are closer to a preprint.
+
     \item \textbf{CTSC} (\href{https://trustedci.org}{trustedci.org}): The NSF Cybersecurity Center of Excellence.
+    
+    I spent about four years contibuting to NSF-funded cybersecurity projects. Most involved my expertise in software engineering - analyzing other NSF-funded projects for software vulnerabilities and best practices, e.g., the IceCube Neutrino Observatory, the Pegasus Workflow Management System, the Globus data management system, and more.
+    
     \item \textbf{CompuCell3D} (\href{https://compucell3d.org}{compucell3d.org}): Multicellular modeling software (Cellular Potts).
-    \item \textbf{EMSL} (\href{https://emsl.pnnl.gov}{emsl.pnnl.gov}): Extensible Computational Chemistry Environment.
-    \item \textbf{\href{https://rheiland.github.io}{rheiland.github.io}}: Variety of past projects.
+    
+    I contributed to another agent-based modeling framework, CompuCell3D, for about three years (part-time). Most of my contributions were related to visualizing simulation results which are still used in its GUI. For that, we used the Visualization Toolkit (VTK), a popular open source library. I also contributed to the Cell Behavior Ontology (see citation). And I also demonstrated how we could easily run multiple simulations on IU's HPC resources.
+    
+    \item \textbf{NCSA}
+    
+    I spent six  years at NCSA, UIUC working on a variety of projects, mostly involving scientific visualization and data analysis. Projects funded by a DoD-HPC Modernization grant included molecular docking in a VR and haptic environment, analyzing data from large CFD models of simulated explosions, and visualizing CFD data related to water quality of the Chesapeake Bay.  Another project, VisBench (see citation), used a client-server architecture for 3D scientific visualization and analysis, using a Java desktop GUI, a VTK server for rendering, and a Matlab server for analysis.
+    
+    \item \textbf{EMSL} (\href{https://emsl.pnnl.gov}{emsl.pnnl.gov}): Extensible Computational Chemistry Environment (ECCE).
+    
+    While working at PNNL, I primarily wrote visualization software for the ECCE project, a desktop suite of tools for running computational chemistry applications on their HPC computers. Another project involved the visualization of 3D ultrasound data using VR technology (see citation).
+    
+    \item \textbf{\href{https://rheiland.github.io}{rheiland.github.io}}: Provides a few more details of past projects.
 \end{itemize}
 
 \section*{Publications}
@@ -173,6 +196,8 @@ Google Scholar: \url{https://scholar.google.com/citations?user=0SeiPdoAAAAJ}
 \textit{Preprints (bioRxiv)}
 
 \begin{enumerate}[leftmargin=*, itemsep=3pt, topsep=4pt]
+    \item O. Hayoun Mya, M. Ruscone, R. Heiland, P. Macklin, A. Valencia, M. Ponce de Leon. PhysiCelldFBA: Linking single-cell genome-scale metabolism to spatially explicit multicellular dynamics. \textit{bioRxiv}, 2026.09.02.748294. \url{https://doi.org/10.64898/2026.09.02.748294}
+
     \item H.L. Rocha, E. Bucher, S. Zhang, A. Deshpande, D.R. Bergman, R. Heiland, P. Macklin. UQ-PhysiCell: An extensible Python framework for uncertainty quantification and model analysis in PhysiCell. \textit{bioRxiv}, 2026.04.06.716692. \url{https://doi.org/10.64898/2026.04.06.716692}
 
     \item E.M. Cramer, R. Heiland, H. Lima da Rocha, D.R. Bergman, J.W. Gray, G.B. Mills, E.J. Fertig, P. Macklin, L.M. Heiser, Y.H. Chang. Tumor-immune trajectory context connects static tissue architecture to clinical outcomes. \textit{bioRxiv}, 2026.03.26.714521. \url{https://doi.org/10.64898/2026.03.26.714521}
